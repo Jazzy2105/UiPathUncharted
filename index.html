@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UiPath Uncharted — Be Our Guest</title>
+  <meta name="description" content="UiPath Uncharted podcast guest page: share your story, explore UiPath products, and join Season 1 as a guest." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="assets/uu-mark-navy.png" />
+  <link rel="apple-touch-icon" href="assets/uu-mark-navy.png" />
+</head>
+<body>
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark"><img src="assets/uu-mark-navy.png" alt="UiPath Uncharted logo" /></div>
+        <div>
+          <p class="eyebrow">UiPath Uncharted</p>
+          <p class="brand-title">Be Our Guest</p>
+        </div>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="site-nav" id="siteNav">
+        <a href="#about">About</a>
+        <a href="#format">Format</a>
+        <a href="#season">Season</a>
+        <a href="#why">Why Guest</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a class="button button-primary" href="#contact">Say Yes</a>
+    </div>
+  </header>
+
+  <div class="page-shell">
+
+    <main>
+      <section class="hero" id="home">
+        <div class="hero-copy" data-animate>
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            Season 1 &middot; Now Casting Guests
+          </div>
+          <h1>UiPath <span class="text-gradient">Uncharted</span></h1>
+          <p class="hero-subtitle">A podcast exploring the full UiPath ecosystem &mdash; one expert, one product, one story at a time.</p>
+          <div class="hero-meta">
+            <div class="meta-item">
+              <span class="meta-num">20</span>
+              <span class="meta-label">Episodes</span>
+            </div>
+            <div class="meta-divider"></div>
+            <div class="meta-item">
+              <span class="meta-num">45<small>min</small></span>
+              <span class="meta-label">Per Episode</span>
+            </div>
+            <div class="meta-divider"></div>
+            <div class="meta-item">
+              <span class="meta-num js-current-year">2025</span>
+              <span class="meta-label">Season 1</span>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#contact">Be Our Guest</a>
+            <a class="button button-secondary" href="#about">How It Works</a>
+          </div>
+        </div>
+        <div class="hero-panel" data-animate data-delay="100">
+          <div class="host-intro">
+            <div class="section-intro">
+              <p class="eyebrow">Your host</p>
+              <h2>Jarryd <span class="text-gradient">Scott</span></h2>
+            </div>
+            <img class="host-avatar" src="assets/image9.png" alt="Jarryd Scott" />
+          </div>
+          <div class="host-panel">
+            <div>
+              <p class="host-name">Technical Lead | Business Automation</p>
+              <p>8 years working in the UiPath ecosystem</p>
+              <p>UiPath MVP candidate / community member</p>
+              <p>Solution Architect | Consulting | Speaker</p>
+            </div>
+            <div class="host-summary">
+              <p>My mission is to showcase the full depth of the UiPath platform through the people who use it — and to build the kind of content that helps the community learn from each other.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="about">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">What is UiPath Uncharted?</p>
+          <h2>Built for practitioners who want <span class="text-gradient">honest UiPath stories.</span></h2>
+        </div>
+        <div class="grid grid-2" data-animate data-delay="100">
+          <div class="panel-panel">
+            <p class="panel-title">Every episode is a deep conversation.</p>
+            <p>We spend 45 minutes on a guest's story and one specific product in the ecosystem: how it works, when to use it, and what nobody tells you.</p>
+          </div>
+          <div class="feature-list">
+            <article>
+              <strong>Real guests</strong>
+              <p>Practitioners from finance, insurance, logistics & more.</p>
+            </article>
+            <article>
+              <strong>Real tools</strong>
+              <p>One UiPath product explored in depth each episode.</p>
+            </article>
+            <article>
+              <strong>Real impact</strong>
+              <p>Stories of what worked, what didn't, and what they'd do differently.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-contrast" id="format">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">The Format</p>
+          <h2>45 minutes. Every episode. <span class="text-gradient">Built around you.</span></h2>
+        </div>
+        <div class="timeline" data-animate data-delay="100">
+          <article class="timeline-item">
+            <span>5 min</span>
+            <h3>Cold open</h3>
+            <p>Host teases the episode hook — solo.</p>
+          </article>
+          <article class="timeline-item">
+            <span>5 min</span>
+            <h3>Guest intro</h3>
+            <p>Your role, background & UiPath origin story.</p>
+          </article>
+          <article class="timeline-item">
+            <span>5 min</span>
+            <h3>Present business case</h3>
+            <p>The real-world challenge, journey & outcome.</p>
+          </article>
+          <article class="timeline-item">
+            <span>15 min</span>
+            <h3>Tool deep dive + demo</h3>
+            <p>One UiPath product explored in depth, together.</p>
+          </article>
+          <article class="timeline-item">
+            <span>5 min</span>
+            <h3>Hot takes</h3>
+            <p>Bold opinions, rapid-fire format.</p>
+          </article>
+          <article class="timeline-item">
+            <span>5 min</span>
+            <h3>Community Q&A</h3>
+            <p>Questions sourced from the UiPath community.</p>
+          </article>
+          <article class="timeline-item">
+            <span>5 min</span>
+            <h3>Close</h3>
+            <p>Your advice + next episode tease.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="season">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">Season 1 at a glance</p>
+          <h2>Five pillars of UiPath <span class="text-gradient">product storytelling.</span></h2>
+        </div>
+        <div class="grid grid-5" data-animate data-delay="100">
+          <div class="series-card discover">
+            <div class="series-card-head">
+              <div>
+                <h3>Discover</h3>
+                <p class="series-subtitle">Eps 1&ndash;4</p>
+              </div>
+            </div>
+            <ul>
+              <li>Automation Hub</li>
+              <li>Task Capture</li>
+              <li>Process Mining + Task Mining</li>
+              <li>Communications Mining</li>
+            </ul>
+          </div>
+          <div class="series-card build">
+            <div class="series-card-head">
+              <div>
+                <h3>Build</h3>
+                <p class="series-subtitle">Eps 5&ndash;9</p>
+              </div>
+            </div>
+            <ul>
+              <li>Studio</li>
+              <li>IXP / Doc Understanding</li>
+              <li>Integration Service</li>
+              <li>AI Center &amp; Autopilot</li>
+              <li>StudioX &amp; Studio Web</li>
+            </ul>
+          </div>
+          <div class="series-card run-scale">
+            <div class="series-card-head">
+              <div>
+                <h3>Run &amp; Scale</h3>
+                <p class="series-subtitle">Eps 10&ndash;14</p>
+              </div>
+            </div>
+            <ul>
+              <li>Orchestrator</li>
+              <li>Maestro</li>
+              <li>Action Center</li>
+              <li>UiPath Assistant</li>
+              <li>Test Cloud</li>
+            </ul>
+          </div>
+          <div class="series-card engage-extend">
+            <div class="series-card-head">
+              <div>
+                <h3>Engage &amp; Extend</h3>
+                <p class="series-subtitle">Eps 15&ndash;18</p>
+              </div>
+            </div>
+            <ul>
+              <li>Apps</li>
+              <li>Data Service</li>
+              <li>Marketplace</li>
+              <li>Automation Ops</li>
+            </ul>
+          </div>
+          <div class="series-card govern-optimise">
+            <div class="series-card-head">
+              <div>
+                <h3>Govern &amp; Optimise</h3>
+                <p class="series-subtitle">Eps 19&ndash;20</p>
+              </div>
+            </div>
+            <ul>
+              <li>Insights</li>
+              <li>Agentic Platform / Finale</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-contrast" id="why">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">Why be a guest?</p>
+          <h2>Your story deserves <span class="text-gradient">a platform.</span></h2>
+        </div>
+        <div class="grid grid-3" data-animate data-delay="100">
+          <article class="info-card">
+            <span class="info-icon">&#128225;</span>
+            <h3>Reach the right audience</h3>
+            <p>The UiPath community is global and highly engaged. Your story reaches practitioners, architects, and decision-makers.</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon">&#11088;</span>
+            <h3>Build your personal brand</h3>
+            <p>Being featured as a subject matter expert is a credibility signal that lives on LinkedIn, in search, and across the community.</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon">&#129309;</span>
+            <h3>Contribute to the community</h3>
+            <p>Your experience helps someone else avoid a mistake, make a better decision, or take a first step.</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon">&#128161;</span>
+            <h3>Share something that matters</h3>
+            <p>Most of your best work goes unseen. This is a structured, low-effort way to document it &mdash; 45 minutes of conversation, zero slides required.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="details">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">What we ask of you</p>
+          <h2>Clear expectations, low effort, <span class="text-gradient">high impact.</span></h2>
+        </div>
+        <div class="grid grid-2 split-cards" data-animate data-delay="100">
+          <div class="card-panel">
+            <h3>Requirements</h3>
+            <ul>
+              <li>Real-world experience with UiPath (any product)</li>
+              <li>45 minutes of your time via Zoom or Teams</li>
+              <li>A story worth telling — success, failure, or both</li>
+              <li>Willingness to share honest opinions</li>
+              <li>No slides, no prep deck needed from your side</li>
+            </ul>
+          </div>
+          <div class="card-panel accent-panel">
+            <h3>What you receive</h3>
+            <ul>
+              <li>Episode brief sent 5 days in advance</li>
+              <li>Full edited episode (yours to share)</li>
+              <li>3–5 short video clips for LinkedIn/social</li>
+              <li>Written episode summary for your profile</li>
+              <li>Permanent feature in the season archive</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-contrast" id="brief">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">Sample episode brief</p>
+          <h2>What we send you <span class="text-gradient">before recording.</span></h2>
+        </div>
+        <div class="brief-panel" data-animate data-delay="100">
+          <p class="brief-tag">EP. 01 · Seeing the Invisible: Process Mining</p>
+          <p class="brief-title">Episode hook</p>
+          <p class="brief-copy">"You didn't know what your process looked like — until the data told a very different story."</p>
+          <p class="brief-title">Featured tool</p>
+          <p class="brief-copy">UiPath Process Mining — process discovery, conformance checking, multi-process views, SAP connectors.</p>
+          <p class="brief-title">Your guest angle</p>
+          <p class="brief-copy">Share how Process Mining revealed something in your operation that surprised you — the data story beats the theory every time.</p>
+          <p class="brief-title">Sample questions</p>
+          <ol>
+            <li>What made you realise the process was broken before you had data to prove it?</li>
+            <li>What did the dashboard reveal that nobody expected?</li>
+            <li>What's one thing Process Mining can't tell you — and how do you fill that gap?</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section section-cta" id="contact">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">Let's make it happen</p>
+          <h2>Say yes to a relaxed conversation, <span class="text-gradient">no slides needed.</span></h2>
+        </div>
+        <div class="contact-grid" data-animate data-delay="100">
+          <div class="steps-panel">
+            <article>
+              <span>01</span>
+              <h3>Reply to this message</h3>
+              <p>Let me know you're interested — one line is all it takes.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>I'll send a brief</h3>
+              <p>A one-pager with the episode topic, questions, and format details.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>We pick a time</h3>
+              <p>45 minutes via Zoom or Teams, whenever suits you.</p>
+            </article>
+            <article>
+              <span>04</span>
+              <h3>We record</h3>
+              <p>Relaxed conversation. No slides. No script. Just your story.</p>
+            </article>
+          </div>
+          <div class="contact-panel">
+            <p class="contact-title">Ready to be featured?</p>
+            <p>Reach out to start your episode journey.</p>
+            <a class="contact-link" href="mailto:jscott@i1solutions.co.za">
+              <em class="contact-link-icon">&#9993;</em>
+              jscott@i1solutions.co.za
+            </a>
+            <a class="contact-link" href="https://www.linkedin.com/in/jarryd-scott-01498019b" target="_blank" rel="noreferrer">
+              <em class="contact-link-icon">in</em>
+              linkedin.com/in/jarryd-scott
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="footer-brand">UiPath Uncharted</p>
+        <p class="footer-meta">Season 1 &middot; 20 Episodes &middot; Hosted by Jarryd Scott</p>
+        <p class="footer-copy">&copy; <span class="js-current-year">2025</span> UiPath Uncharted. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
