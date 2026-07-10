@@ -68,6 +68,28 @@
             <a class="button button-primary" href="#contact">Be Our Guest</a>
             <a class="button button-secondary" href="#about">How It Works</a>
           </div>
+
+          <div class="episode-countdown" data-target="2026-08-07T12:00:00+02:00">
+            <p class="ec-eyebrow"><span class="ec-live-dot"></span> First Episode Goes Live</p>
+            <p class="ec-date">7 August 2026</p>
+            <p class="ec-time">
+              12:00 - 14:00 SAST
+              <span class="ec-zoom"><em class="ec-zoom-icon">&#127909;</em> Live on Zoom</span>
+            </p>
+            <div class="ec-timer" id="episodeCountdown" role="timer" aria-label="Time remaining until the first episode">
+              <div class="ec-unit"><span class="ec-num" data-cd="days">00</span><span class="ec-label">Days</span></div>
+              <span class="ec-sep">:</span>
+              <div class="ec-unit"><span class="ec-num" data-cd="hours">00</span><span class="ec-label">Hours</span></div>
+              <span class="ec-sep">:</span>
+              <div class="ec-unit"><span class="ec-num" data-cd="minutes">00</span><span class="ec-label">Minutes</span></div>
+              <span class="ec-sep">:</span>
+              <div class="ec-unit"><span class="ec-num" data-cd="seconds">00</span><span class="ec-label">Seconds</span></div>
+            </div>
+            <!-- TODO: paste the Zoom meeting URL into href below and remove the is-disabled class + aria-disabled/tabindex when ready. -->
+            <a class="button button-primary ec-join is-disabled" id="episodeJoinLink" href="#" aria-disabled="true" tabindex="-1">
+              Zoom link coming soon
+            </a>
+          </div>
         </div>
         <div class="hero-panel" data-animate data-delay="100">
           <div class="host-intro">
@@ -76,7 +98,7 @@
               <h2>Jarryd <span class="text-gradient">Scott</span></h2>
               <p class="host-tagline">Dropping automation hot takes, one episode at a time.</p>
             </div>
-            <img class="host-avatar" src="assets/image9.png" alt="Jarryd Scott" />
+            <img class="host-avatar" src="assets/jarryd-scott.jpg" alt="Jarryd Scott" />
           </div>
           <div class="host-panel">
             <div>
@@ -88,6 +110,32 @@
             <div class="host-summary">
               <p>My mission is to showcase the full depth of the UiPath platform through the people who use it - and to build the kind of content that helps the community learn from each other.</p>
             </div>
+          </div>
+
+          <div class="guests" data-animate data-delay="100">
+            <article class="guest-card">
+              <p class="eyebrow guest-eyebrow">Guest Speaker</p>
+              <div class="guest-intro">
+                <img class="guest-avatar" src="assets/jacqui-muller.jpg" alt="Jacqui Muller"
+                     onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('div'),{className:'guest-avatar guest-avatar-placeholder',textContent:'JM'}))" />
+                <div>
+                  <h3 class="guest-name">Jacqui Muller</h3>
+                  <p class="guest-title">5 x UiPath MVP | Industry Coordinator</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="guest-card">
+              <p class="eyebrow guest-eyebrow">Guest Speaker</p>
+              <div class="guest-intro">
+                <img class="guest-avatar" src="assets/annalise-olivier.jpg" alt="Annalise Olivier"
+                     onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('div'),{className:'guest-avatar guest-avatar-placeholder',textContent:'AO'}))" />
+                <div>
+                  <h3 class="guest-name">Annalise Olivier</h3>
+                  <p class="guest-title">Executive - Business Automation | Helping customers on their journey towards transformative automation</p>
+                </div>
+              </div>
+            </article>
           </div>
         </div>
       </section>

@@ -70,3 +70,57 @@ const animateObserver = new IntersectionObserver(
 document.querySelectorAll('[data-animate]').forEach((el) => {
   animateObserver.observe(el);
 });
+
+// ─── Episode countdown ───────────────────────────────
+const countdownWrap = document.querySelector('.episode-countdown');
+const countdownEl = document.getElementById('episodeCountdown');
+
+if (countdownWrap && countdownEl) {
+  const target = new Date(countdownWrap.dataset.target).getTime();
+  const eventEndMs = 2 * 60 * 60 * 1000; // event runs ~2 hours
+  const nums = {
+    days: countdownEl.querySelector('[data-cd="days"]'),
+    hours: countdownEl.querySelector('[data-cd="hours"]'),
+    minutes: countdownEl.querySelector('[data-cd="minutes"]'),
+    seconds: countdownEl.querySelector('[data-cd="seconds"]'),
+  };
+  const pad = (n) => String(n).padStart(2, '0');
+  let timer;
+
+  const setAll = (v) => {
+    nums.days.textContent = nums.hours.textContent = v;
+    nums.minutes.textContent = nums.seconds.textContent = v;
+  };
+
+  const tick = () => {
+    const diff = target - Date.now();
+
+    if (diff <= 0) {
+      setAll('00');
+      countdownWrap.classList.add('is-live');
+      const dateEl = countdownWrap.querySelector('.ec-date');
+      const timeEl = countdownWrap.querySelector('.ec-time');
+      // Show a live state during the ~2h window, then a wrap-up message
+      if (Date.now() - target < eventEndMs) {
+        if (dateEl) dateEl.textContent = 'We are live now!';
+      } else if (dateEl) {
+        dateEl.textContent = 'That is a wrap - thank you!';
+        if (timeEl) timeEl.style.display = 'none';
+      }
+      if (timer) clearInterval(timer);
+      return;
+    }
+
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    nums.days.textContent = pad(d);
+    nums.hours.textContent = pad(h);
+    nums.minutes.textContent = pad(m);
+    nums.seconds.textContent = pad(s);
+  };
+
+  tick();
+  timer = setInterval(tick, 1000);
+}
