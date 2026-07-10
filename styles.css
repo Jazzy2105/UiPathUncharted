@@ -241,15 +241,51 @@ img {
 }
 
 .hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.95fr);
-  gap: 52px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
+  gap: 80px;
   padding: 80px 0 68px;
 }
 
-/* Hero copy (left side) */
-.hero-copy { max-width: none; }
+/* Hero copy - centred on the page, widened, and wrapped in a dark "bubble" */
+.hero-copy {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: rgba(4, 6, 18, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius-lg);
+  padding: 56px 64px 60px;
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Fancy brand mark at the top of the hero bubble */
+.hero-logo {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 26px;
+  border-radius: 24px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #7c5cff 0%, #42d6ff 100%);
+  box-shadow: 0 12px 34px rgba(124, 92, 255, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease);
+}
+
+.hero-logo:hover {
+  transform: scale(1.08);
+  box-shadow: 0 18px 48px rgba(124, 92, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.hero-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
 
 .hero-badge {
   display: inline-flex;
@@ -291,7 +327,6 @@ img {
 .hero-panel {
   display: grid;
   gap: 14px;
-  align-self: start;
 }
 
 .hero h1 {
@@ -304,24 +339,33 @@ img {
 
 .hero-subtitle {
   font-size: 1.05rem;
-  max-width: none;
+  max-width: 760px;
   line-height: 1.85;
   color: var(--muted);
-  margin: 0 0 28px;
+  margin: 0 auto 28px;
 }
 
 .hero-meta {
   display: flex;
   align-items: center;
-  gap: 18px;
-  margin-bottom: 34px;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto 34px;
   flex-wrap: wrap;
 }
 
-.meta-item { display: flex; flex-direction: column; }
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+}
 
 .meta-num {
-  font-size: 1.55rem;
+  font-size: 1.85rem;
   font-weight: 800;
   line-height: 1;
   color: #fff;
@@ -347,7 +391,7 @@ img {
 
 .meta-divider {
   width: 1px;
-  height: 34px;
+  height: 42px;
   background: rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
 }
@@ -355,12 +399,23 @@ img {
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 12px;
 }
 
+/* Host panel - moved below the hero copy and centred on the page */
 .hero-panel {
   display: grid;
-  gap: 14px;
+  gap: 18px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Centre the "Your host / Jarryd Scott" intro row above the bio */
+.hero-panel .host-intro {
+  justify-content: center;
 }
 
 .hero-card {
@@ -459,9 +514,10 @@ img {
   text-align: center;
 }
 
-/* Center headings for Details and Brief sections */
+/* Center headings for Details, Brief and Contact sections */
 #details .section-intro,
-#brief .section-intro {
+#brief .section-intro,
+#contact .section-intro {
   text-align: center;
 }
 
@@ -558,6 +614,10 @@ img {
 /* ─── Info cards ────────────────────────────────────── */
 
 .info-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 12px;
   transition: border-color var(--t) var(--ease), transform var(--t) var(--ease), box-shadow var(--t) var(--ease);
   cursor: default;
 }
@@ -570,19 +630,20 @@ img {
 
 .info-icon {
   font-size: 1.6rem;
-  margin-bottom: 14px;
-  display: block;
+  margin-bottom: 0;
+  line-height: 1;
 }
 
 .info-card h3 {
   font-size: 1.02rem;
   font-weight: 700;
   color: #fff;
-  margin: 0 0 10px;
+  margin: 0;
 }
 
 .info-card p {
-  margin: 0;
+  grid-column: 1 / -1;
+  margin: 12px 0 0;
   color: var(--muted);
   line-height: 1.75;
   font-size: 0.9rem;
@@ -840,19 +901,52 @@ img {
   margin-bottom: 0;
 }
 
+.host-tagline {
+  margin: 10px 0 0;
+  font-size: 0.98rem;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+
+.host-tagline::before {
+  content: '\201C';
+  color: var(--accent);
+  font-style: normal;
+  font-weight: 700;
+  margin-right: 2px;
+}
+
+.host-tagline::after {
+  content: '\201D';
+  color: var(--accent);
+  font-style: normal;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
 .host-avatar {
   width: 128px;
   height: 128px;
-  border-radius: 999px;
+  border-radius: var(--radius-md);
   object-fit: cover;
   border: 2px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+
+.host-avatar:hover {
+  transform: scale(1.06);
+  border-color: rgba(124, 92, 255, 0.4);
+  box-shadow: 0 24px 60px rgba(124, 92, 255, 0.28);
 }
 
 @media (max-width: 720px) {
   .host-intro {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
   }
 
   .host-avatar {
@@ -1080,10 +1174,11 @@ img {
   }
 
   .hero {
-    grid-template-columns: 1fr;
     padding: 52px 0 40px;
-    gap: 36px;
+    gap: 48px;
   }
+
+  .hero-copy { padding: 36px 24px 40px; }
 
   .hero-meta { gap: 14px; }
 
