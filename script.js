@@ -124,3 +124,55 @@ if (countdownWrap && countdownEl) {
   tick();
   timer = setInterval(tick, 1000);
 }
+
+// ─── Add to calendar (.ics download) ─────────────────
+const calBtn = document.getElementById('addToCalendar');
+const joinLink = document.getElementById('episodeJoinLink');
+
+if (calBtn) {
+  const meetingUrl = joinLink ? joinLink.href : '';
+  const DTSTART = '20260807T100000Z'; // 12:00 SAST (UTC+2)
+  const DTEND = '20260807T120000Z';   // 14:00 SAST (UTC+2)
+
+  // Escape text per RFC 5545 (backslash, semicolon, comma, newline)
+  const esc = (s) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+  // Fold content lines to <=75 chars with CRLF + space continuation
+  const fold = (line) => {
+    let out = '';
+    while (line.length > 74) { out += line.slice(0, 74) + '\r\n '; line = line.slice(74); }
+    return out + line;
+  };
+
+  calBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//UiPath Uncharted//Episode 1//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      'UID:ep1-20260807@uipathuncharted.co.za',
+      'DTSTAMP:' + stamp,
+      'DTSTART:' + DTSTART,
+      'DTEND:' + DTEND,
+      fold('SUMMARY:' + esc('UiPath Uncharted - Episode 1')),
+      fold('DESCRIPTION:' + esc('The first episode of UiPath Uncharted, live on Microsoft Teams. Join: ' + meetingUrl)),
+      fold('LOCATION:' + esc('Microsoft Teams')),
+      fold('URL:' + meetingUrl),
+      'STATUS:CONFIRMED',
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ];
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'uipath-uncharted-episode-1.ics';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+}

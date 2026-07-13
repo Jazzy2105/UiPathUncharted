@@ -74,7 +74,7 @@
             <p class="ec-date">7 August 2026</p>
             <p class="ec-time">
               12:00 - 14:00 SAST
-              <span class="ec-zoom"><em class="ec-zoom-icon">&#127909;</em> Live on Zoom</span>
+              <span class="ec-zoom"><em class="ec-zoom-icon">&#127909;</em> Live on Teams</span>
             </p>
             <div class="ec-timer" id="episodeCountdown" role="timer" aria-label="Time remaining until the first episode">
               <div class="ec-unit"><span class="ec-num" data-cd="days">00</span><span class="ec-label">Days</span></div>
@@ -85,10 +85,16 @@
               <span class="ec-sep">:</span>
               <div class="ec-unit"><span class="ec-num" data-cd="seconds">00</span><span class="ec-label">Seconds</span></div>
             </div>
-            <!-- TODO: paste the Zoom meeting URL into href below and remove the is-disabled class + aria-disabled/tabindex when ready. -->
-            <a class="button button-primary ec-join is-disabled" id="episodeJoinLink" href="#" aria-disabled="true" tabindex="-1">
-              Zoom link coming soon
-            </a>
+            <div class="ec-cta">
+              <a class="button button-primary ec-join" id="episodeJoinLink"
+                 href="https://teams.microsoft.com/meet/374447388064510?p=sqNMhYX6oVQpYfPdsP"
+                 target="_blank" rel="noreferrer noopener">
+                Join on Teams
+              </a>
+              <a class="button button-secondary ec-calendar" id="addToCalendar" href="#" download="uipath-uncharted-episode-1.ics">
+                <span aria-hidden="true">&#128197;</span> Add to Calendar
+              </a>
+            </div>
           </div>
         </div>
         <div class="hero-panel" data-animate data-delay="100">

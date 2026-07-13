@@ -538,8 +538,16 @@ img {
   margin-top: -14px;
 }
 
-.ec-join {
-  margin-top: 26px;
+.ec-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.ec-calendar {
+  gap: 8px;
 }
 
 .ec-join.is-disabled {
