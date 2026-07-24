@@ -669,6 +669,11 @@ img {
   text-align: center;
 }
 
+/* Center headings for the Season section */
+#season .section-intro {
+  text-align: center;
+}
+
 /* Center headings for the Why section */
 #why .section-intro {
   text-align: center;
