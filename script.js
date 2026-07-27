@@ -158,7 +158,7 @@ if (calBtn) {
       'DTSTART:' + DTSTART,
       'DTEND:' + DTEND,
       fold('SUMMARY:' + esc('UiPath Uncharted - Episode 1')),
-      fold('DESCRIPTION:' + esc('The first episode of UiPath Uncharted, live on Microsoft Teams. Join: ' + meetingUrl)),
+      fold('DESCRIPTION:' + esc('The first episode of UiPath Uncharted, live on Microsoft Teams. Register: ' + meetingUrl)),
       fold('LOCATION:' + esc('Microsoft Teams')),
       fold('URL:' + meetingUrl),
       'STATUS:CONFIRMED',
