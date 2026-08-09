@@ -149,6 +149,7 @@ img {
   font-size: 0.98rem;
   padding: 7px 20px;
   border-radius: 10px;
+  cursor: pointer;
   transition: color var(--t) var(--ease), background var(--t) var(--ease);
   white-space: nowrap;
 }
