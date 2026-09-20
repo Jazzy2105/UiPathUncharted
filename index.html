@@ -29,7 +29,7 @@
         <a href="#about">About</a>
         <a href="#format">Format</a>
         <a href="#season">Season</a>
-        <a href="#why">Why Guest</a>
+        <span class="nav-soon" data-tip="Coming soon" aria-disabled="true" tabindex="0">Blog</span>
         <a href="#contact">Contact</a>
       </nav>
     </div>
@@ -68,9 +68,9 @@
             <a class="button button-secondary" href="#about">How It Works</a>
           </div>
 
-          <div class="episode-countdown" data-target="2026-09-11T12:00:00+02:00">
+          <div class="episode-countdown" data-target="2026-10-16T12:00:00+02:00">
             <p class="ec-eyebrow"><span class="ec-live-dot"></span> Episode 2 &middot; Automation Discovery Skill</p>
-            <p class="ec-date">11 September 2026</p>
+            <p class="ec-date">16 October 2026</p>
             <p class="ec-time">
               12:00 - 14:00 SAST
               <span class="ec-zoom"><em class="ec-zoom-icon">&#127909;</em> Live on Teams</span>
@@ -144,30 +144,11 @@
             </div>
           </div>
 
-          <div class="guests" data-animate data-delay="100">
-            <article class="guest-card">
-              <p class="eyebrow guest-eyebrow">Guest Speaker</p>
-              <div class="guest-intro">
-                <img class="guest-avatar" src="assets/tertius-nel.jpg" alt="Tertius Nel"
-                     onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('div'),{className:'guest-avatar guest-avatar-placeholder',textContent:'TN'}))" />
-                <div>
-                  <h3 class="guest-name">Tertius Nel</h3>
-                  <p class="guest-title">Principal Customer Success Manager | Master of socialising</p>
-                </div>
-              </div>
-            </article>
+          <!-- Guest speaker + featured tool cards removed after Episode 2. When the next
+               episode's guest/tool are confirmed, re-add a
+               <div class="guests" data-animate data-delay="100"> grid with guest-card
+               articles here. -->
 
-            <article class="guest-card">
-              <p class="eyebrow guest-eyebrow">Featured Tool</p>
-              <div class="guest-intro">
-                <img class="guest-avatar" src="assets/Automation%20Discovery.jpeg" alt="Automation Discovery Skill" />
-                <div>
-                  <h3 class="guest-name">Automation Discovery Skill</h3>
-                  <p class="guest-title">An agentic skill that investigates how people in an organisation really work, then identifies and prioritises automation opportunities backed by actual evidence.</p>
-                </div>
-              </div>
-            </article>
-          </div>
         </div>
       </section>
 
@@ -242,75 +223,79 @@
           <p class="eyebrow">Season 1 at a glance</p>
           <h2>Five pillars of UiPath <span class="text-gradient">product storytelling.</span></h2>
         </div>
-        <div class="grid grid-5" data-animate data-delay="100">
-          <div class="series-card discover">
-            <div class="series-card-head">
-              <div>
+        <div class="pillars">
+          <div class="pillar discover" data-animate>
+            <div class="pillar-head">
+              <span class="pillar-num">01</span>
+              <div class="pillar-titles">
                 <h3>Discover</h3>
-                <p class="series-subtitle">Eps 1-4</p>
+                <p class="pillar-eps">Eps 1-4</p>
               </div>
             </div>
-            <ul>
+            <ul class="pillar-list">
               <li>Automation Hub</li>
-              <li>Task Capture</li>
-              <li>Process Mining + Task Mining</li>
-              <li>Communications Mining</li>
+              <li>Automation Discovery Skill</li>
+              <li>Process/Communications Mining</li>
+              <li>UiPath Delegate</li>
             </ul>
           </div>
-          <div class="series-card build">
-            <div class="series-card-head">
-              <div>
+          <div class="pillar build" data-animate data-delay="100">
+            <div class="pillar-head">
+              <span class="pillar-num">02</span>
+              <div class="pillar-titles">
                 <h3>Build</h3>
-                <p class="series-subtitle">Eps 5-9</p>
+                <p class="pillar-eps">Eps 5-9</p>
               </div>
             </div>
-            <ul>
+            <ul class="pillar-list">
               <li>Studio</li>
               <li>IXP / Doc Understanding</li>
               <li>Integration Service</li>
               <li>AI Center &amp; Autopilot</li>
-              <li>StudioX &amp; Studio Web</li>
             </ul>
           </div>
-          <div class="series-card run-scale">
-            <div class="series-card-head">
-              <div>
+          <div class="pillar run-scale" data-animate data-delay="200">
+            <div class="pillar-head">
+              <span class="pillar-num">03</span>
+              <div class="pillar-titles">
                 <h3>Run &amp; Scale</h3>
-                <p class="series-subtitle">Eps 10-14</p>
+                <p class="pillar-eps">Eps 10-14</p>
               </div>
             </div>
-            <ul>
+            <ul class="pillar-list">
               <li>Orchestrator</li>
               <li>Maestro</li>
               <li>Action Center</li>
-              <li>UiPath Assistant</li>
               <li>Test Cloud</li>
             </ul>
           </div>
-          <div class="series-card engage-extend">
-            <div class="series-card-head">
-              <div>
+          <div class="pillar engage-extend" data-animate data-delay="300">
+            <div class="pillar-head">
+              <span class="pillar-num">04</span>
+              <div class="pillar-titles">
                 <h3>Engage &amp; Extend</h3>
-                <p class="series-subtitle">Eps 15-18</p>
+                <p class="pillar-eps">Eps 15-18</p>
               </div>
             </div>
-            <ul>
-              <li>Apps</li>
-              <li>Data Service</li>
+            <ul class="pillar-list">
+              <li>Coded Apps</li>
+              <li>Data Fabric</li>
               <li>Marketplace</li>
               <li>Automation Ops</li>
             </ul>
           </div>
-          <div class="series-card govern-optimise">
-            <div class="series-card-head">
-              <div>
+          <div class="pillar govern-optimise" data-animate data-delay="400">
+            <div class="pillar-head">
+              <span class="pillar-num">05</span>
+              <div class="pillar-titles">
                 <h3>Govern &amp; Optimise</h3>
-                <p class="series-subtitle">Eps 19-20</p>
+                <p class="pillar-eps">Eps 19-20</p>
               </div>
             </div>
-            <ul>
+            <ul class="pillar-list">
               <li>Insights</li>
               <li>Agentic Platform / Finale</li>
+              <li>AI Trust Layer</li>
             </ul>
           </div>
         </div>
