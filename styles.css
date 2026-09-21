@@ -217,7 +217,8 @@ img {
   .site-nav a,
   .site-nav .nav-soon {
     padding: 6px 14px;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    font-weight: 700;
   }
 }
 
@@ -722,6 +723,11 @@ img {
   margin-top: 28px;
 }
 
+/* Keep both countdown CTAs the same width */
+.ec-cta .button {
+  min-width: 190px;
+}
+
 .ec-calendar {
   gap: 8px;
 }
@@ -1173,6 +1179,95 @@ img {
 .pillar-list li:hover {
   background: color-mix(in srgb, var(--c1) 15%, transparent);
   transform: translateX(4px);
+}
+
+/* Finished episodes: text greyed out, coloured accent bar kept, marked done */
+.pillar-list li.done {
+  color: var(--muted);
+  position: relative;
+  cursor: pointer;
+}
+
+.pillar-list li.done::after {
+  content: '\2713';
+  margin-left: auto;
+  padding-left: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--c1);
+}
+
+/* Hover popup on finished episodes: quick links to the video/audio */
+.ep-links {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  transform: translateY(6px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 12px;
+  background: rgba(12, 14, 26, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 160ms var(--ease), transform 160ms var(--ease);
+  z-index: 40;
+  white-space: nowrap;
+}
+
+/* invisible bridge across the gap so the popup stays open while reaching it */
+.ep-links::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 12px;
+}
+
+.pillar-list li.done:hover .ep-links,
+.pillar-list li.done:focus-within .ep-links {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.ep-link {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: transform 140ms var(--ease), filter 140ms var(--ease);
+}
+
+.ep-link svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.ep-link:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.ep-yt { background: #e60000; }
+.ep-yt svg { fill: #fff; }
+.ep-sp { background: #1ed760; }
+.ep-sp svg { fill: #04120a; }
+
+.ep-soon-text {
+  padding: 4px 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 /* Per-pillar attractive colour pairs */

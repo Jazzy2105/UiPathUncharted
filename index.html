@@ -63,10 +63,8 @@
               <span class="meta-label">Season 1</span>
             </div>
           </div>
-          <div class="hero-actions">
-            <a class="button button-primary" href="#contact">Become a Guest</a>
-            <a class="button button-secondary" href="#about">How It Works</a>
-          </div>
+          <!-- Hero action buttons ("Become a Guest" / "How It Works") removed - were being
+               confused with the episode Register CTA. Re-add here (or elsewhere) later. -->
 
           <div class="episode-countdown" data-target="2026-10-16T12:00:00+02:00">
             <p class="ec-eyebrow"><span class="ec-live-dot"></span> Episode 2 &middot; Automation Discovery Skill</p>
@@ -233,10 +231,23 @@
               </div>
             </div>
             <ul class="pillar-list">
-              <li>Automation Hub</li>
-              <li>Automation Discovery Skill</li>
-              <li>Process/Communications Mining</li>
+              <li class="done" tabindex="0">Automation Hub
+                <span class="ep-links" role="group" aria-label="Episode 1 links">
+                  <a class="ep-link ep-yt" href="https://www.youtube.com/watch?v=49ndYvN9IZk&amp;t=1447s" target="_blank" rel="noreferrer noopener" aria-label="Watch Episode 1 on YouTube">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.51A3.02 3.02 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3.02 3.02 0 0 0 2.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.55 15.57V8.43L15.82 12l-6.27 3.57Z"/></svg>
+                  </a>
+                  <a class="ep-link ep-sp" href="https://open.spotify.com/episode/49hsLKifbDMQehoe5zfG4o?si=c12221e8ca87449d" target="_blank" rel="noreferrer noopener" aria-label="Listen to Episode 1 on Spotify">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.63 0 12 0Zm5.5 17.31a.75.75 0 0 1-1.03.25c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.57-1.05 8.5-.6 11.66 1.34.35.22.46.69.25 1.03Zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.16-2.56-11.98-1.4a.94.94 0 1 1-.55-1.8c4.37-1.33 9.8-.69 13.5 1.59.44.27.58.85.32 1.3Zm.13-3.4C15.36 8.3 8.9 8.09 5.3 9.18a1.12 1.12 0 1 1-.65-2.15C8.78 5.78 15.9 6.02 20.2 8.57a1.13 1.13 0 1 1-1.15 1.94Z"/></svg>
+                  </a>
+                </span>
+              </li>
+              <li class="done" tabindex="0">Automation Discovery Skill
+                <span class="ep-links" role="group" aria-label="Episode 2 links">
+                  <span class="ep-soon-text">🎬 Video coming soon</span>
+                </span>
+              </li>
               <li>UiPath Delegate</li>
+              <li>Process/Communications Mining</li>
             </ul>
           </div>
           <div class="pillar build" data-animate data-delay="100">
@@ -244,14 +255,14 @@
               <span class="pillar-num">02</span>
               <div class="pillar-titles">
                 <h3>Build</h3>
-                <p class="pillar-eps">Eps 5-9</p>
+                <p class="pillar-eps">Eps 5-8</p>
               </div>
             </div>
             <ul class="pillar-list">
-              <li>Studio</li>
+              <li>Studio/RPA Agent Skill</li>
               <li>IXP / Doc Understanding</li>
               <li>Integration Service</li>
-              <li>AI Center &amp; Autopilot</li>
+              <li>Agent Builder</li>
             </ul>
           </div>
           <div class="pillar run-scale" data-animate data-delay="200">
@@ -259,14 +270,14 @@
               <span class="pillar-num">03</span>
               <div class="pillar-titles">
                 <h3>Run &amp; Scale</h3>
-                <p class="pillar-eps">Eps 10-14</p>
+                <p class="pillar-eps">Eps 9-12</p>
               </div>
             </div>
             <ul class="pillar-list">
               <li>Orchestrator</li>
-              <li>Maestro</li>
-              <li>Action Center</li>
-              <li>Test Cloud</li>
+              <li>Maestro BPMN</li>
+              <li>Maestro Flow</li>
+              <li>Maestro Case</li>
             </ul>
           </div>
           <div class="pillar engage-extend" data-animate data-delay="300">
@@ -274,14 +285,14 @@
               <span class="pillar-num">04</span>
               <div class="pillar-titles">
                 <h3>Engage &amp; Extend</h3>
-                <p class="pillar-eps">Eps 15-18</p>
+                <p class="pillar-eps">Eps 13-16</p>
               </div>
             </div>
             <ul class="pillar-list">
               <li>Coded Apps</li>
               <li>Data Fabric</li>
-              <li>Marketplace</li>
-              <li>Automation Ops</li>
+              <li>Test Cloud</li>
+              <li>Assistant/Autopilot</li>
             </ul>
           </div>
           <div class="pillar govern-optimise" data-animate data-delay="400">
@@ -289,13 +300,14 @@
               <span class="pillar-num">05</span>
               <div class="pillar-titles">
                 <h3>Govern &amp; Optimise</h3>
-                <p class="pillar-eps">Eps 19-20</p>
+                <p class="pillar-eps">Eps 17-20</p>
               </div>
             </div>
             <ul class="pillar-list">
               <li>Insights</li>
-              <li>Agentic Platform / Finale</li>
               <li>AI Trust Layer</li>
+              <li>Automation Ops</li>
+              <li>Agentic Platform / Finale</li>
             </ul>
           </div>
         </div>
