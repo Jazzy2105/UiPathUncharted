@@ -131,8 +131,8 @@ const joinLink = document.getElementById('episodeJoinLink');
 
 if (calBtn) {
   const meetingUrl = joinLink ? joinLink.href : '';
-  const DTSTART = '20261016T100000Z'; // 12:00 SAST (UTC+2)
-  const DTEND = '20261016T120000Z';   // 14:00 SAST (UTC+2)
+  const DTSTART = '20261015T113000Z'; // 13:30 SAST (UTC+2)
+  const DTEND = '20261015T133000Z';   // 15:30 SAST (UTC+2)
 
   // Escape text per RFC 5545 (backslash, semicolon, comma, newline)
   const esc = (s) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
@@ -153,7 +153,7 @@ if (calBtn) {
       'CALSCALE:GREGORIAN',
       'METHOD:PUBLISH',
       'BEGIN:VEVENT',
-      'UID:ep3-20261016@uipathuncharted.co.za',
+      'UID:ep3-20261015@uipathuncharted.co.za',
       'DTSTAMP:' + stamp,
       'DTSTART:' + DTSTART,
       'DTEND:' + DTEND,
