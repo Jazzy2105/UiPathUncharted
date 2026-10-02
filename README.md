@@ -4,6 +4,8 @@ This repository contains a single-page website for the UiPath Uncharted guest pi
 
 ## Files
 - `index.html` - homepage content
+- `hackathon.html` - Community Hackathon brief (5 - 19 October 2026)
+- `hackathon.js` - hackathon countdown and submission form (opens a prefilled email, no backend)
 - `styles.css` - modern visual styling
 - `script.js` - mobile navigation toggle
 

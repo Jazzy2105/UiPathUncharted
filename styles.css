@@ -1700,6 +1700,352 @@ img {
   color: #c4b5ff;
 }
 
+/* ─── Hackathon page ─────────────────────────────────── */
+
+/* Keep the content column as wide as the hero bubble instead of edge-to-edge */
+.page-hackathon .section {
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+.page-hackathon .section-intro {
+  text-align: center;
+}
+
+.section-lead {
+  max-width: 760px;
+  margin: 16px auto 0;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.brief-statement {
+  margin: 0 0 8px;
+  font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.brief-copy + .brief-copy {
+  margin-top: 12px;
+}
+
+.brief-panel li strong {
+  color: var(--text);
+}
+
+.hack-gap {
+  margin-top: 22px;
+}
+
+/* Suggested duration pill next to each video chapter heading */
+.step-time {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(124, 92, 255, 0.13);
+  color: #c4b5ff;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 0.74rem;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.hack-checklist {
+  padding: 20px 22px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+/* Submission form */
+.hack-form {
+  margin-top: 24px;
+  padding: 28px 32px 32px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* Honeypot field for the form service - hidden from people, filled by bots */
+.hack-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.hack-form button[disabled] {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
+
+.hack-form-note {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.hack-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+}
+
+.hack-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.hack-field-wide {
+  grid-column: 1 / -1;
+}
+
+.hack-field > span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.hack-field input,
+.hack-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.92rem;
+  transition: border-color var(--t) var(--ease), background var(--t) var(--ease);
+}
+
+.hack-field textarea {
+  resize: vertical;
+}
+
+.hack-field input::placeholder,
+.hack-field textarea::placeholder {
+  color: var(--muted2);
+}
+
+.hack-field input:focus,
+.hack-field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(124, 92, 255, 0.07);
+}
+
+.hack-field.has-error input,
+.hack-field.has-error textarea {
+  border-color: #ff5a6a;
+  background: rgba(255, 90, 106, 0.06);
+}
+
+.hack-error {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: #ff5a6a;
+}
+
+.hack-error:empty {
+  display: none;
+}
+
+.hack-checks {
+  display: grid;
+  gap: 12px;
+  margin: 24px 0 8px;
+}
+
+.hack-checks label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.hack-checks input {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin: 3px 0 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.hack-form.was-validated .hack-checks input:invalid + span {
+  color: #ff5a6a;
+}
+
+.hack-form-status {
+  min-height: 1.6em;
+  margin: 14px 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.hack-form-status.is-error { color: #ff5a6a; }
+.hack-form-status.is-ok { color: #6ee7a8; }
+
+@media (max-width: 720px) {
+  .hack-form { padding: 24px 20px 26px; }
+  .hack-form-grid { grid-template-columns: 1fr; }
+}
+
+/* Submission success pop-up */
+.hack-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(2, 4, 12, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: hackFade 220ms var(--ease);
+}
+
+.hack-modal[hidden] {
+  display: none;
+}
+
+.hack-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  padding: 40px 36px 36px;
+  text-align: center;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(120% 120% at 50% -10%, rgba(124, 92, 255, 0.28), transparent 60%),
+    #0a0f24;
+  border: 1px solid rgba(124, 92, 255, 0.4);
+  box-shadow: 0 30px 90px rgba(124, 92, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: hackPop 420ms cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+
+.hack-modal-check {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #7c5cff 0%, #42d6ff 100%);
+  box-shadow: 0 14px 40px rgba(66, 214, 255, 0.4);
+}
+
+.hack-modal-check svg {
+  width: 52px;
+  height: 52px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hack-modal-check circle {
+  stroke: rgba(255, 255, 255, 0.35);
+  stroke-width: 2;
+}
+
+.hack-modal-check path {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: hackDraw 480ms 260ms var(--ease) forwards;
+}
+
+.hack-modal-eyebrow {
+  margin: 0 0 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6ee7a8;
+}
+
+.hack-modal-card h2 {
+  margin: 0 0 14px;
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.hack-modal-copy {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.hack-modal-copy strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.hack-modal-card .button {
+  margin-top: 16px;
+  min-width: 180px;
+}
+
+.hack-modal-confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hack-modal-confetti i {
+  position: absolute;
+  top: -20px;
+  width: 9px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: hackConfetti linear forwards;
+}
+
+@keyframes hackFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes hackPop {
+  from { opacity: 0; transform: translateY(24px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes hackDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes hackConfetti {
+  0% { opacity: 1; transform: translate3d(0, 0, 0) rotate(0deg); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(var(--drift), 105vh, 0) rotate(var(--spin)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hack-modal,
+  .hack-modal-card { animation: none; }
+  .hack-modal-check path { animation: none; stroke-dashoffset: 0; }
+  .hack-modal-confetti { display: none; }
+}
+
 /* ─── Footer ────────────────────────────────────────── */
 
 .site-footer {

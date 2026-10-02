@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Hackathon - UiPath Uncharted</title>
+  <meta name="description" content="UiPath Uncharted Community Hackathon: find a problem that burdens your community and solve it with agentic AI built on UiPath. 5 - 19 October 2026. Submit a video presentation." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=20261002e" />
+  <link rel="icon" type="image/png" href="assets/uu-mark-navy.png" />
+  <link rel="apple-touch-icon" href="assets/uu-mark-navy.png" />
+</head>
+<body class="page-hackathon">
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a class="brand" href="index.html">
+        <div class="brand-mark"><img src="assets/uu-mark-navy.png" alt="UiPath Uncharted logo" /></div>
+        <div>
+          <p class="eyebrow">UiPath Uncharted</p>
+          <p class="brand-title">Community Hackathon</p>
+        </div>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="site-nav" id="siteNav">
+        <a href="index.html">Podcast</a>
+        <a href="#brief">Brief</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#submission">Submission</a>
+        <a href="#judging">Judging</a>
+        <a href="#enter">Enter</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-shell">
+
+    <main>
+      <section class="hero" id="home">
+        <div class="hero-copy" data-animate>
+          <div class="hero-logo"><img src="assets/uu-mark-navy.png" alt="UiPath Uncharted logo" /></div>
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            Community Hackathon &middot; 5 - 19 October 2026
+          </div>
+          <h1>Agents for your <span class="text-gradient">community.</span></h1>
+          <p class="hero-subtitle">Find a problem that burdens the people around you. Solve it with agentic AI on UiPath. Show us in a video. You have two weeks.</p>
+          <div class="hero-meta">
+            <div class="meta-item">
+              <span class="meta-num">2<small>weeks</small></span>
+              <span class="meta-label">To build</span>
+            </div>
+            <div class="meta-divider"></div>
+            <div class="meta-item">
+              <span class="meta-num">1<small>problem</small></span>
+              <span class="meta-label">From your community</span>
+            </div>
+            <div class="meta-divider"></div>
+            <div class="meta-item">
+              <span class="meta-num">1<small>video</small></span>
+              <span class="meta-label">To submit</span>
+            </div>
+          </div>
+
+          <div class="episode-countdown" id="hackCountdownWrap"
+               data-start="2026-10-05T09:00:00+02:00"
+               data-end="2026-10-19T23:59:00+02:00">
+            <p class="ec-eyebrow"><span class="ec-live-dot"></span> <span id="hackPhase">Kick-off in</span></p>
+            <p class="ec-date" id="hackDate">5 October 2026</p>
+            <p class="ec-time" id="hackTime">
+              Kick-off 09:00 SAST
+              <span class="ec-zoom">Submissions close 19 October, 23:59 SAST</span>
+            </p>
+            <div class="ec-timer" id="hackCountdown" role="timer" aria-label="Hackathon countdown">
+              <div class="ec-unit"><span class="ec-num" data-cd="days">00</span><span class="ec-label">Days</span></div>
+              <span class="ec-sep">:</span>
+              <div class="ec-unit"><span class="ec-num" data-cd="hours">00</span><span class="ec-label">Hours</span></div>
+              <span class="ec-sep">:</span>
+              <div class="ec-unit"><span class="ec-num" data-cd="minutes">00</span><span class="ec-label">Minutes</span></div>
+              <span class="ec-sep">:</span>
+              <div class="ec-unit"><span class="ec-num" data-cd="seconds">00</span><span class="ec-label">Seconds</span></div>
+            </div>
+            <div class="ec-cta">
+              <a class="button button-primary" href="#brief">Read the Brief</a>
+              <a class="button button-secondary" href="#submission">What to Submit</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-contrast" id="brief">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">The brief</p>
+          <h2>One real burden. <span class="text-gradient">One agent that lifts it.</span></h2>
+        </div>
+        <div class="brief-panel" data-animate data-delay="100">
+          <p class="brief-tag">The challenge</p>
+          <p class="brief-statement">Find a problem that burdens your community today, and use agentic AI on the UiPath platform to solve it.</p>
+
+          <p class="brief-title">The background</p>
+          <p class="brief-copy">Every community runs on unpaid admin. The volunteer who answers the same forty questions every week. The treasurer reconciling payments at midnight. The clinic queue nobody can see the end of. The WhatsApp group where the one message that mattered got buried. These are not glamorous problems, and that is exactly why nobody has solved them.</p>
+          <p class="brief-copy">Agentic AI changes what a small team can build in two weeks. An agent can read, reason, decide, act across systems, and ask a human when it is unsure. That is a very good fit for the messy, judgement-heavy work that communities depend on and that classic rule-based automation could never quite reach.</p>
+
+          <p class="brief-title">Your mission</p>
+          <p class="brief-copy">Pick a community you belong to or can genuinely reach. Go and talk to the people in it. Find one specific, recurring burden - something that costs real people real time, money or energy right now. Then design and build an agentic solution on UiPath technology that takes that burden away, and prove it works.</p>
+
+          <p class="brief-title">What we are looking for</p>
+          <ol>
+            <li><strong>A real problem, with a real owner.</strong> Not a hypothetical. Name the community, name who carries the burden, and tell us what it costs them today.</li>
+            <li><strong>Agentic AI at the core.</strong> The agent must do meaningful reasoning and take action - not just answer questions. If you could swap it for a fixed script and lose nothing, it is not agentic enough.</li>
+            <li><strong>Built on UiPath.</strong> The solution must be built on UiPath technology, with the agent itself running on the UiPath platform. You can connect to other systems and services, but UiPath is the foundation, not a bolt-on.</li>
+            <li><strong>A working solution.</strong> Scope it small enough to finish. A narrow thing that works beats a grand thing that does not.</li>
+            <li><strong>Something people can actually use.</strong> The person carrying the burden should be able to pick it up without you in the room.</li>
+            <li><strong>Built responsibly.</strong> Keep a human in the loop where the stakes are high, and protect the people whose data you touch.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section" id="community">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">Where to look</p>
+          <h2>"Community" is <span class="text-gradient">wider than you think.</span></h2>
+          <p class="section-lead">Any group of people you are part of and can talk to this week counts. Start with the people, not the technology.</p>
+        </div>
+        <div class="grid grid-3" data-animate data-delay="100">
+          <article class="info-card">
+            <span class="info-icon">&#127968;</span>
+            <h3>Where you live</h3>
+            <p>Your neighbourhood, body corporate, residents' association or community safety group. Think fault reporting, levy queries, visitor access, load-shedding and water notices.</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon">&#127891;</span>
+            <h3>Where you learn</h3>
+            <p>A school, campus, tutoring programme or parent body. Think timetable clashes, bursary applications, lift clubs, permission slips and study support.</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon">&#129309;</span>
+            <h3>Where you give back</h3>
+            <p>An NPO, clinic, food bank, animal shelter, faith group or sports club. Think volunteer rosters, donor follow-ups, intake forms and grant reporting.</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon">&#128187;</span>
+            <h3>Where you work and build</h3>
+            <p>Your user group, developer community, small-business network or team. Think onboarding newcomers, event logistics, knowledge that lives in one person's head.</p>
+          </article>
+        </div>
+        <div class="grid grid-2 split-cards hack-gap" data-animate data-delay="100">
+          <div class="card-panel">
+            <h3>Signs you have found a good problem</h3>
+            <ul>
+              <li>You can name the person who does this work today</li>
+              <li>It happens again and again, not once a year</li>
+              <li>It needs judgement, reading or conversation - not just copy and paste</li>
+              <li>You can measure it: hours, rands, missed cases, waiting time</li>
+              <li>That person would use your solution next week if it worked</li>
+            </ul>
+          </div>
+          <div class="card-panel accent-panel">
+            <h3>What makes a solution "agentic"</h3>
+            <ul>
+              <li>It is given a goal, not a fixed list of steps</li>
+              <li>It reasons over messy input: messages, documents, images, voice</li>
+              <li>It uses tools and takes actions in other systems</li>
+              <li>It handles exceptions and knows when to escalate to a human</li>
+              <li>It works alongside automations, apps and people as one process</li>
+              <li>It is built and run on the UiPath platform</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-contrast" id="timeline">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">The timeline</p>
+          <h2>Two weeks, <span class="text-gradient">start to submit.</span></h2>
+          <p class="section-lead">A suggested pace. How you spend the fourteen days is up to you - only the start and the deadline are fixed.</p>
+        </div>
+        <div class="timeline" data-animate data-delay="100">
+          <article class="timeline-item">
+            <span>Mon 5 Oct</span>
+            <h3>Kick-off</h3>
+            <p>The brief goes live and the clock starts. Form your team and choose your community.</p>
+          </article>
+          <article class="timeline-item">
+            <span>Days 1 - 3</span>
+            <h3>Discover</h3>
+            <p>Talk to the people who carry the burden. Pin down one problem and what it costs today.</p>
+          </article>
+          <article class="timeline-item">
+            <span>Days 4 - 5</span>
+            <h3>Design</h3>
+            <p>Sketch the solution. Decide which UiPath products are involved and what the agent is responsible for.</p>
+          </article>
+          <article class="timeline-item">
+            <span>Days 6 - 11</span>
+            <h3>Build and test</h3>
+            <p>Get the happy path working end to end first, then harden it. Put it in front of a real user.</p>
+          </article>
+          <article class="timeline-item">
+            <span>Days 12 - 14</span>
+            <h3>Guide and record</h3>
+            <p>Write the user guide, rehearse the demo, and record your video presentation.</p>
+          </article>
+          <article class="timeline-item">
+            <span>Mon 19 Oct</span>
+            <h3>Submissions close</h3>
+            <p>Your video must be in by 23:59 SAST. Late entries cannot be judged.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="submission">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">What to submit</p>
+          <h2>One video. <span class="text-gradient">Five chapters.</span></h2>
+          <p class="section-lead">Your entry is a single video presentation of up to 10 minutes. It must cover these five things, in this order. The timings are a guide.</p>
+        </div>
+        <div class="contact-grid" data-animate data-delay="100">
+          <div class="steps-panel">
+            <article>
+              <span>01</span>
+              <h3>Present the problem <em class="step-time">~1.5 min</em></h3>
+              <p>Who is the community, and who carries this burden? What happens today, how often, and what does it cost? Make us feel why it is worth solving.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>Present the design <em class="step-time">~2 min</em></h3>
+              <p>Show an architecture diagram of your solution and name every UiPath product involved, plus anything else it connects to. Explain what each one does, where the agent sits, what tools and data it can reach, and where a human steps in.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>Explain it like I'm five <em class="step-time">~1 min</em></h3>
+              <p>Now explain the solution with no jargon at all - as if to someone from the community who has never heard of an agent. If a ten-year-old would not follow it, simplify it again.</p>
+            </article>
+            <article>
+              <span>04</span>
+              <h3>Demo the solution working <em class="step-time">~4 min</em></h3>
+              <p>Run it for real, end to end, on a realistic scenario. Show the agent reasoning and acting, not just the final result. Include at least one exception or edge case and how it is handled.</p>
+            </article>
+            <article>
+              <span>05</span>
+              <h3>Walk through the user guide <em class="step-time">~1.5 min</em></h3>
+              <p>Show the guide you wrote for the people who will use this, and demonstrate a user following it: how they start, what they see, what to do when something goes wrong, and who to ask for help.</p>
+            </article>
+          </div>
+          <div class="contact-panel">
+            <p class="contact-title">Submission checklist</p>
+            <p>Before you send it in, check that you have:</p>
+            <div class="card-panel hack-checklist">
+              <ul>
+                <li>One video, 10 minutes or less</li>
+                <li>All five chapters, clearly signposted</li>
+                <li>A design slide naming the UiPath products used</li>
+                <li>A live demo, not just screenshots</li>
+                <li>The user guide shown on screen</li>
+                <li>Team name and member names on the first slide</li>
+                <li>No real personal or sensitive data visible</li>
+                <li>A link that works for someone who is not logged in</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-contrast" id="judging">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">How it is judged</p>
+          <h2>Impact first. <span class="text-gradient">Polish second.</span></h2>
+        </div>
+        <div class="grid grid-3" data-animate data-delay="100">
+          <article class="info-card">
+            <span class="info-icon">&#127919;</span>
+            <h3>Community impact &middot; 25%</h3>
+            <p>Is the problem real, specific and worth solving? Is it clear who benefits and by how much?</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon">&#129302;</span>
+            <h3>Agentic design &middot; 25%</h3>
+            <p>Is the agent doing genuine reasoning and action? Is the design sound, with the right UiPath products in the right roles and sensible human oversight?</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon">&#9881;&#65039;</span>
+            <h3>Working solution &middot; 20%</h3>
+            <p>Does the demo run end to end? Does it cope when something unexpected happens?</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon">&#128172;</span>
+            <h3>Clarity &middot; 15%</h3>
+            <p>Could someone outside tech understand what it does and why it matters after your ELI5?</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon">&#128214;</span>
+            <h3>Usability &middot; 15%</h3>
+            <p>Could the community pick this up and use it from your user guide, without you in the room?</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="rules">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">The rules</p>
+          <h2>Simple rules, <span class="text-gradient">fair play.</span></h2>
+        </div>
+        <div class="grid grid-2 split-cards" data-animate data-delay="100">
+          <div class="card-panel">
+            <h3>Taking part</h3>
+            <ul>
+              <li>Open to everyone in the community, at any experience level</li>
+              <li>Enter solo or as a team of up to four</li>
+              <li>One submission per team</li>
+              <li>The solution must be built on UiPath technology</li>
+              <li>It must be built during the hackathon window</li>
+              <li>Existing templates, connectors and libraries are fine - say what you reused</li>
+            </ul>
+          </div>
+          <div class="card-panel accent-panel">
+            <h3>Building responsibly</h3>
+            <ul>
+              <li>Use test or anonymised data - never real personal information on screen</li>
+              <li>Get permission from the community you are building for</li>
+              <li>Keep a human in the loop for decisions that affect people</li>
+              <li>Be honest about what the agent cannot do yet</li>
+              <li>Your work stays yours - we only ask to share your video</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-cta" id="enter">
+        <div class="section-intro" data-animate>
+          <p class="eyebrow">Ready to build?</p>
+          <h2>Find the burden. <span class="text-gradient">Build the agent.</span></h2>
+        </div>
+        <div class="contact-grid" data-animate data-delay="100">
+          <div class="steps-panel">
+            <article>
+              <span>01</span>
+              <h3>Tell us you are in</h3>
+              <p>Send your team name and members so we know to expect you.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>Build from 5 October</h3>
+              <p>Two weeks to find the problem, design, build and test.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>Record your video</h3>
+              <p>Five chapters, 10 minutes or less.</p>
+            </article>
+            <article>
+              <span>04</span>
+              <h3>Submit by 19 October</h3>
+              <p>Use the submission form below before 23:59 SAST.</p>
+            </article>
+          </div>
+          <div class="contact-panel">
+            <p class="contact-title">Enter or ask a question</p>
+            <p>Register your team or ask anything about the brief.</p>
+            <a class="contact-link" href="mailto:jscott@i1solutions.co.za?subject=UiPath%20Uncharted%20Community%20Hackathon">
+              <em class="contact-link-icon">&#9993;</em>
+              jscott@i1solutions.co.za
+            </a>
+            <a class="contact-link" href="https://www.linkedin.com/in/jarryd-scott-01498019b" target="_blank" rel="noreferrer">
+              <em class="contact-link-icon">in</em>
+              linkedin.com/in/jarryd-scott
+            </a>
+          </div>
+        </div>
+
+        <!-- data-endpoint: the Power Automate "When an HTTP request is received" URL that entries are
+             posted to. If it is emptied the form falls back to a prefilled email. -->
+        <form class="hack-form" id="submissionForm" data-endpoint="https://d80c19c96957ebfea55496aa7e1413.4d.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/03/workflows/291c098346cd4ce59260df864b2c9014/triggers/manual/paths/invoke?api-version=1&amp;sp=%2Ftriggers%2Fmanual%2Frun&amp;sv=1.0&amp;sig=IXBTnCxF3f6xzlfp12d6CGeiXetyGD2_42syCm-7hkU" data-to="jscott@i1solutions.co.za" data-animate novalidate>
+          <p class="brief-tag">Submission form</p>
+          <p class="brief-statement">Submit your entry</p>
+          <input class="hack-hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <p class="hack-form-note" id="submissionNote">Fill this in once your video is ready. You will see a confirmation here as soon as your entry is received.</p>
+
+          <div class="hack-form-grid">
+            <label class="hack-field">
+              <span>Team name *</span>
+              <input type="text" name="team" required maxlength="80" autocomplete="organization" />
+            </label>
+            <label class="hack-field">
+              <span>Contact person *</span>
+              <input type="text" name="contact" required maxlength="80" autocomplete="name" />
+            </label>
+            <label class="hack-field">
+              <span>Contact email *</span>
+              <input type="email" name="email" required maxlength="120" autocomplete="email" />
+            </label>
+            <label class="hack-field">
+              <span>Team members (up to four)</span>
+              <input type="text" name="members" maxlength="200" placeholder="Names, separated by commas" />
+            </label>
+            <label class="hack-field hack-field-wide">
+              <span>Solution name *</span>
+              <input type="text" name="solution" required maxlength="100" />
+            </label>
+            <label class="hack-field hack-field-wide">
+              <span>The community you built for *</span>
+              <input type="text" name="community" required maxlength="150" placeholder="e.g. Our neighbourhood food bank" />
+            </label>
+            <label class="hack-field hack-field-wide">
+              <span>The problem, in a sentence or two *</span>
+              <textarea name="problem" required maxlength="400" rows="3"></textarea>
+            </label>
+            <label class="hack-field hack-field-wide">
+              <span>UiPath products used *</span>
+              <input type="text" name="products" required maxlength="200" placeholder="e.g. Agent Builder, Maestro, Integration Service" />
+            </label>
+            <label class="hack-field">
+              <span>Video link *</span>
+              <input type="url" name="video" required maxlength="300" placeholder="https://" />
+            </label>
+            <label class="hack-field">
+              <span>User guide link</span>
+              <input type="url" name="guide" maxlength="300" placeholder="https://" />
+            </label>
+          </div>
+
+          <div class="hack-checks">
+            <label><input type="checkbox" name="c_built" required /> <span>The solution is built on UiPath technology and was built during the hackathon window.</span></label>
+            <label><input type="checkbox" name="c_video" required /> <span>The video is 10 minutes or less and covers all five chapters.</span></label>
+            <label><input type="checkbox" name="c_data" required /> <span>No real personal or sensitive data is visible in the video.</span></label>
+            <label><input type="checkbox" name="c_share" required /> <span>UiPath Uncharted may share our video with the community.</span></label>
+          </div>
+
+          <p class="hack-form-status" id="submissionStatus" role="status" aria-live="polite"></p>
+          <button class="button button-primary" type="submit">Submit Entry</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="footer-brand">UiPath Uncharted</p>
+        <p class="footer-meta">Community Hackathon &middot; 5 - 19 October 2026</p>
+        <p class="footer-copy">&copy; <span class="js-current-year">2026</span> UiPath Uncharted. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+  <div class="hack-modal" id="successModal" role="dialog" aria-modal="true" aria-labelledby="successTitle" hidden>
+    <div class="hack-modal-confetti" id="successConfetti" aria-hidden="true"></div>
+    <div class="hack-modal-card">
+      <div class="hack-modal-check" aria-hidden="true">
+        <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" /><path d="M15 27l7.5 7.5L37.5 19" /></svg>
+      </div>
+      <p class="hack-modal-eyebrow">Entry received</p>
+      <h2 id="successTitle">You're <span class="text-gradient">in!</span></h2>
+      <p class="hack-modal-copy"><strong id="successSolution"></strong> by <strong id="successTeam"></strong> has been submitted to the UiPath Uncharted Community Hackathon.</p>
+      <p class="hack-modal-copy">A confirmation email with your details is on its way to <strong id="successEmail"></strong>.</p>
+      <button class="button button-primary" type="button" id="successClose">Awesome</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <script src="hackathon.js?v=20261002e"></script>
+</body>
+</html>
