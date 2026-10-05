@@ -176,3 +176,65 @@ if (calBtn) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
 }
+
+// ─── Back to top ─────────────────────────────────────
+// Appears once you scroll, its ring fills with page progress, and a click
+// glides (eased) back to the top. Cancelled if the reader scrolls mid-way.
+const toTop = document.querySelector('.to-top');
+
+if (toTop) {
+  const ring = toTop.querySelector('.to-top-progress');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - ((-2 * t + 2) ** 3) / 2);
+  let ticking = false;
+  let frame = null;
+
+  const update = () => {
+    ticking = false;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    toTop.classList.toggle('is-visible', window.scrollY > 500);
+    ring.style.strokeDashoffset = String(100 - ratio * 100);
+  };
+
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  }, { passive: true });
+  update();
+
+  const stop = () => {
+    cancelAnimationFrame(frame);
+    frame = null;
+    document.documentElement.style.scrollBehavior = '';
+    window.removeEventListener('wheel', stop);
+    window.removeEventListener('touchstart', stop);
+  };
+
+  toTop.addEventListener('click', () => {
+    const start = window.scrollY;
+    if (!start) return;
+    const firstHeaderControl = [...document.querySelectorAll('.site-header a, .site-header button')]
+      .find((el) => el.offsetParent !== null);
+    if (firstHeaderControl) firstHeaderControl.focus({ preventScroll: true });
+    if (reduceMotion.matches) {
+      window.scrollTo(0, 0);
+      return;
+    }
+    stop();
+    // Our own easing, so the native smooth-scroll mustn't fight it.
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.addEventListener('wheel', stop, { passive: true });
+    window.addEventListener('touchstart', stop, { passive: true });
+    const duration = Math.min(1100, Math.max(500, start * 0.25));
+    const began = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - began) / duration);
+      window.scrollTo(0, start * (1 - easeInOut(t)));
+      if (t < 1) frame = requestAnimationFrame(step);
+      else stop();
+    };
+    frame = requestAnimationFrame(step);
+  });
+}

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automation Hub: the pipeline before the pipeline · UiPath Uncharted</title>
+  <meta name="description" content="Episode 1 companion, with Jacqui Muller. How ideas get captured, scored and governed before a single bot is built, and why that front door decides the programme." />
+  <meta name="theme-color" content="#060816" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="UiPath Uncharted" />
+  <meta property="og:title" content="Automation Hub: the pipeline before the pipeline · UiPath Uncharted" />
+  <meta property="og:description" content="Episode 1 companion, with Jacqui Muller. How ideas get captured, scored and governed before a single bot is built, and why that front door decides the programme." />
+  <meta property="og:url" content="https://uipathuncharted.co.za/blog/automation-hub/" />
+  <meta property="og:image" content="https://uipathuncharted.co.za/blog/assets/automation-hub-cover.jpg" />
+  <meta property="og:image:width" content="1600" />
+  <meta property="og:image:height" content="893" />
+  <meta property="og:image:alt" content="Automation Hub: the pipeline before the pipeline" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://uipathuncharted.co.za/blog/automation-hub/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../blog.css" />
+  <link rel="icon" type="image/png" href="../../assets/uu-mark-navy.png" />
+  <link rel="apple-touch-icon" href="../../assets/uu-mark-navy.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="uu-page">
+    <div class="uu-progress" aria-hidden="true"><span></span></div>
+
+    <header class="uu-header">
+      <div class="uu-wrap uu-header-inner">
+        <a class="uu-brand" href="../" aria-label="UiPath Uncharted Field Notes, blog home">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="34" height="34" />
+          <span class="uu-brand-text">
+            <span class="uu-brand-name">UiPath Uncharted</span>
+            <span class="uu-brand-sub">Field Notes</span>
+          </span>
+        </a>
+        <nav class="uu-nav" aria-label="Blog">
+          <a href="../#feed">Writing</a>
+          <a href="../#pillars">Pillars</a>
+          <a class="nav-cross" href="../../">Podcast</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="uu-wrap post-main">
+      <a class="back-link" href="../">← All writing</a>
+      <div class="post-layout">
+        <article>
+          <header class="post-head">
+            <div class="chips">
+              <span class="chip chip-lg p-discover">Discover</span>
+              <span class="chip chip-status c-green">shipped</span>
+              <span class="post-date">20 Feb 2026 · 9 min</span>
+            </div>
+            <h1 class="post-title">Automation Hub: the pipeline before the pipeline</h1>
+            <p class="post-lede">Automation Hub is where an automation programme decides what to build — and later proves whether it was worth it. Here is how the pipeline works, how to drive it from the uip CLI, and how to keep the numbers honest.</p>
+            <div class="author">
+              <img src="../assets/jarryd-scott-avatar.jpg" alt="" width="40" height="40" />
+              <div class="author-text">
+                <span class="author-name">Jarryd Scott</span>
+                <span class="author-role">Technical Lead, Business Automation · host of UiPath Uncharted</span>
+              </div>
+              <span class="author-ep">Ep. 01 companion</span>
+            </div>
+            <figure class="post-hero">
+              <img src="../assets/automation-hub-cover.jpg" alt="Automation Hub: the pipeline before the pipeline" width="1600" height="893" />
+            </figure>
+          </header>
+          <div class="prose">
+            <h2 id="a1">What it actually is</h2>
+            <p>Automation Hub is the system of record for your automation pipeline. Ideas come in, get assessed, reviewed, built and measured — and every one of those decisions is written down in one place instead of a spreadsheet only the CoE lead understands.</p>
+            <p>It sits on the Discover layer for a reason: it decides what gets built. Get the front door wrong and the best developers in the world will very efficiently automate the wrong things.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Source</p>
+                  <h3 class="info-title">Citizen developers</h3>
+                  <p class="info-body">People closest to the work, submitting what annoys them most. High signal on pain, low signal on feasibility.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Source</p>
+                  <h3 class="info-title">CoE-driven</h3>
+                  <p class="info-body">Top-down candidates from the automation team, usually tied to a strategic objective or a cost target.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Source</p>
+                  <h3 class="info-title">Employee-driven</h3>
+                  <p class="info-body">Broad intake campaigns. Volume is the point — and also the risk, if nobody triages.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Source</p>
+                  <h3 class="info-title">Discovery tools</h3>
+                  <p class="info-body">Task Mining, Process Mining and the Automation Discovery Skill pushing evidence-backed candidates straight in.</p>
+                </div>
+              </li>
+            </ul>
+
+            <h2 id="a2">The pipeline, stage by stage</h2>
+            <p>Four stages, four different owners. Click through — the useful question at each one is who is allowed to change the numbers.</p>
+            <div class="stages" data-stages>
+              <div class="stage-tabs" role="tablist" aria-label="Pipeline stages">
+                <button type="button" class="stage-tab" role="tab" id="stage1-tab-1" aria-controls="stage1-panel-1" aria-selected="true">
+                  <span class="stage-tab-n">01</span><span>Idea</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="stage1-tab-2" aria-controls="stage1-panel-2" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">02</span><span>Assessment</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="stage1-tab-3" aria-controls="stage1-panel-3" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">03</span><span>Technical review</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="stage1-tab-4" aria-controls="stage1-panel-4" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">04</span><span>Live</span>
+                </button>
+              </div>
+              <div class="stage-body">
+                <div class="stage-bar" aria-hidden="true"><span></span></div>
+                <div class="stage-panel" role="tabpanel" id="stage1-panel-1" aria-labelledby="stage1-tab-1">
+                  <h3 class="stage-title">Idea — is it worth a closer look?</h3>
+                  <p class="stage-text">Anyone can submit: citizen developers, the CoE, or a discovery tool pushing candidates in. Nothing is scored yet. The only decision here is whether the idea deserves an assessment.</p>
+                  <ul class="meta-pills">
+                    <li>owner · submitter</li>
+                    <li>input · description, frequency, rough volume</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="stage1-panel-2" aria-labelledby="stage1-tab-2" hidden>
+                  <h3 class="stage-title">Assessment — benefit vs ease</h3>
+                  <p class="stage-text">The process owner and CoE put numbers on it: volume, time per case, error rates, and how hard it looks. This is where inflated estimates usually sneak in, so write down where each number came from.</p>
+                  <ul class="meta-pills">
+                    <li>owner · process owner + CoE</li>
+                    <li>output · priority score</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="stage1-panel-3" aria-labelledby="stage1-tab-3" hidden>
+                  <h3 class="stage-title">Technical review — can we actually build it?</h3>
+                  <p class="stage-text">An architect or senior developer checks the systems, screen stability, data quality and exceptions. Ease of implementation gets corrected by someone who will actually build it.</p>
+                  <ul class="meta-pills">
+                    <li>owner · solution architect</li>
+                    <li>output · approach + estimate</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="stage1-panel-4" aria-labelledby="stage1-tab-4" hidden>
+                  <h3 class="stage-title">Live — did it pay off?</h3>
+                  <p class="stage-text">Built, deployed and measured. The benefit that justified the idea is tracked against reality — hours, cost, capacity. This is the stage most programmes forget to close, and it is the one finance cares about.</p>
+                  <ul class="meta-pills">
+                    <li>owner · CoE</li>
+                    <li>output · realised benefit</li>
+                  </ul>
+                </div>
+                <div class="stage-nav">
+                  <button type="button" class="mini-btn" data-prev>← prev</button>
+                  <button type="button" class="mini-btn is-accent" data-next>next →</button>
+                </div>
+              </div>
+            </div>
+
+            <h2 id="a3">The skill: uipath-automationhub</h2>
+            <p>uipath-automationhub is the skill that lets a coding agent publish processes to Automation Hub and read them back, using your own cloud login. You don't need an admin-generated OpenAPI token: the agent sees and can do exactly what your Automation Hub role allows, and nothing more.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Write</p>
+                  <h3 class="info-title">Publish</h3>
+                  <p class="info-body">Create an approved process in Automation Hub as the system of record, along with its PDD and SDD documents, uploaded as files or as links.</p>
+                  <ul class="arrow-list">
+                    <li>payload · built from the idea-flow schema, fetched live</li>
+                    <li>typical source · a process Cartographer has documented</li>
+                  </ul>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Read</p>
+                  <h3 class="info-title">Get</h3>
+                  <p class="info-body">Fetch a process by id or by search, list its attached documents, and download their file bytes.</p>
+                  <ul class="arrow-list">
+                    <li>use · dedup and related-idea lookups</li>
+                    <li>use · pull a published PDD or SDD into your workspace</li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Three invariants</p>
+              <p class="callout-text">Collect every input before the first write. Verify before reporting success. Never invent a value the tenant didn't provide. Every flow in the skill keeps all three.</p>
+            </aside>
+
+            <h2 id="a3b">Hands-on: publish and fetch</h2>
+            <p>Five steps from a clean CLI to a published process with its documents, then back again. The skill picks its own transport, so most of what you type is a prompt.</p>
+            <ol class="steps">
+              <li class="step">
+                <span class="step-n" aria-hidden="true">01</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Install the skill</h3>
+                    <span class="step-time">~1 min</span>
+                  </div>
+                  <p class="step-body">It's part of the UiPath skills catalog. If you followed the Automation Discovery walkthrough you already have it. Just update to make sure it's current.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Terminal</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip skills install --agent claude</span></div>
+                        <div class="ln ln-c"><span class="txt"># confirm it's there</span></div>
+                        <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip skills search uipath-automationhub --output json</span></div>
+                        <div class="ln ln-c"><span class="txt"># or invoke it directly from your agent</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">/uipath-automationhub</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <span class="step-n" aria-hidden="true">02</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Preflight: CLI or raw API?</h3>
+                    <span class="step-time">automatic</span>
+                  </div>
+                  <p class="step-body">Step 0 of the skill. It runs uip ah --help once per session. If that succeeds, every flow goes through uip ah commands and uip handles auth. If it fails with unknown command 'ah' (an older CLI), it switches to the raw Open API flows. It never mixes the two in one run.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Terminal</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip ah --help</span></div>
+                        <div class="ln ln-ok"><span class="txt">✓ succeeds → CLI flows (preferred)</span></div>
+                        <div class="ln ln-o"><span class="txt">✗ unknown command 'ah' → raw Open API flows</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tip">
+                    <span class="tip-label">Check</span>
+                    <p class="tip-text">The domain rules (required fields, wrapping rules, document types) are identical on both paths. Only the transport changes.</p>
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <span class="step-n" aria-hidden="true">03</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Authenticate</h3>
+                    <span class="step-time">~1 min</span>
+                  </div>
+                  <p class="step-body">On the CLI path, log in once and you're done. On the raw-API path the skill finds a cloud token in a fixed order: runtime env-auth first (how Delegate provides it), then your uip login session in ~/.uipath/.auth, and only as a last resort a token you paste in.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Terminal — authenticate</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login</span></div>
+                        <div class="ln ln-c"><span class="txt"># browser opens → choose organisation + tenant</span></div>
+                        <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login status</span></div>
+                        <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login tenant set &lt;tenant-name&gt;</span></div>
+                      </div>
+                    </div>
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Raw-API path — what the skill looks for</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-c"><span class="txt"># 1 · runtime env-auth (preferred, how Delegate supplies it)</span></div>
+                        <div class="ln ln-o"><span class="txt">UIPATH_CLI_ENABLE_ENV_AUTH=true</span></div>
+                        <div class="ln ln-o"><span class="txt">UIPATH_CLI_AUTH_TOKEN  UIPATH_CLI_ORGANIZATION_NAME  UIPATH_CLI_TENANT_NAME</span></div>
+                        <div class="ln ln-c"><span class="txt"># 2 · logged-in session</span></div>
+                        <div class="ln ln-o"><span class="txt">~/.uipath/.auth   → accessToken · baseUrl · organizationName · tenantName</span></div>
+                        <div class="ln ln-c"><span class="txt"># 3 · last resort: user pastes token + org + tenant slugs</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tip">
+                    <span class="tip-label">401?</span>
+                    <p class="tip-text">Cloud tokens are short-lived. If you get a 401, run uip login again and retry. Never add admin headers to fix it.</p>
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <span class="step-n" aria-hidden="true">04</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Publish a process and its documents</h3>
+                    <span class="step-time">~3 min</span>
+                  </div>
+                  <p class="step-body">The publish flow fetches the idea-flow schema from your tenant, collects every required field before writing anything, creates the process, attaches the PDD and SDD, then reads the record back to confirm it landed.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Claude Code — prompt</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Publish 'AP invoice exception triage' to Automation Hub.</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Attach ./design/ap-exceptions-pdd.docx and the SDD,</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">then give me the link once you've verified it.</span></div>
+                      </div>
+                    </div>
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Agent output (illustrative)</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-o"><span class="txt">● Preflight     uip ah available → CLI flow</span></div>
+                        <div class="ln ln-o"><span class="txt">● Schema        idea-flow fields fetched live · 1 missing → asked</span></div>
+                        <div class="ln ln-ok"><span class="txt">✓ Process created</span></div>
+                        <div class="ln ln-ok"><span class="txt">✓ PDD + SDD attached</span></div>
+                        <div class="ln ln-ok"><span class="txt">✓ Re-read and verified → link returned</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tip">
+                    <span class="tip-label">Why it matters</span>
+                    <p class="tip-text">Because the schema is fetched live, the flow adapts on its own if your CoE changes the idea-flow fields.</p>
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <span class="step-n" aria-hidden="true">05</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Fetch it back</h3>
+                    <span class="step-time">~1 min</span>
+                  </div>
+                  <p class="step-body">The get flow is the reverse: find the process by id or search, list its documents, download the bytes into your workspace. Use it before you publish, to check for duplicates, or when a build team needs the SDD.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Claude Code — prompt</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Is there already an idea like 'vendor onboarding checks'</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">in Automation Hub? If so, download its PDD into ./design.</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ol>
+
+            <h2 id="a3c">Under the hood: the raw Open API</h2>
+            <p>When the CLI doesn't have uip ah, the skill calls the Automation Hub Open API directly. It helps to know the rules it follows, because they're the same mistakes people make when they script this by hand.</p>
+            <ol class="steps">
+              <li class="step">
+                <span class="step-n" aria-hidden="true">→</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Gateway and headers</h3>
+                    <span class="step-time">every request</span>
+                  </div>
+                  <p class="step-body">One gateway URL for everything. The platform injects tenant routing from the org and tenant path segments, which are the two segments after the host in your Automation Hub URL.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Open API — request shape</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-c"><span class="txt"># gateway</span></div>
+                        <div class="ln ln-o"><span class="txt">{baseUrl}/{org}/{tenant}/automationhub_/api/v1/openapi</span></div>
+                        <div class="ln ln-c"><span class="txt"># always</span></div>
+                        <div class="ln ln-o"><span class="txt">Authorization: Bearer &lt;cloud access token&gt;</span></div>
+                        <div class="ln ln-o"><span class="txt">Content-Type: application/json        # on POSTs</span></div>
+                        <div class="ln ln-c"><span class="txt"># NEVER — routes to the admin-token path, 401s a cloud token</span></div>
+                        <div class="ln ln-o"><span class="txt">x-ah-openapi-auth</span></div>
+                        <div class="ln ln-o"><span class="txt">x-ah-openapi-app-key</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tip">
+                    <span class="tip-label">The #1 mistake</span>
+                    <p class="tip-text">Adding x-ah-openapi-auth to fix a 401. It makes things worse: that header switches you to the admin-token path, which rejects your cloud token every time.</p>
+                  </div>
+                </div>
+              </li>
+            </ol>
+            <aside class="callout is-note">
+              <p class="callout-label">Automation Hub not on the tenant?</p>
+              <p class="callout-text">The skill says so plainly and stops instead of failing with a generic error. It tells two cases apart because they have different fixes: not enabled, which only an admin can fix, and reachable but never onboarded, which you can fix yourself.</p>
+            </aside>
+
+            <h2 id="a4">Back-of-envelope: is it worth it?</h2>
+            <p>Before an idea earns an assessment, run the simplest possible sum. If it doesn't survive this, it won't survive a CFO.</p>
+            <div class="calc" data-calc>
+              <div class="calc-inputs">
+                <label>
+                  <span class="calc-row"><span>Cases per month</span><output for="calc-vol" data-out="vol">400</output></span>
+                  <input id="calc-vol" name="vol" type="range" min="50" max="5000" step="50" value="400" />
+                </label>
+                <label>
+                  <span class="calc-row"><span>Minutes per case</span><output for="calc-mins" data-out="mins">6 min</output></span>
+                  <input id="calc-mins" name="mins" type="range" min="1" max="60" step="1" value="6" />
+                </label>
+                <label>
+                  <span class="calc-row"><span>Share you can automate</span><output for="calc-cov" data-out="cov">70%</output></span>
+                  <input id="calc-cov" name="cov" type="range" min="10" max="100" step="5" value="70" />
+                </label>
+              </div>
+              <div class="calc-out">
+                <div class="calc-stat">
+                  <span class="eyebrow-label">Hours back per year</span>
+                  <output data-out="hours" aria-live="polite">336</output>
+                </div>
+                <div class="calc-stat">
+                  <span class="eyebrow-label">FTE capacity</span>
+                  <output class="is-accent" data-out="fte" aria-live="polite">0.2</output>
+                </div>
+              </div>
+            </div>
+            <aside class="callout is-note">
+              <p class="callout-label">Read this honestly</p>
+              <p class="callout-text">This is a sanity check, not Automation Hub's scoring model. It assumes ~1,800 productive hours per FTE-year and ignores build and run cost — which is exactly what the assessment and technical review stages are for.</p>
+            </aside>
+
+            <h2 id="a5">Where it breaks</h2>
+            <p>Three failure modes show up again and again. Idea graveyards: intake campaigns that collect hundreds of ideas nobody triages, so submitters stop submitting. Score inflation: assessment numbers written by the person who wants the automation, with no source attached. And no close-out: automations go live, nobody updates the realised benefit, and the pipeline can't prove its own value at budget time.</p>
+            <p>The fix is the same for all three — give every stage a named owner and make the Live stage mandatory, not optional.</p>
+
+            <h2 id="a6">Watch the episode</h2>
+            <div class="episode">
+              <div class="episode-head">
+                <span class="initials" aria-hidden="true">JM</span>
+                <div>
+                  <div class="episode-title">Episode 1 · with Jacqui Muller</div>
+                  <div class="episode-sub">Automation Hub · 45 min</div>
+                </div>
+              </div>
+              <a class="episode-stage" href="https://www.youtube.com/watch?v=49ndYvN9IZk&amp;t=1447s" target="_blank" rel="noreferrer noopener">
+              <img class="episode-thumb" src="https://i.ytimg.com/vi/49ndYvN9IZk/hqdefault.jpg" alt="" loading="lazy" />
+                <span class="play-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l11.02-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14Z"/></svg>Play on YouTube</span>
+              </a>
+              <p class="listen">
+                <span class="listen-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.63 0 12 0Zm5.5 17.31a.75.75 0 0 1-1.03.25c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.57-1.05 8.5-.6 11.66 1.34.35.22.46.69.25 1.03Zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.16-2.56-11.98-1.4a.94.94 0 1 1-.55-1.8c4.37-1.33 9.8-.69 13.5 1.59.44.27.58.85.32 1.3Zm.13-3.4C15.36 8.3 8.9 8.09 5.3 9.18a1.12 1.12 0 1 1-.65-2.15C8.78 5.78 15.9 6.02 20.2 8.57a1.13 1.13 0 1 1-1.15 1.94Z"/></svg></span>
+                <span>Prefer audio? <a href="https://open.spotify.com/episode/49hsLKifbDMQehoe5zfG4o?si=c12221e8ca87449d" target="_blank" rel="noreferrer noopener">Listen on Spotify</a></span>
+              </p>
+            </div>
+          </div>
+        </article>
+        <aside class="post-aside">
+          <nav class="toc" aria-labelledby="toc-title">
+            <p class="eyebrow-label" id="toc-title">On this page</p>
+            <a href="#a1">What it actually is</a>
+            <a href="#a2">The pipeline, stage by stage</a>
+            <a href="#a3">The skill: uipath-automationhub</a>
+            <a href="#a3b">Hands-on: publish and fetch</a>
+            <a href="#a3c">Under the hood: the raw Open API</a>
+            <a href="#a4">Back-of-envelope: is it worth it?</a>
+            <a href="#a5">Where it breaks</a>
+            <a href="#a6">Watch the episode</a>
+          </nav>
+          <div class="tagged">
+            <p class="eyebrow-label">Tagged</p>
+            <ul class="tag-list">
+              <li>Automation Hub</li>
+              <li>CoE</li>
+              <li>Episode 1</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="uu-footer">
+      <div class="uu-wrap uu-footer-inner">
+        <div class="uu-footer-brand">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="26" height="26" />
+          <span>UiPath Uncharted</span>
+        </div>
+        <span class="uu-footer-note">Field notes · Season 1 · Hosted by Jarryd Scott</span>
+        <nav class="uu-footer-links" aria-label="Elsewhere">
+          <a href="mailto:jscott@i1solutions.co.za">Email</a>
+          <a href="https://www.linkedin.com/in/jarryd-scott-01498019b" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+          <a href="../../">Main site</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <button type="button" class="to-top" aria-label="Back to top">
+    <svg class="to-top-ring" viewBox="0 0 48 48" aria-hidden="true">
+      <defs>
+        <linearGradient id="to-top-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#42d6ff" />
+          <stop offset="1" stop-color="#7c5cff" />
+        </linearGradient>
+      </defs>
+      <circle class="to-top-track" cx="24" cy="24" r="22" />
+      <circle class="to-top-progress" cx="24" cy="24" r="22" pathLength="100" />
+    </svg>
+    <svg class="to-top-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+  </button>
+
+  <script src="../blog.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UiPath Delegate &amp; Cartographer · UiPath Uncharted</title>
+  <meta name="description" content="Episode 3 companion, with Annalise Olivier. A desktop agent that acts and an AI mapper that documents the as-is — two sides of the same discovery problem." />
+  <meta name="theme-color" content="#060816" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="UiPath Uncharted" />
+  <meta property="og:title" content="UiPath Delegate &amp; Cartographer · UiPath Uncharted" />
+  <meta property="og:description" content="Episode 3 companion, with Annalise Olivier. A desktop agent that acts and an AI mapper that documents the as-is — two sides of the same discovery problem." />
+  <meta property="og:url" content="https://uipathuncharted.co.za/blog/delegate-cartographer/" />
+  <meta property="og:image" content="https://uipathuncharted.co.za/blog/assets/delegate-cartographer-cover.jpg" />
+  <meta property="og:image:width" content="1376" />
+  <meta property="og:image:height" content="768" />
+  <meta property="og:image:alt" content="UiPath Delegate &amp; Cartographer" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://uipathuncharted.co.za/blog/delegate-cartographer/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../blog.css" />
+  <link rel="icon" type="image/png" href="../../assets/uu-mark-navy.png" />
+  <link rel="apple-touch-icon" href="../../assets/uu-mark-navy.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="uu-page">
+    <div class="uu-progress" aria-hidden="true"><span></span></div>
+
+    <header class="uu-header">
+      <div class="uu-wrap uu-header-inner">
+        <a class="uu-brand" href="../" aria-label="UiPath Uncharted Field Notes, blog home">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="34" height="34" />
+          <span class="uu-brand-text">
+            <span class="uu-brand-name">UiPath Uncharted</span>
+            <span class="uu-brand-sub">Field Notes</span>
+          </span>
+        </a>
+        <nav class="uu-nav" aria-label="Blog">
+          <a href="../#feed">Writing</a>
+          <a href="../#pillars">Pillars</a>
+          <a class="nav-cross" href="../../">Podcast</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="uu-wrap post-main">
+      <a class="back-link" href="../">← All writing</a>
+      <div class="post-layout">
+        <article>
+          <header class="post-head">
+            <div class="chips">
+              <span class="chip chip-lg p-discover">Discover</span>
+              <span class="chip chip-status c-green">shipped</span>
+              <span class="post-date">18 Sep 2026 · 9 min</span>
+            </div>
+            <h1 class="post-title">UiPath Delegate &amp; Cartographer</h1>
+            <p class="post-lede">One agent does the work on your desktop. The other writes down how the work actually runs — exceptions and judgment calls included. No CLI here: Cartographer lives inside the UiPath desktop app, and you build a project by hand. Here's every setting, screen by screen.</p>
+            <div class="author">
+              <img src="../assets/jarryd-scott-avatar.jpg" alt="" width="40" height="40" />
+              <div class="author-text">
+                <span class="author-name">Jarryd Scott</span>
+                <span class="author-role">Technical Lead, Business Automation · host of UiPath Uncharted</span>
+              </div>
+              <span class="author-ep">Ep. 03 companion</span>
+            </div>
+            <figure class="post-hero">
+              <img src="../assets/delegate-cartographer-cover.jpg" alt="UiPath Delegate &amp; Cartographer" width="1376" height="768" />
+            </figure>
+          </header>
+          <div class="prose">
+            <h2 id="d1">Two products, one app</h2>
+            <p>Both went generally available at FUSION 2026. They install alongside UiPath Assistant and you move between the three from the switcher in the title bar. Cartographer is built on Delegate, but they answer different questions.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Acts</p>
+                  <h3 class="info-title">UiPath Delegate</h3>
+                  <p class="info-body">A desktop agent that does the work you'd otherwise do by hand. You describe the task in plain language and it drives your apps, documents and business systems, under your organisation's existing controls.</p>
+                  <ul class="arrow-list">
+                    <li>input · a plain-language ask or a recording</li>
+                    <li>output · the task, done, or a reusable routine</li>
+                    <li>best for · repetitive personal desktop work</li>
+                  </ul>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Maps</p>
+                  <h3 class="info-title">UiPath Cartographer</h3>
+                  <p class="info-body">An AI agent for business analysts. It turns transcripts, interviews, SOPs and recordings into governed process documentation: a PDD, then an SDD once the PDD is approved.</p>
+                  <ul class="arrow-list">
+                    <li>input · SOPs, recordings, SME interviews</li>
+                    <li>output · AS-IS / TO-BE, PDD, SDD</li>
+                    <li>best for · processes you're about to automate</li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Why no uip commands?</p>
+              <p class="callout-text">There's no uip CLI skill for Delegate or Cartographer. You set up a Cartographer project in the app itself, and the uip CLI only comes in later, once the SDD has been sent to Automation Hub.</p>
+            </aside>
+
+            <h2 id="d2">Setup 1 · Project basics</h2>
+            <p>In Cartographer, start a new business process. The New project dialog has three tabs down the left: Basics, Allowlist and Skills. Basics is the only one you must fill in. Click a number to see what each field does.</p>
+            <div class="anat" data-anat>
+              <figure>
+                <div class="anat-shot">
+                  <img src="../assets/cartographer-setup-basics.png" alt="Cartographer New project dialog, Basics tab" width="863" height="716" loading="lazy" />
+                  <button type="button" class="pin" style="--x: 5%; --y: 12.8%" aria-pressed="true" aria-label="1: Basics · Allowlist · Skills">1</button>
+                  <button type="button" class="pin" style="--x: 27%; --y: 9.6%" aria-pressed="false" aria-label="2: Name">2</button>
+                  <button type="button" class="pin" style="--x: 27%; --y: 25%" aria-pressed="false" aria-label="3: Project instructions">3</button>
+                  <button type="button" class="pin" style="--x: 27%; --y: 47%" aria-pressed="false" aria-label="4: Context files">4</button>
+                  <button type="button" class="pin" style="--x: 27%; --y: 61.5%" aria-pressed="false" aria-label="5: Approval mode">5</button>
+                </div>
+                <figcaption><span class="fig-num">FIG 01</span><span>New project → Basics</span></figcaption>
+              </figure>
+              <ol class="pin-cards">
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="true">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">1</span><span class="pin-card-title">Basics · Allowlist · Skills</span></span>
+                    <span class="pin-card-body">The three settings tabs. You can reopen them any time from the gear icon in the project sidebar.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">2</span><span class="pin-card-title">Name</span></span>
+                    <span class="pin-card-body">The only required field. Name it after the process, not the team (&quot;AP invoice exceptions&quot;, not &quot;Finance&quot;), because this is what shows in your business-process list.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">3</span><span class="pin-card-title">Project instructions</span></span>
+                    <span class="pin-card-body">The standing brief Cartographer follows in every conversation in this project. It comes pre-filled with the default goal: capture AS-IS, design TO-BE, generate the PDD. Edit it to add scope, audience or naming rules.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">4</span><span class="pin-card-title">Context files</span></span>
+                    <span class="pin-card-body">Drop in what already exists, such as SOPs, policies, process diagrams and old PDDs. Cartographer compares them, flags where they contradict each other, and asks questions to close the gaps.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">5</span><span class="pin-card-title">Approval mode</span></span>
+                    <span class="pin-card-body">How much the agent may do before checking with you. The app-wide modes are Cautious (asks for everything), Balanced (recommended: runs safe tools, asks before high-impact ones) and Autonomous (no prompts). This build labels the most permissive one Full access, so use it only on a sandbox project.</span>
+                  </button>
+                </li>
+              </ol>
+            </div>
+            <ol class="steps">
+              <li class="step">
+                <span class="step-n" aria-hidden="true">→</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>A stronger project brief</h3>
+                    <span class="step-time">copy &amp; adapt</span>
+                  </div>
+                  <p class="step-body">The default instructions work. Being specific about scope and sources gets you a sharper first draft and fewer clarifying questions.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Project instructions</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">You are documenting a business process for automation.</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Goal: capture the AS-IS, design the TO-BE, generate the PDD.</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Scope: AP invoice exceptions only, from receipt to posting in SAP.</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Treat the attached SOP as intent, not truth. Flag every</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">place where the recordings disagree with it.</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Audience: CoE solution architects. Use our system names.</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tip">
+                    <span class="tip-label">Allowlist</span>
+                    <p class="tip-text">The Allowlist tab lists the local files and folders Cartographer may use when Guarded mode is on, plus linked project resources that stay in sync with their source. Point it at the process's folder and nothing else.</p>
+                  </div>
+                </div>
+              </li>
+            </ol>
+
+            <h2 id="d3">Setup 2 · Preload skills</h2>
+            <p>Skills are packaged know-how the agent can draw on. This tab decides which ones are already loaded when a conversation starts, so the agent doesn't have to discover them first. Changes only apply to new conversations: a session keeps the skills it started with.</p>
+            <div class="anat" data-anat>
+              <figure>
+                <div class="anat-shot">
+                  <img src="../assets/cartographer-setup-skills.png" alt="Cartographer New project dialog, Skills tab" width="865" height="716" loading="lazy" />
+                  <button type="button" class="pin" style="--x: 50%; --y: 16%" aria-pressed="true" aria-label="1: New conversations only">1</button>
+                  <button type="button" class="pin" style="--x: 30%; --y: 28%" aria-pressed="false" aria-label="2: Business Analysis">2</button>
+                  <button type="button" class="pin" style="--x: 30%; --y: 35.5%" aria-pressed="false" aria-label="3: Knowledge Base">3</button>
+                  <button type="button" class="pin" style="--x: 30%; --y: 43%" aria-pressed="false" aria-label="4: project-checklist">4</button>
+                  <button type="button" class="pin" style="--x: 87%; --y: 28%" aria-pressed="false" aria-label="5: Pin · Auto · Off">5</button>
+                  <button type="button" class="pin" style="--x: 30%; --y: 57%" aria-pressed="false" aria-label="6: Built-in skills">6</button>
+                  <button type="button" class="pin" style="--x: 41%; --y: 66%" aria-pressed="false" aria-label="7: Connect first">7</button>
+                </div>
+                <figcaption><span class="fig-num">FIG 02</span><span>New project → Skills</span></figcaption>
+              </figure>
+              <ol class="pin-cards">
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="true">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">1</span><span class="pin-card-title">New conversations only</span></span>
+                    <span class="pin-card-body">The warning banner means what it says. If you add a skill mid-project, start a new chat to pick it up, because existing sessions won't see it.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">2</span><span class="pin-card-title">Business Analysis</span></span>
+                    <span class="pin-card-body">The core Cartographer skill. It runs the AS-IS → TO-BE → PDD conversation and asks the analyst questions. It's enabled by default and you shouldn't remove it.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">3</span><span class="pin-card-title">Knowledge Base</span></span>
+                    <span class="pin-card-body">Builds and maintains a persistent Markdown knowledge base for the project in Open Knowledge Format (OKF). This is where the Map of Work lives.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">4</span><span class="pin-card-title">project-checklist</span></span>
+                    <span class="pin-card-body">Reads and updates the project's checklist.md, which tracks readiness as FACTS (AS-IS) and ANALYSIS (TO-BE) items marked pending, confirmed or needing attention.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">5</span><span class="pin-card-title">Pin · Auto · Off</span></span>
+                    <span class="pin-card-body">Three states per skill. As far as the UI shows, pin preloads it into every new conversation, the sparkle lets the agent pull it in when it's relevant, and the slashed circle turns it off for this project.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">6</span><span class="pin-card-title">Built-in skills</span></span>
+                    <span class="pin-card-body">Optional extras: Automation Cloud (Orchestrator folders, queues, jobs), Delegate Guide, Document Co-Authoring and Excel Architect. Leave them on Auto unless the process depends on them.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">7</span><span class="pin-card-title">Connect first</span></span>
+                    <span class="pin-card-body">Some skills need a connection before they can work. Confluence shows a red Connect: Confluence Cloud link until you authorise it under Add-ons &amp; Integrations.</span>
+                  </button>
+                </li>
+              </ol>
+            </div>
+
+            <h2 id="d4">The project home</h2>
+            <p>Click Create and you land on the project's home page. It has three columns: navigation on the left, the conversation in the middle, and the project's standing context on the right.</p>
+            <div class="anat" data-anat>
+              <figure>
+                <div class="anat-shot">
+                  <img src="../assets/cartographer-project-home.png" alt="Cartographer project home" width="937" height="973" loading="lazy" />
+                  <button type="button" class="pin" style="--x: 32%; --y: 2%" aria-pressed="true" aria-label="1: Product switcher">1</button>
+                  <button type="button" class="pin" style="--x: 4%; --y: 13%" aria-pressed="false" aria-label="2: Project sidebar">2</button>
+                  <button type="button" class="pin" style="--x: 37%; --y: 22.5%" aria-pressed="false" aria-label="3: Composer">3</button>
+                  <button type="button" class="pin" style="--x: 40%; --y: 37.5%" aria-pressed="false" aria-label="4: Quick actions">4</button>
+                  <button type="button" class="pin" style="--x: 34%; --y: 50.5%" aria-pressed="false" aria-label="5: Conversations">5</button>
+                  <button type="button" class="pin" style="--x: 94.5%; --y: 9%" aria-pressed="false" aria-label="6: Stakeholders">6</button>
+                  <button type="button" class="pin" style="--x: 94.5%; --y: 33%" aria-pressed="false" aria-label="7: Project instructions">7</button>
+                  <button type="button" class="pin" style="--x: 94.5%; --y: 60%" aria-pressed="false" aria-label="8: Skills">8</button>
+                </div>
+                <figcaption><span class="fig-num">FIG 03</span><span>Inside the business process</span></figcaption>
+              </figure>
+              <ol class="pin-cards">
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="true">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">1</span><span class="pin-card-title">Product switcher</span></span>
+                    <span class="pin-card-body">Move between Assistant, Delegate and Cartographer from the title bar. The dropdown next to it switches between your projects.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">2</span><span class="pin-card-title">Project sidebar</span></span>
+                    <span class="pin-card-body">New Chat, Checklist, Conversations, Resources and Settings. When the process reaches handoff, more items appear: Current Process, Future Design, Diagrams, and the PDD and SDD with download buttons.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">3</span><span class="pin-card-title">Composer</span></span>
+                    <span class="pin-card-body">Start by naming the process and how it runs today. The + icon attaches files or runs a routine. Beside it are Guarded mode (the shield, which restricts the agent to allowlisted files), approval mode, the model picker and voice input.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">4</span><span class="pin-card-title">Quick actions</span></span>
+                    <span class="pin-card-body">Document AS-IS starts the interview. Create from recording builds the AS-IS from a screen recording, and Attach recording adds one to the conversation.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">5</span><span class="pin-card-title">Conversations</span></span>
+                    <span class="pin-card-body">Every chat in this project, all sharing the same instructions, skills and knowledge base. Splitting by phase (interview, TO-BE, PDD review) keeps each one focused.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">6</span><span class="pin-card-title">Stakeholders</span></span>
+                    <span class="pin-card-body">The people on the project and their roles. Questions for teammates lists anything Cartographer has delegated to another person, which opens in their own app with the context attached.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">7</span><span class="pin-card-title">Project instructions</span></span>
+                    <span class="pin-card-body">The brief you wrote in Basics, editable in place. A change applies to new conversations.</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pin-card" aria-pressed="false">
+                    <span class="pin-card-head"><span class="pin-num" aria-hidden="true">8</span><span class="pin-card-title">Skills</span></span>
+                    <span class="pin-card-body">The skills enabled for this business process. By default these are Business Analysis, project-checklist and Knowledge Base, matching what you pinned in FIG 02.</span>
+                  </button>
+                </li>
+              </ol>
+            </div>
+
+            <h2 id="d5">Your first session</h2>
+            <p>Everything from here on is conversation. These are the prompts I'd actually type, in order.</p>
+            <ol class="steps">
+              <li class="step">
+                <span class="step-n" aria-hidden="true">01</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Open with the AS-IS</h3>
+                    <span class="step-time">~15 min</span>
+                  </div>
+                  <p class="step-body">Click Document AS-IS, or just describe the process. Cartographer interviews you step by step and asks about triggers, systems, volumes and the exceptions nobody wrote down.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Cartographer — prompt</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">AP invoice exceptions. Invoices that fail 3-way match land</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">in the AP mailbox; an analyst checks SAP, emails the buyer,</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">and posts or rejects. ~400 a month, one analyst covers it.</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tip">
+                    <span class="tip-label">Beginner tip</span>
+                    <p class="tip-text">Answer with what really happens, not what the SOP says. The contradictions between the two are what the documentation is for.</p>
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <span class="step-n" aria-hidden="true">02</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Feed it a recording</h3>
+                    <span class="step-time">~10 min</span>
+                  </div>
+                  <p class="step-body">Use Create from recording to capture one real run, or attach an existing recording. Cartographer turns what it sees into confirmed steps on the AS-IS map.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Cartographer — prompt</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Here's a recording of me handling one price-variance</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">exception end to end. Update the AS-IS and list anything</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">that contradicts the attached SOP.</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <span class="step-n" aria-hidden="true">03</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Design the TO-BE</h3>
+                    <span class="step-time">~15 min</span>
+                  </div>
+                  <p class="step-body">Cartographer goes through the steps one by one and asks how each will be handled: Fully Automated, Assisted, Agent, Human Review or Manual. It then draws a future-state map colour-coded by mode. Confirming that map is a mandatory checkpoint.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Cartographer — prompt</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Move to TO-BE. Mark anything you're unsure of as Manual</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">and provisional. Approvals over the threshold are Human Review.</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tip">
+                    <span class="tip-label">Conservative default</span>
+                    <p class="tip-text">If you're unsure about a step, choose Manual and mark it provisional. You can change any mode before or after the PDD is generated.</p>
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <span class="step-n" aria-hidden="true">04</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Generate the PDD, then the SDD</h3>
+                    <span class="step-time">~10 min</span>
+                  </div>
+                  <p class="step-body">Once the TO-BE is confirmed, Cartographer generates the PDD and works through the quality checklist with you. When the PDD is approved, it produces the SDD for the build team and their coding agents.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Cartographer — prompt</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Generate the PDD. Then walk me through every open item</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">on the checklist before we produce the SDD.</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tip">
+                    <span class="tip-label">Handoff</span>
+                    <p class="tip-text">From the SDD you can send everything to Automation Hub, and that's where the uip CLI and coding agents from Episodes 1 and 2 take over.</p>
+                  </div>
+                </div>
+              </li>
+            </ol>
+
+            <h2 id="d6">Where it breaks</h2>
+            <p>Go in with eyes open on three things. First, the output is only as good as the interview. Cartographer drafts, but it never approves, so a rushed AS-IS gives you a confident, wrong PDD. Second, Full access approval mode on a real project is a governance conversation, not a personal preference. Your admin can enforce limits through Automation Ops policies. Third, licensing: ask your account team in writing what Delegate and Cartographer sessions consume.</p>
+
+            <h2 id="d7">Watch the episode</h2>
+            <div class="episode">
+              <div class="episode-head">
+                <img src="../assets/annalise-olivier-avatar.jpg" alt="" width="38" height="38" />
+                <div>
+                  <div class="episode-title">Episode 3 · with Annalise Olivier</div>
+                  <div class="episode-sub">UiPath Delegate &amp; Cartographer · coming soon</div>
+                </div>
+              </div>
+              <a class="episode-stage" href="http://www.youtube.com/@uipathuncharted" target="_blank" rel="noreferrer noopener">
+                <span class="play-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.51A3.02 3.02 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3.02 3.02 0 0 0 2.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.55 15.57V8.43L15.82 12l-6.27 3.57Z"/></svg>Subscribe on YouTube</span>
+              </a>
+              <p class="listen">
+                <span class="listen-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.63 0 12 0Zm5.5 17.31a.75.75 0 0 1-1.03.25c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.57-1.05 8.5-.6 11.66 1.34.35.22.46.69.25 1.03Zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.16-2.56-11.98-1.4a.94.94 0 1 1-.55-1.8c4.37-1.33 9.8-.69 13.5 1.59.44.27.58.85.32 1.3Zm.13-3.4C15.36 8.3 8.9 8.09 5.3 9.18a1.12 1.12 0 1 1-.65-2.15C8.78 5.78 15.9 6.02 20.2 8.57a1.13 1.13 0 1 1-1.15 1.94Z"/></svg></span>
+                <span>Prefer audio? <a href="https://open.spotify.com/show/0344mY363tx1Oy0OOfkJDg" target="_blank" rel="noreferrer noopener">Follow on Spotify</a></span>
+              </p>
+            </div>
+          </div>
+        </article>
+        <aside class="post-aside">
+          <nav class="toc" aria-labelledby="toc-title">
+            <p class="eyebrow-label" id="toc-title">On this page</p>
+            <a href="#d1">Two products, one app</a>
+            <a href="#d2">Setup 1 · Project basics</a>
+            <a href="#d3">Setup 2 · Preload skills</a>
+            <a href="#d4">The project home</a>
+            <a href="#d5">Your first session</a>
+            <a href="#d6">Where it breaks</a>
+            <a href="#d7">Watch the episode</a>
+          </nav>
+          <div class="tagged">
+            <p class="eyebrow-label">Tagged</p>
+            <ul class="tag-list">
+              <li>Delegate</li>
+              <li>Cartographer</li>
+              <li>Episode 3</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="uu-footer">
+      <div class="uu-wrap uu-footer-inner">
+        <div class="uu-footer-brand">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="26" height="26" />
+          <span>UiPath Uncharted</span>
+        </div>
+        <span class="uu-footer-note">Field notes · Season 1 · Hosted by Jarryd Scott</span>
+        <nav class="uu-footer-links" aria-label="Elsewhere">
+          <a href="mailto:jscott@i1solutions.co.za">Email</a>
+          <a href="https://www.linkedin.com/in/jarryd-scott-01498019b" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+          <a href="../../">Main site</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <button type="button" class="to-top" aria-label="Back to top">
+    <svg class="to-top-ring" viewBox="0 0 48 48" aria-hidden="true">
+      <defs>
+        <linearGradient id="to-top-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#42d6ff" />
+          <stop offset="1" stop-color="#7c5cff" />
+        </linearGradient>
+      </defs>
+      <circle class="to-top-track" cx="24" cy="24" r="22" />
+      <circle class="to-top-progress" cx="24" cy="24" r="22" pathLength="100" />
+    </svg>
+    <svg class="to-top-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+  </button>
+
+  <script src="../blog.js" defer></script>
+</body>
+</html>

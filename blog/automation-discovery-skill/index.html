@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automation Discovery Skill: the REAL data analyst · UiPath Uncharted</title>
+  <meta name="description" content="An agentic skill that assembles evidence about how a team actually works, then ranks automation candidates you were never going to ask about." />
+  <meta name="theme-color" content="#060816" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="UiPath Uncharted" />
+  <meta property="og:title" content="Automation Discovery Skill: the REAL data analyst · UiPath Uncharted" />
+  <meta property="og:description" content="An agentic skill that assembles evidence about how a team actually works, then ranks automation candidates you were never going to ask about." />
+  <meta property="og:url" content="https://uipathuncharted.co.za/blog/automation-discovery-skill/" />
+  <meta property="og:image" content="https://uipathuncharted.co.za/blog/assets/automation-discovery-cover.jpg" />
+  <meta property="og:image:width" content="1600" />
+  <meta property="og:image:height" content="893" />
+  <meta property="og:image:alt" content="Automation Discovery Skill: the REAL data analyst" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://uipathuncharted.co.za/blog/automation-discovery-skill/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../blog.css" />
+  <link rel="icon" type="image/png" href="../../assets/uu-mark-navy.png" />
+  <link rel="apple-touch-icon" href="../../assets/uu-mark-navy.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="uu-page">
+    <div class="uu-progress" aria-hidden="true"><span></span></div>
+
+    <header class="uu-header">
+      <div class="uu-wrap uu-header-inner">
+        <a class="uu-brand" href="../" aria-label="UiPath Uncharted Field Notes, blog home">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="34" height="34" />
+          <span class="uu-brand-text">
+            <span class="uu-brand-name">UiPath Uncharted</span>
+            <span class="uu-brand-sub">Field Notes</span>
+          </span>
+        </a>
+        <nav class="uu-nav" aria-label="Blog">
+          <a href="../#feed">Writing</a>
+          <a href="../#pillars">Pillars</a>
+          <a class="nav-cross" href="../../">Podcast</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="uu-wrap post-main">
+      <a class="back-link" href="../">← All writing</a>
+      <div class="post-layout">
+        <article>
+          <header class="post-head">
+            <div class="chips">
+              <span class="chip chip-lg p-discover">Discover</span>
+              <span class="chip chip-status c-green">shipped</span>
+              <span class="post-date">20 Mar 2026 · 10 min</span>
+            </div>
+            <h1 class="post-title">Automation Discovery Skill: the REAL data analyst</h1>
+            <p class="post-lede">An agentic skill that reads how an organisation actually works, then ranks automation candidates against evidence instead of opinion. Here is what it does, where it breaks, and how to put it in front of a business sponsor.</p>
+            <div class="author">
+              <img src="../assets/jarryd-scott-avatar.jpg" alt="" width="40" height="40" />
+              <div class="author-text">
+                <span class="author-name">Jarryd Scott</span>
+                <span class="author-role">Technical Lead, Business Automation · host of UiPath Uncharted</span>
+              </div>
+              <span class="author-ep">Ep. 02 companion</span>
+            </div>
+            <figure class="post-hero is-blend">
+              <img src="../assets/automation-discovery-cover.jpg" alt="Automation Discovery Skill: the REAL data analyst" width="1600" height="893" />
+            </figure>
+          </header>
+          <div class="prose">
+            <h2 id="s1">What it actually is</h2>
+            <p><code>uipath-automation-discovery</code> is not a dashboard and it is not Task Mining with a chat box bolted on. It is an agent with a research loop: it interviews systems and people, assembles evidence about how work moves through a team, and returns a ranked opportunity list with the reasoning attached. The important word is <strong>evidence</strong> — every candidate it surfaces can be traced back to something it observed, not something a workshop attendee claimed in a room.</p>
+            <p>That changes who the output is for. A discovery workshop produces a list the automation team believes. This produces a list a finance sponsor can audit.</p>
+            <figure class="callout">
+              <figcaption class="callout-label">From the episode</figcaption>
+              <blockquote>
+                <p class="callout-text">“The value isn't that it finds processes. It's that it finds the ones you were never going to ask about.”</p>
+              </blockquote>
+              <p class="callout-by">— Tertius Nel, Principal Customer Success Manager</p>
+            </figure>
+
+            <h2 id="s2">The evidence loop</h2>
+            <p>The skill runs seven phases, straight from its SKILL.md. It checks in with you after each one, so you can steer before it moves on.</p>
+            <ol class="phase-list">
+              <li>
+                <span class="phase-n">P0</span>
+                <div>
+                  <div class="phase-title">Intake — interactive</div>
+                  <p class="phase-body">Company context, tool inventory, org structure, privacy scope and scope size (quick scan 10 findings, standard 25, deep dive 35). It tests each source with a read-only call before mining. Rule 2: never assume, always ask.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P1</span>
+                <div>
+                  <div class="phase-title">Mine</div>
+                  <p class="phase-body">Parallel agents, one per source category. Priority order: messaging help channels → email → CRM/ERP → wiki → issue tracker → HRIS → web research. Raw signal summary checkpoint at the end.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P2</span>
+                <div>
+                  <div class="phase-title">Analyze</div>
+                  <p class="phase-body">Behavioural patterns per department, single points of failure (pseudonymised by default), proven replicable models, a department coverage map and process deep reads. Sources with fewer than 5 signals are flagged low-confidence.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P3</span>
+                <div>
+                  <div class="phase-title">Reflect</div>
+                  <p class="phase-body">Layers on public strategy and financials to find strategic gaps that behavioural data alone won't show. These become Tier 4.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P4</span>
+                <div>
+                  <div class="phase-title">Report</div>
+                  <p class="phase-body">A 4-tier prioritised report. Every Tier 1–3 finding cites a source, a metric and an affected role or team.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P4.5</span>
+                <div>
+                  <div class="phase-title">Estimate — on request</div>
+                  <p class="phase-body">Opportunity → complexity band → pack-hours → adjustment factors → contingency. The band-to-hours numbers come from YOUR matrices and Pack-Hours catalogue. If you don't supply them, it stops and asks.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P5</span>
+                <div>
+                  <div class="phase-title">Handoff</div>
+                  <p class="phase-body">Maps each Tier 1–2 opportunity to an implementation skill (uipath-rpa, uipath-maestro-flow, uipath-agents, uipath-human-in-the-loop, uipath-platform), or to uipath-planner for multi-component designs.</p>
+                </div>
+              </li>
+            </ol>
+
+            <h2 id="s3">Wiring it to Automation Hub</h2>
+            <p>The skill is only useful if its output lands where your pipeline already lives. Push each ranked candidate into Automation Hub as an idea with its evidence payload intact, so the CoE reviews the reasoning rather than re-litigating the score.</p>
+            <div class="code-win">
+              <div class="code-head">
+                <span class="code-file">push-candidates.py</span>
+                <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+              </div>
+              <pre><code>from uipath import AutomationHub, DiscoveryAgent
+
+            agent = AutomationHub.discovery(&quot;finance-ops&quot;)
+            hub   = AutomationHub(tenant=&quot;prod&quot;)
+
+            for c in agent.rank(min_confidence=0.72):
+                hub.ideas.create(
+                    name=c.process_name,
+                    category=c.pillar,
+                    evidence=c.evidence_bundle(),   # keep the trail
+                    est_hours=c.annual_hours_saved,
+                    source=&quot;uipath-automation-discovery&quot;,
+                )
+                print(f&quot;{c.rank:&gt;2}. {c.process_name:&lt;38} {c.confidence:.2f}&quot;)</code></pre>
+            </div>
+
+            <h2 id="s6">Hands-on: from zero to first report</h2>
+            <p>Enough theory. Here is the full path on a clean machine — install the UiPath CLI, wire the skill into your coding agent, authenticate, run a discovery and hand the results off to a build. Five steps, roughly fifteen minutes.</p>
+            <div class="walkthrough" data-os="mac">
+              <div class="prereqs">
+                <span class="eyebrow-label">You need</span>
+                <span class="prereq">Node.js 20+</span>
+                <span class="prereq">A coding agent — Claude Code, Cursor, Codex, Copilot or Gemini CLI</span>
+                <span class="prereq">A UiPath Automation Cloud tenant</span>
+              </div>
+              <div class="os-toggle">
+                <span id="os-label">Show commands for</span>
+                <div class="seg" role="group" aria-labelledby="os-label">
+                  <button type="button" data-os-choice="mac" aria-pressed="true">macOS / Linux</button>
+                  <button type="button" data-os-choice="win" aria-pressed="false">Windows</button>
+                </div>
+              </div>
+              <ol class="steps">
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">01</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Install the UiPath CLI</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">uip is the UiPath command-line interface. The official installer is idempotent: it checks for Node.js 20+, installs @uipath/cli plus the .NET 8 SDK and Python, then wires skills into any coding agent it finds. Safe to re-run — it skips whatever is already there.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file"><span class="os-mac">Terminal — macOS / Linux</span><span class="os-win">PowerShell — Windows</span></span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-c"><span class="txt"># one-liner: CLI + runtimes + skills</span></div>
+                          <div class="ln ln-p os-mac"><span class="pfx" aria-hidden="true">$ </span><span class="txt">curl -fsSL https://download.uipath.com/uipath-cli/install.sh | bash</span></div>
+                          <div class="ln ln-p os-win"><span class="pfx" aria-hidden="true">$ </span><span class="txt">irm https://download.uipath.com/uipath-cli/install.ps1 | iex</span></div>
+                          <div class="ln ln-c"><span class="txt"># already have Node? CLI only</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">npm -g install @uipath/cli</span></div>
+                          <div class="ln ln-c"><span class="txt"># verify</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip --help</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Check</span>
+                      <p class="tip-text">uip --help should list login, logout, tools, skills, mcp and completion. If it does, you're installed.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">02</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Install the skill into your coding agent</h3>
+                      <span class="step-time">~1 min</span>
+                    </div>
+                    <p class="step-body">A skill is not a tool — it adds no commands to uip. It's a pack of Markdown instructions your coding agent reads so it knows when to call uip, with what inputs, in what order. uip skills install pulls the whole UiPath catalog, including uipath-automation-discovery.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-c"><span class="txt"># auto-detects Claude Code, Cursor, Codex, Copilot, Gemini CLI</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip skills install</span></div>
+                          <div class="ln ln-c"><span class="txt"># or target one agent</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip skills install --agent claude</span></div>
+                          <div class="ln ln-c"><span class="txt"># confirm the discovery skill is present</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip skills search uipath-automation-discovery --output json</span></div>
+                          <div class="ln ln-c"><span class="txt"># or invoke it explicitly from your agent</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">/uipath-automation-discovery</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Heads up</span>
+                      <p class="tip-text">uipath-automation-discovery is in Preview — behaviour can change between releases. uip skills install keeps it updated; npx skills add gives you a one-off copy you must update yourself.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">03</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Authenticate to your tenant</h3>
+                      <span class="step-time">~2 min</span>
+                    </div>
+                    <p class="step-body">Installing skills needs no login — the registry is public. Everything the skill hands off to (Automation Hub, Orchestrator, builds) does. Log in interactively on your laptop; use an External App's client credentials in CI.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Interactive login</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login</span></div>
+                          <div class="ln ln-c"><span class="txt"># browser opens → choose organisation + tenant</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login status</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login tenant list</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login tenant set &lt;tenant-name&gt;</span></div>
+                        </div>
+                      </div>
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">CI / headless</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-c"><span class="txt"># External App, confidential client — secrets from env</span></div>
+                          <div class="ln ln-p os-mac"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login --client-id &quot;$UIPATH_CLIENT_ID&quot; --client-secret &quot;$UIPATH_CLIENT_SECRET&quot;</span></div>
+                          <div class="ln ln-p os-win"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login --client-id $env:UIPATH_CLIENT_ID --client-secret $env:UIPATH_CLIENT_SECRET</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Security</span>
+                      <p class="tip-text">Never paste a client secret into your agent's chat. Environment variables locally, your pipeline's secret store in CI.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">04</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Run the discovery</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">Ask the question, or invoke /uipath-automation-discovery directly. Expect questions back before any mining: intake is interactive by design. Name the sources and the scope up front to shorten it. Narrow scope gives sharper evidence and a shorter report.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Claude Code — prompt</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">/uipath-automation-discovery</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Standard scan of Finance Ops. Sources: #finance-ops Slack,</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">the AP shared mailbox, the Finance wiki and SAP. 90 days.</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Pseudonymise people. Our pack-hours catalogue is in ./estimation.</span></div>
+                        </div>
+                      </div>
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Agent output (abridged)</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-o"><span class="txt">● Loading skill  uipath-automation-discovery</span></div>
+                          <div class="ln ln-o"><span class="txt">● Phase 0        intake · 4 sources verified read-only · scope: standard (≤25)</span></div>
+                          <div class="ln ln-o"><span class="txt">● Phase 1        mining Slack · Email · Wiki · ERP  → checkpoint</span></div>
+                          <div class="ln ln-o"><span class="txt">● Phase 2        patterns · SPOFs · replicable models · coverage map → checkpoint</span></div>
+                          <div class="ln ln-o"><span class="txt">● Phase 3        strategy gaps from public financials</span></div>
+                          <div class="ln ln-o"><span class="txt">● Phase 4.5      sizing from ./estimation catalogue</span></div>
+                          <div class="ln ln-ok"><span class="txt">✓ Wrote discovery/finance-ops-opportunities.md</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Beginner tip</span>
+                      <p class="tip-text">Start with one team you know well. If the report surprises you on a process you understand, you've learned how much to trust it on the ones you don't.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">05</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Hand off to Automation Hub and build</h3>
+                      <span class="step-time">~2 min</span>
+                    </div>
+                    <p class="step-body">Every candidate names its implementation path — uipath-rpa, uipath-maestro-flow or uipath-agents — so the next prompt is the build. For Automation Hub, the automationhub skill checks once whether your CLI ships uip ah (1.201+) and falls back to the raw API if not.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Claude Code — prompt</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Push every Priority 1 candidate to Automation Hub</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">with its evidence attached, then scaffold the top</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">one as a coded workflow with uipath-rpa.</span></div>
+                        </div>
+                      </div>
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">What the agent runs first</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-c"><span class="txt"># transport preflight — CLI if available, API otherwise</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip ah --help</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Why it matters</span>
+                      <p class="tip-text">Same session, same context. The build agent already knows why the candidate ranked — nobody re-types the business case into a form.</p>
+                    </div>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+            <h2 id="s7">Reading the 4-tier report</h2>
+            <p>The output is a Markdown report your agent writes into the workspace. Tiers aren't a simple ranking. Tier 1 is always replicable models: automation already working in one place that could be copied elsewhere. Tier 4 is strategic gaps tied to documented priorities. If you ask for Phase 4.5, each finding also gets a <strong>complexity band</strong>, estimated <strong>pack-hours</strong> of build effort, and a <strong>contingency</strong> buffer, calibrated from your own catalogue and never invented. Click a row to see why it landed there.</p>
+            <div class="eyebrow-label">Illustrative sample · Finance Ops</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-green is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-1">
+                  <span class="tier-badge">T1</span>
+                  <span>
+                    <span class="tier-name">Replicate AP exception bot to Procurement</span>
+                    <span class="tier-facts"><span>band · low</span><span>from catalogue</span><span>contingency · low-conf +</span></span>
+                  </span>
+                  <span class="tier-path">uipath-rpa</span>
+                </button>
+                <p class="tier-why" id="tier-why-1">A proven replicable model: the AP mailbox bot already triages price-variance exceptions, and Procurement does the same triage by hand. Rule 5: replication is always Tier 1.</p>
+              </li>
+              <li class="tier c-cyan">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-2">
+                  <span class="tier-badge">T2</span>
+                  <span>
+                    <span class="tier-name">Vendor onboarding checks</span>
+                    <span class="tier-facts"><span>band · medium</span><span>from catalogue</span><span>contingency · per confidence</span></span>
+                  </span>
+                  <span class="tier-path">uipath-maestro-flow</span>
+                </button>
+                <p class="tier-why" id="tier-why-2" hidden>High-volume behavioural pattern: it repeats weekly across Slack and email with three hand-offs, and one analyst is a single point of failure (&quot;Finance Ops Lead A&quot;). The value is orchestration, hence a flow.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-3">
+                  <span class="tier-badge">T3</span>
+                  <span>
+                    <span class="tier-name">Month-end accrual commentary</span>
+                    <span class="tier-facts"><span>band · high</span><span>from catalogue</span><span>contingency · per confidence</span></span>
+                  </span>
+                  <span class="tier-path">uipath-agents</span>
+                </button>
+                <p class="tier-why" id="tier-why-3" hidden>Real, but fewer than 5 signals in the wiki source, so Rule 4 caps it at Tier 3 as low-confidence until a second source corroborates it.</p>
+              </li>
+              <li class="tier c-slate">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-4">
+                  <span class="tier-badge">T4</span>
+                  <span>
+                    <span class="tier-name">Faster quarter close</span>
+                    <span class="tier-facts"><span>band · —</span><span>not sized</span><span>contingency · —</span></span>
+                  </span>
+                  <span class="tier-path">uipath-planner</span>
+                </button>
+                <p class="tier-why" id="tier-why-4" hidden>A strategic gap: close speed is a documented priority in the public financials, and Phase 2 saw manual reconciliation. Multi-component, so it goes to uipath-planner.</p>
+              </li>
+            </ul>
+            <figure class="figure">
+              <img src="../assets/ads-opportunity-report.webp" alt="A sample 4-tier opportunity report written by the Automation Discovery Skill" width="1200" height="670" loading="lazy" />
+            </figure>
+
+            <h2 id="s4">Where it breaks</h2>
+            <p>Three consistent failure modes so far: shallow system coverage (it can only reason about what it can see, so a team living in an unconnected legacy client is invisible), over-confident ranking on low-volume processes, and sponsors who read the list as a commitment rather than a hypothesis. The first is a connector problem, the second is a threshold you set, the third is a conversation you have up front.</p>
+
+            <h2 id="s5">Watch the episode</h2>
+            <div class="episode">
+              <div class="episode-head">
+                <img src="../assets/tertius-nel-avatar.jpg" alt="" width="38" height="38" />
+                <div>
+                  <div class="episode-title">Episode 2 · with Tertius Nel</div>
+                  <div class="episode-sub">Automation Discovery Skill · 45 min</div>
+                </div>
+              </div>
+              <a class="episode-stage" href="https://youtu.be/p4xuqiAAbII" target="_blank" rel="noreferrer noopener">
+              <img class="episode-thumb" src="https://i.ytimg.com/vi/p4xuqiAAbII/hqdefault.jpg" alt="" loading="lazy" />
+                <span class="play-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l11.02-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14Z"/></svg>Play on YouTube</span>
+              </a>
+              <p class="listen">
+                <span class="listen-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.63 0 12 0Zm5.5 17.31a.75.75 0 0 1-1.03.25c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.57-1.05 8.5-.6 11.66 1.34.35.22.46.69.25 1.03Zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.16-2.56-11.98-1.4a.94.94 0 1 1-.55-1.8c4.37-1.33 9.8-.69 13.5 1.59.44.27.58.85.32 1.3Zm.13-3.4C15.36 8.3 8.9 8.09 5.3 9.18a1.12 1.12 0 1 1-.65-2.15C8.78 5.78 15.9 6.02 20.2 8.57a1.13 1.13 0 1 1-1.15 1.94Z"/></svg></span>
+                <span>Prefer audio? <a href="https://open.spotify.com/episode/6HdMMQHOnMoPg0vzdu5qFq?si=c5cd47547d4041ea" target="_blank" rel="noreferrer noopener">Listen on Spotify</a></span>
+              </p>
+            </div>
+          </div>
+        </article>
+        <aside class="post-aside">
+          <nav class="toc" aria-labelledby="toc-title">
+            <p class="eyebrow-label" id="toc-title">On this page</p>
+            <a href="#s1">What it actually is</a>
+            <a href="#s2">The evidence loop</a>
+            <a href="#s3">Wiring to Automation Hub</a>
+            <a href="#s6">Hands-on: install → run</a>
+            <a href="#s7">Reading the report</a>
+            <a href="#s4">Where it breaks</a>
+            <a href="#s5">Watch the episode</a>
+          </nav>
+          <div class="tagged">
+            <p class="eyebrow-label">Tagged</p>
+            <ul class="tag-list">
+              <li>Automation Discovery</li>
+              <li>Automation Hub</li>
+              <li>Agentic</li>
+              <li>Episode 2</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="uu-footer">
+      <div class="uu-wrap uu-footer-inner">
+        <div class="uu-footer-brand">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="26" height="26" />
+          <span>UiPath Uncharted</span>
+        </div>
+        <span class="uu-footer-note">Field notes · Season 1 · Hosted by Jarryd Scott</span>
+        <nav class="uu-footer-links" aria-label="Elsewhere">
+          <a href="mailto:jscott@i1solutions.co.za">Email</a>
+          <a href="https://www.linkedin.com/in/jarryd-scott-01498019b" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+          <a href="../../">Main site</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <button type="button" class="to-top" aria-label="Back to top">
+    <svg class="to-top-ring" viewBox="0 0 48 48" aria-hidden="true">
+      <defs>
+        <linearGradient id="to-top-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#42d6ff" />
+          <stop offset="1" stop-color="#7c5cff" />
+        </linearGradient>
+      </defs>
+      <circle class="to-top-track" cx="24" cy="24" r="22" />
+      <circle class="to-top-progress" cx="24" cy="24" r="22" pathLength="100" />
+    </svg>
+    <svg class="to-top-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+  </button>
+
+  <script src="../blog.js" defer></script>
+</body>
+</html>
