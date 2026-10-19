@@ -131,8 +131,8 @@ const joinLink = document.getElementById('episodeJoinLink');
 
 if (calBtn) {
   const meetingUrl = joinLink ? joinLink.href : '';
-  const DTSTART = '20261015T113000Z'; // 13:30 SAST (UTC+2)
-  const DTEND = '20261015T133000Z';   // 15:30 SAST (UTC+2)
+  const DTSTART = '20261120T100000Z'; // 12:00 SAST (UTC+2)
+  const DTEND = '20261120T120000Z';   // 14:00 SAST (UTC+2)
 
   // Escape text per RFC 5545 (backslash, semicolon, comma, newline)
   const esc = (s) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
@@ -149,16 +149,16 @@ if (calBtn) {
     const lines = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//UiPath Uncharted//Episode 3//EN',
+      'PRODID:-//UiPath Uncharted//Episode 4//EN',
       'CALSCALE:GREGORIAN',
       'METHOD:PUBLISH',
       'BEGIN:VEVENT',
-      'UID:ep3-20261015@uipathuncharted.co.za',
+      'UID:ep4-20261120@uipathuncharted.co.za',
       'DTSTAMP:' + stamp,
       'DTSTART:' + DTSTART,
       'DTEND:' + DTEND,
-      fold('SUMMARY:' + esc('UiPath Uncharted - Episode 3 (UiPath Delegate)')),
-      fold('DESCRIPTION:' + esc('Episode 3 of UiPath Uncharted - UiPath Delegate, live on Microsoft Teams. Register: ' + meetingUrl)),
+      fold('SUMMARY:' + esc('UiPath Uncharted - Episode 4 (UiPath Process & Communications Mining)')),
+      fold('DESCRIPTION:' + esc('Episode 4 of UiPath Uncharted - UiPath Process & Communications Mining, live on Microsoft Teams. Register: ' + meetingUrl)),
       fold('LOCATION:' + esc('Microsoft Teams')),
       fold('URL:' + meetingUrl),
       'STATUS:CONFIRMED',
@@ -169,7 +169,7 @@ if (calBtn) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'uipath-uncharted-episode-3.ics';
+    a.download = 'uipath-uncharted-episode-4.ics';
     document.body.appendChild(a);
     a.click();
     a.remove();
