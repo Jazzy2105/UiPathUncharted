@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Process Mining: mine the mess before you automate it · UiPath Uncharted</title>
+  <meta name="description" content="A hands-on, end-to-end process mining build with the uipath-process-mining skill: from a raw event log to a published app, process graph, root-cause analysis and a business case, using vendor onboarding at a fictional distributor." />
+  <meta name="theme-color" content="#060816" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="UiPath Uncharted" />
+  <meta property="og:title" content="Process Mining: mine the mess before you automate it · UiPath Uncharted" />
+  <meta property="og:description" content="A hands-on, end-to-end process mining build with the uipath-process-mining skill: from a raw event log to a published app, process graph, root-cause analysis and a business case, using vendor onboarding at a fictional distributor." />
+  <meta property="og:url" content="https://uipathuncharted.co.za/blog/process-mining/" />
+  <meta property="og:image" content="https://uipathuncharted.co.za/blog/assets/process-mining-cover.jpg" />
+  <meta property="og:image:width" content="1600" />
+  <meta property="og:image:height" content="893" />
+  <meta property="og:image:alt" content="Process Mining: mine the mess before you automate it" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://uipathuncharted.co.za/blog/process-mining/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../blog.css" />
+  <link rel="icon" type="image/png" href="../../assets/uu-mark-navy.png" />
+  <link rel="apple-touch-icon" href="../../assets/uu-mark-navy.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="uu-page">
+    <div class="uu-progress" aria-hidden="true"><span></span></div>
+
+    <header class="uu-header">
+      <div class="uu-wrap uu-header-inner">
+        <a class="uu-brand" href="../" aria-label="UiPath Uncharted Field Notes, blog home">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="34" height="34" />
+          <span class="uu-brand-text">
+            <span class="uu-brand-name">UiPath Uncharted</span>
+            <span class="uu-brand-sub">Field Notes</span>
+          </span>
+        </a>
+        <nav class="uu-nav" aria-label="Blog">
+          <a href="../#feed">Writing</a>
+          <a href="../#pillars">Pillars</a>
+          <a class="nav-cross" href="../../">Podcast</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="uu-wrap post-main">
+      <a class="back-link" href="../">← All writing</a>
+      <div class="post-layout">
+        <article>
+          <header class="post-head">
+            <div class="chips">
+              <span class="chip chip-lg p-discover">Discover</span>
+              <span class="chip chip-status c-green">shipped</span>
+              <span class="post-date">27 Oct 2026 · 19 min</span>
+            </div>
+            <h1 class="post-title">Process Mining: mine the mess before you automate it</h1>
+            <p class="post-lede">Everyone said vendor onboarding takes about a week. 1,800 cases and 257 variants later, the data disagreed. This is a complete, hands-on walkthrough of mining a process with UiPath Process Mining and the uip CLI, from CSV to root cause, mistakes included.</p>
+            <div class="author">
+              <img src="../assets/jarryd-scott-avatar.jpg" alt="" width="40" height="40" />
+              <div class="author-text">
+                <span class="author-name">Jarryd Scott</span>
+                <span class="author-role">Technical Lead, Business Automation · host of UiPath Uncharted</span>
+              </div>
+              <span class="author-ep">Hands-on deep dive</span>
+            </div>
+            <figure class="post-hero">
+              <img src="../assets/process-mining-cover.jpg" alt="Process Mining: mine the mess before you automate it, with a mined vendor onboarding graph showing a rework loop and a compliance bottleneck" width="1600" height="893" />
+            </figure>
+          </header>
+          <div class="prose">
+            <h2 id="c1">Mine it before you automate it</h2>
+            <p>Every automation programme has the same bad habit. Somebody describes a process in a workshop, we draw it on a whiteboard as five tidy boxes, and then we automate the whiteboard. Six weeks later the bot is live and the process is still slow, because the whiteboard was never the process.</p>
+            <p><strong>Process mining</strong> fixes that by refusing to listen to anyone. It reads the timestamps your systems already write and rebuilds what actually happened, case by case: every path, every loop, every wait. It is the last stop in the Discover layer for a reason. Automation Hub collects the ideas, the Automation Discovery Skill finds the ones nobody mentioned, Delegate and Cartographer document how people do the work, and process mining proves what the work really looks like at scale.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-slate">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">You think</p>
+                  <h3 class="info-title">The whiteboard</h3>
+                  <p class="info-body">Request comes in, details captured, checks run, compliance approves, vendor created. Five boxes, about a week.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">The data says</p>
+                  <h3 class="info-title">The process</h3>
+                  <p class="info-body">1,800 cases took <strong>257 different paths</strong>. The most common path covers only 27% of them. Some cases go round the same loop three times.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">So you</p>
+                  <h3 class="info-title">Automate the right thing</h3>
+                  <p class="info-body">Fix the loop that costs 6 days per case before you build a robot that does the five boxes faster.</p>
+                </div>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Where this fits in the series</p>
+              <p class="callout-text">This post closes the <strong>Discover</strong> pillar, and it hands straight over to <a href="../maestro-case-management/">Maestro Case Management</a> in Run &amp; Scale. Same process, vendor onboarding. Here we find out what is wrong with it; there we rebuild it as a case.</p>
+            </aside>
+
+            <h2 id="c2">The use case: Karoo Distribution</h2>
+            <p>Meet <strong>Karoo Distribution</strong>, a made-up South African distributor that onboards around 300 new suppliers a month. Requests arrive three ways: an email to Procurement, a phone call that someone writes up, or a web form. Three clerks capture the details, run a duplicate check, verify the company registration and bank account, and send the vendor through sanctions screening. A risk model scores the vendor, compliance signs off, and the vendor is created in SAP with a welcome pack.</p>
+            <p>Everyone agrees it takes "about a week". The CFO wants to know why some take three. That is our question.</p>
+            <aside class="callout is-note">
+              <p class="callout-label">About the data</p>
+              <p class="callout-text">Karoo Distribution is fictional and the event log is <strong>synthetic</strong>: I wrote a small Python generator so there is no client data anywhere near a public blog. Everything after that is real. The app, the ingestion, the SQL, the errors, the numbers and every screenshot come from a real UiPath Process Mining app on my dev tenant, built with the <code>uipath-process-mining</code> skill. I did plant a few problems in the generator, the way they show up in real onboarding data. The fun part is watching the tooling find them without being told where to look.</p>
+            </aside>
+            <div class="stages" data-stages>
+              <div class="stage-tabs" role="tablist" aria-label="The vendor onboarding process, as described">
+                <button type="button" class="stage-tab" role="tab" id="cstage1-tab-1" aria-controls="cstage1-panel-1" aria-selected="true">
+                  <span class="stage-tab-n">01</span><span>Request</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="cstage1-tab-2" aria-controls="cstage1-panel-2" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">02</span><span>Capture</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="cstage1-tab-3" aria-controls="cstage1-panel-3" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">03</span><span>Verify</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="cstage1-tab-4" aria-controls="cstage1-panel-4" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">04</span><span>Approve</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="cstage1-tab-5" aria-controls="cstage1-panel-5" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">05</span><span>Activate</span>
+                </button>
+              </div>
+              <div class="stage-body">
+                <div class="stage-bar" aria-hidden="true"><span></span></div>
+                <div class="stage-panel" role="tabpanel" id="cstage1-panel-1" aria-labelledby="cstage1-tab-1">
+                  <h3 class="stage-title">Vendor request received</h3>
+                  <p class="stage-text">From email (59%), phone (16%) or web form (25%). The web form forces the vendor to upload documents up front. Email and phone do not.</p>
+                  <ul class="meta-pills">
+                    <li>3 channels</li>
+                    <li>Requester or vendor portal</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="cstage1-panel-2" aria-labelledby="cstage1-tab-2" hidden>
+                  <h3 class="stage-title">Details captured and checked for duplicates</h3>
+                  <p class="stage-text">A clerk types the vendor into the onboarding tracker and checks it does not already exist. Sometimes the details are wrong and get corrected later.</p>
+                  <ul class="meta-pills">
+                    <li>3 clerks</li>
+                    <li>Duplicate check</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="cstage1-panel-3" aria-labelledby="cstage1-tab-3" hidden>
+                  <h3 class="stage-title">Registration, bank account, sanctions</h3>
+                  <p class="stage-text">Three checks, usually in that order but not always. If documents are missing, the clerk emails the vendor, waits, sends reminders, and verifies the bank account again when they arrive.</p>
+                  <ul class="meta-pills">
+                    <li>Rework loop</li>
+                    <li>Reminders</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="cstage1-panel-4" aria-labelledby="cstage1-tab-4" hidden>
+                  <h3 class="stage-title">Risk scored, compliance decides</h3>
+                  <p class="stage-text">A risk model scores the vendor. Compliance approves or rejects. High-risk vendors can be escalated to the Head of Procurement first.</p>
+                  <ul class="meta-pills">
+                    <li>2 reviewers</li>
+                    <li>Escalations</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="cstage1-panel-5" aria-labelledby="cstage1-tab-5" hidden>
+                  <h3 class="stage-title">Created in SAP, welcome pack sent</h3>
+                  <p class="stage-text">The vendor is created in SAP and gets a welcome pack. Occasionally, weeks later, somebody changes the vendor's bank details. Finance should be nervous about that.</p>
+                  <ul class="meta-pills">
+                    <li>SAP</li>
+                    <li>Bank changes</li>
+                  </ul>
+                </div>
+                <div class="stage-nav">
+                  <button type="button" class="mini-btn" data-prev>← prev</button>
+                  <button type="button" class="mini-btn is-accent" data-next>next →</button>
+                </div>
+              </div>
+            </div>
+
+            <h2 id="c3">An event log in three columns</h2>
+            <p>Process mining needs exactly three things per row: <strong>which case</strong>, <strong>what happened</strong> and <strong>when</strong>. Everything else is a bonus. Here is the top of the real file, 21,385 rows of it:</p>
+            <div class="term">
+              <div class="code-head">
+                <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                <span class="code-file">vendor_onboarding_events.csv</span>
+              </div>
+              <div class="term-body">
+                <div class="ln ln-o"><span class="txt">Case_ID;Activity;Event_end;User;Case;Case_status;Case_type;Case_value;Channel;Region;Department</span></div>
+                <div class="ln ln-o"><span class="txt">VEND-27095;Vendor request received;2026-01-05 11:11:07;Requester;Waterberg Consulting Holdings;Onboarded;Services;946000;Email;Eastern Cape;Fleet</span></div>
+                <div class="ln ln-o"><span class="txt">VEND-27039;Vendor request received;2026-01-05 14:14:23;Requester;Vaal IT Solutions Trading;Onboarded;Services;393000;Email;Gauteng;IT</span></div>
+                <div class="ln ln-o"><span class="txt">VEND-26888;Vendor request received;2026-01-06 08:10:28;Requester;Namaqua Print CC;Onboarded;Goods;107000;Email;Eastern Cape;Marketing</span></div>
+              </div>
+            </div>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Required</p>
+                  <h3 class="info-title">Case_ID · Activity · Event_end</h3>
+                  <p class="info-body">The case key, the step name and its timestamp. With only these three you already get the process graph, variants and throughput times.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Template hooks</p>
+                  <h3 class="info-title">Case · Case_status · Case_type · Case_value</h3>
+                  <p class="info-body">The <code>uipath.custom</code> template's <code>Cases.sql</code> looks for these four by name. Name your columns to match and you skip the most common first-run error (more on that below).</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Bonus</p>
+                  <h3 class="info-title">Channel · Region · Department · User</h3>
+                  <p class="info-body">Attributes you want to slice by. They load even if you do not map them, but you have to promote them to case level before you can group by them.</p>
+                </div>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Real systems</p>
+              <p class="callout-text">In real life the event log comes from SAP change documents, a ServiceNow audit table or an Orchestrator queue. For a source system with a full extract, use the matching template (for example <code>uipath.p2p.sap</code>). For one flat log like this, use <code>uipath.custom</code>, the "Event log" template.</p>
+            </aside>
+
+            <h2 id="c4">Meet the skill: uipath-process-mining</h2>
+            <p>The skill teaches your coding agent to drive <code>uip pm</code>, the Process Mining part of the UiPath CLI, from a raw CSV to a queryable app. Before the hands-on part, here are the rules it lives by. Each one saved me (or would have saved me) a slow round trip.</p>
+            <div class="eyebrow-label">Seven rules · click a row</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-cyan is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-1">
+                  <span class="tier-badge">1</span>
+                  <span>
+                    <span class="tier-name">Match the template to the data</span>
+                    <span class="tier-facts"><span>one flat log → uipath.custom</span></span>
+                  </span>
+                  <span class="tier-path">pick first</span>
+                </button>
+                <p class="tier-why" id="tier-why-1">Every template shares the same pipeline: mapping → upload → ingest → transform → query. Only the expected input tables differ. A single denormalised log is <code>uipath.custom</code>. A full SAP or ServiceNow extract gets its own template.</p>
+              </li>
+              <li class="tier c-pink">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-2">
+                  <span class="tier-badge">2</span>
+                  <span>
+                    <span class="tier-name">The Cases.sql gotcha</span>
+                    <span class="tier-facts"><span>custom template only</span></span>
+                  </span>
+                  <span class="tier-path">name your columns</span>
+                </button>
+                <p class="tier-why" id="tier-why-2" hidden>The event-log template's <code>Cases.sql</code> references <code>Case</code>, <code>Case_status</code>, <code>Case_type</code> and <code>Case_value</code>. A minimal mapping does not produce them and dbt fails with <code>000904 invalid identifier</code>. Either null them in SQL or, like me, include them in the CSV.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-3">
+                  <span class="tier-badge">3</span>
+                  <span>
+                    <span class="tier-name">SQL failed? Apply, don't re-ingest</span>
+                    <span class="tier-facts"><span>data is already loaded</span></span>
+                  </span>
+                  <span class="tier-path">fast loop</span>
+                </button>
+                <p class="tier-why" id="tier-why-3" hidden>A transformation error means the data loaded fine. Fix the SQL, push it, and run <code>transformations apply</code>. Re-ingesting only helps when the raw file or the mapping changed.</p>
+              </li>
+              <li class="tier c-purple">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-4">
+                  <span class="tier-badge">4</span>
+                  <span>
+                    <span class="tier-name">Mapping wrong? Fix it in place</span>
+                    <span class="tier-facts"><span>never recreate the app</span></span>
+                  </span>
+                  <span class="tier-path">data-mapping update</span>
+                </button>
+                <p class="tier-why" id="tier-why-4" hidden><code>apps data-mapping get</code>, edit, <code>update --etag</code>, then re-ingest. Recreating the app throws away every transformation you already wrote.</p>
+              </li>
+              <li class="tier c-green">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-5">
+                  <span class="tier-badge">5</span>
+                  <span>
+                    <span class="tier-name">Use --wait</span>
+                    <span class="tier-facts"><span>no poll loops</span></span>
+                  </span>
+                  <span class="tier-path">blocking</span>
+                </button>
+                <p class="tier-why" id="tier-why-5" hidden><code>ingestions create --wait</code> and <code>transformations apply --wait</code> block until done and print the dbt or loader error if it fails.</p>
+              </li>
+              <li class="tier c-cyan">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-6">
+                  <span class="tier-badge">6</span>
+                  <span>
+                    <span class="tier-name">Queries use field ids</span>
+                    <span class="tier-facts"><span>ask query info first</span></span>
+                  </span>
+                  <span class="tier-path">or use sugar</span>
+                </button>
+                <p class="tier-why" id="tier-why-6" hidden>Query bodies take hashed ids like <code>F__Cases__Channel__7fdf…</code>. The <code>--group-by</code> / <code>--metric</code> sugar resolves plain names for you. And you can only group by case-level fields, not event-level ones.</p>
+              </li>
+              <li class="tier c-slate">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-7">
+                  <span class="tier-badge">7</span>
+                  <span>
+                    <span class="tier-name">Develop on dev, publish the full set</span>
+                    <span class="tier-facts"><span>two stages</span></span>
+                  </span>
+                  <span class="tier-path">dev → published</span>
+                </button>
+                <p class="tier-why" id="tier-why-7" hidden>Iterate on the <code>dev</code> stage. Publish when the model is right. The published stage then needs its own ingestion before dashboards show data.</p>
+              </li>
+            </ul>
+
+            <h2 id="c5">Hands-on: from CSV to a mined process</h2>
+            <p>This is the exact path I took on my dev tenant, mistakes included. I had the skill loaded in Claude Code and let it drive. Every command below is one it ran, and every output is real. Budget an hour the first time.</p>
+            <div class="walkthrough" data-os="mac">
+              <div class="prereqs">
+                <span class="eyebrow-label">You need</span>
+                <span class="prereq">The UiPath CLI (uip) 1.203+</span>
+                <span class="prereq">A coding agent with the UiPath skills</span>
+                <span class="prereq">A tenant with Process Mining enabled</span>
+                <span class="prereq">An event log as CSV</span>
+              </div>
+              <ol class="steps">
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">01</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Check the skill is installed</h3>
+                      <span class="step-time">~2 min</span>
+                    </div>
+                    <p class="step-body">If you followed the <a href="../maestro-case-management/">Case Management post</a>, you already have it: <code>uip skills install</code> installs the whole catalog. Confirm it is there.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip skills install --agent claude</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip skills show uipath-process-mining</span></div>
+                          <div class="ln ln-c"><span class="txt"># the commands it drives</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm --help</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Commands</span>
+                      <p class="tip-text"><code>uip pm</code> has groups for <code>apps</code>, <code>files</code>, <code>ingestions</code>, <code>transformations</code>, <code>query</code>, <code>conformance</code>, <code>deviations</code> and <code>simulations</code>. You will use the first five today.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">02</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Log in to the right tenant</h3>
+                      <span class="step-time">~2 min</span>
+                    </div>
+                    <p class="step-body">This one caught me. My organisation has a Development and a Production tenant, and a plain login stopped with an error because I had not said which. Name the tenant explicitly, then check before you create anything.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login</span></div>
+                          <div class="ln ln-o"><span class="txt">ConfigError: Multiple tenants available in organization &quot;…&quot;; none selected.</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login --tenant &lt;your-dev-tenant&gt;</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login status --output json</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Security</span>
+                      <p class="tip-text">The CLI login is separate from UiPath Assistant and Studio. Being signed in there does not mean the CLI is pointing at the same place. Always check <code>login status</code> before you write to a tenant.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">03</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Pre-flight the CSV</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">Each check here saves a multi-minute ingestion that fails. The skill runs these locally before anything leaves your machine: encoding, delimiter, a regular field count on every line, no empty trailing rows, and the date format.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">What to check</span>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-c"><span class="txt"># UTF-8, &quot;;&quot; delimited, 11 fields on every line</span></div>
+                          <div class="ln ln-c"><span class="txt"># dates are yyyy-mm-dd hh:mm:ss (not dd-mm, not mm-dd)</span></div>
+                          <div class="ln ln-c"><span class="txt"># 1,800 distinct Case_IDs, 20 distinct activities</span></div>
+                          <div class="ln ln-ok"><span class="txt">✓ 21,385 rows · no empty rows · no embedded delimiters</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Date formats</span>
+                      <p class="tip-text">If the first number in a date ever goes above 12, it is day-first. Process Mining wants the format spelled out, lowercase and not strftime: <code>dd-mm-yyyy hh:mm:ss</code>.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">04</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Write the mapping</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">The mapping tells the loader which source column becomes which target field. Map the three required ones (plus <code>User</code>) and leave the rest: unmapped columns still load under their own names.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">mapping.json</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-o"><span class="txt">{ &quot;Tables&quot;: [ {</span></div>
+                          <div class="ln ln-o"><span class="txt">  &quot;SourceName&quot;: &quot;Event_log&quot;, &quot;TargetName&quot;: &quot;Event_log&quot;, &quot;Source&quot;: &quot;blob&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">  &quot;SourceSettings&quot;: { &quot;Encoding&quot;: &quot;utf-8&quot;, &quot;FieldDelimiter&quot;: &quot;;&quot;, &quot;QuoteCharacter&quot;: &quot;\&quot;&quot; },</span></div>
+                          <div class="ln ln-o"><span class="txt">  &quot;Fields&quot;: [</span></div>
+                          <div class="ln ln-o"><span class="txt">    { &quot;DataType&quot;: &quot;text&quot;, &quot;SourceName&quot;: &quot;Case_ID&quot;, &quot;TargetName&quot;: &quot;Case_ID&quot;, &quot;IsMandatory&quot;: true },</span></div>
+                          <div class="ln ln-o"><span class="txt">    { &quot;DataType&quot;: &quot;text&quot;, &quot;SourceName&quot;: &quot;Activity&quot;, &quot;TargetName&quot;: &quot;Activity&quot;, &quot;IsMandatory&quot;: true },</span></div>
+                          <div class="ln ln-o"><span class="txt">    { &quot;DataType&quot;: &quot;datetime&quot;, &quot;SourceName&quot;: &quot;Event_end&quot;, &quot;TargetName&quot;: &quot;Event_end&quot;, &quot;IsMandatory&quot;: true,</span></div>
+                          <div class="ln ln-o"><span class="txt">      &quot;DataTypeSettings&quot;: { &quot;DateTimeFormatString&quot;: &quot;yyyy-mm-dd hh:mm:ss&quot; } },</span></div>
+                          <div class="ln ln-o"><span class="txt">    { &quot;DataType&quot;: &quot;text&quot;, &quot;SourceName&quot;: &quot;User&quot;, &quot;TargetName&quot;: &quot;User&quot; }</span></div>
+                          <div class="ln ln-o"><span class="txt">  ] } ] }</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">05</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Create the app, upload, ingest</h3>
+                      <span class="step-time">~10 min</span>
+                    </div>
+                    <p class="step-body">Three commands. <code>apps create</code> builds the app from the template, <code>files upload</code> sends the CSV, and <code>ingestions create --wait</code> loads it and runs the transformations.</p>
+                    <p class="step-body">My first ingestion bounced: the app was still provisioning. Wait a minute and run it again.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm app-types list --output-filter &quot;[].{Key:AppTypeKey,Name:DefaultName}&quot;</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm apps create &quot;UU Vendor Onboarding Mining&quot; --type uipath.custom --data-mapping ./mapping.json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm files upload $app ./vendor_onboarding_events.csv --input-table Event_log</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm ingestions create $app --file-format csv --field-delimiter &quot;;&quot; --encoding utf-8 --wait</span></div>
+                          <div class="ln ln-ok"><span class="txt">✓ Status: SUCCESS_WITH_WARNINGS</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Warnings are fine</span>
+                      <p class="tip-text"><code>SUCCESS_WITH_WARNINGS</code> on a first ingest usually means optional template columns you did not provide. Because my CSV already had <code>Case</code>, <code>Case_status</code>, <code>Case_type</code> and <code>Case_value</code>, the famous Cases.sql error never happened.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">06</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>See what you can query</h3>
+                      <span class="step-time">~3 min</span>
+                    </div>
+                    <p class="step-body"><code>query info</code> lists every queryable table and field. Here is the catch: <code>Channel</code>, <code>Region</code> and <code>Department</code> landed on the <em>events</em> table, not on <em>Cases</em>. And <code>query run</code> can only group by case-level fields. Grouping by an event field fails with <code>UserError_EventTableUsedInQuery</code>.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm query info $app --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">Cases      Case_ID · Case · Case_status · Case_type · Case_value · Event_count · throughput …</span></div>
+                          <div class="ln ln-o"><span class="txt">Event_log  Activity · Event_end · User · Channel · Region · Department …</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">07</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Promote attributes to the case</h3>
+                      <span class="step-time">~10 min</span>
+                    </div>
+                    <p class="step-body">So we edit the dbt model that builds <code>Cases</code>. Pull it, add the attributes, and while we are there, add flags we will want for root-cause analysis: did this case need documents chased, did the bank details change after creation, who reviewed it and how long compliance took.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm transformations get $app models/Cases.sql --destination Cases.sql</span></div>
+                          <div class="ln ln-c"><span class="txt"># note the ETag it returns - the update must send the same one</span></div>
+                        </div>
+                      </div>
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">models/Cases.sql (my version)</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-o"><span class="txt">select</span></div>
+                          <div class="ln ln-o"><span class="txt">    Event_log.&quot;Case_ID&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    min(Event_log.&quot;Case&quot;) as &quot;Case&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    min(Event_log.&quot;Case_status&quot;) as &quot;Case_status&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    min(Event_log.&quot;Case_type&quot;) as &quot;Case_type&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    min(Event_log.&quot;Case_value&quot;) as &quot;Case_value&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    min(Event_log.&quot;Channel&quot;) as &quot;Channel&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    min(Event_log.&quot;Region&quot;) as &quot;Region&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    min(Event_log.&quot;Department&quot;) as &quot;Department&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    count_if(Event_log.&quot;Activity&quot; = 'Documents requested from vendor') as &quot;Document_requests&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    iff(count_if(Event_log.&quot;Activity&quot; = 'Documents requested from vendor') &gt; 0, 'Yes', 'No') as &quot;Missing_documents&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    iff(count_if(Event_log.&quot;Activity&quot; = 'Bank details changed after creation') &gt; 0, 'Yes', 'No') as &quot;Bank_changed_after_creation&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    max(iff(Event_log.&quot;Activity&quot; in ('Compliance approved', 'Compliance rejected', 'Escalated to Head of Procurement'), Event_log.&quot;User&quot;, null)) as &quot;Compliance_reviewer&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    round(datediff('minute', &lt;risk assessed&gt;, &lt;first compliance decision&gt;) / 1440.0, 1) as &quot;Compliance_wait_days&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">    count(*) as &quot;Event_count&quot;</span></div>
+                          <div class="ln ln-o"><span class="txt">from {{ source('sources', 'Event_log') }} as Event_log</span></div>
+                          <div class="ln ln-o"><span class="txt">group by Event_log.&quot;Case_ID&quot;</span></div>
+                        </div>
+                      </div>
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm transformations update $app models/Cases.sql --file Cases.sql --etag '&lt;etag from get&gt;'</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm transformations apply $app --wait</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">ETags</span>
+                      <p class="tip-text">The update must carry the ETag from <em>your</em> get. If someone else changed the file in between, you get a 409. The fix is to get it again and re-apply your change, not to grab a fresh ETag and overwrite them.</p>
+                    </div>
+                    <figure class="figure shot">
+                      <img src="../assets/pm-01-build.png" alt="Terminal output: creating the app, uploading, an ingestion rejected while the app was still creating, a successful ingestion, a failed transformation with a Snowflake TRY_CAST error, and the successful re-apply" width="1100" height="553" loading="lazy" />
+                      <figcaption>The real run, both mistakes included. The app was still provisioning on the first ingest, and my first Cases.sql wrapped an already-numeric column in <code>try_to_double</code>. Fixed the SQL, applied again, no re-ingest.</figcaption>
+                    </figure>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">08</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Ask it questions</h3>
+                      <span class="step-time">~10 min</span>
+                    </div>
+                    <p class="step-body">Now the new case fields are queryable straight away. The <code>--group-by</code> and <code>--metric</code> sugar takes plain names. Throughput comes back in milliseconds, so 789,227,782 is 9.1 days.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm query run $app --group-by Channel --metric Case_ID:count:Cases --metric $T:average:Avg_throughput --output table</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm query run $app --group-by Missing_documents --metric Case_ID:count:Cases --metric $T:average:Avg_throughput --output table</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm query percentile $app --field $T --values 0.5,0.9,0.95</span></div>
+                          <div class="ln ln-o"><span class="txt">{ &quot;Values&quot;: [ 628123750, 1218046000, 1443483000 ] }   # 7.3 · 14.1 · 16.7 days</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <figure class="figure shot">
+                      <img src="../assets/pm-05-query.png" alt="Terminal output of three uip pm query run commands grouped by channel, by missing documents and by compliance reviewer" width="1100" height="531" loading="lazy" />
+                      <figcaption>Three questions, three tables. Email and phone cases take about 3 days longer than web-form cases; cases with missing documents take twice as long; one reviewer carries 70% of the compliance load at almost double the wait.</figcaption>
+                    </figure>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">09</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Root-cause analysis</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body"><code>query rca</code> takes a selected set of cases and tells you which attribute values are over-represented in it. My first try selected cases by <code>Document_requests</code> in [1,2,3] and failed with <code>UserError_UnsupportedFilterTypeKind</code>: value lists only work on text fields. That is why the SQL above has a Yes/No <code>Missing_documents</code> flag.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">rca.json</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-o"><span class="txt">{ &quot;argument&quot;: &quot;Case_ID&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">  &quot;exploreAttributes&quot;: [&quot;&lt;Channel id&gt;&quot;, &quot;Case_type&quot;, &quot;&lt;Region id&gt;&quot;, &quot;&lt;Department id&gt;&quot;],</span></div>
+                          <div class="ln ln-o"><span class="txt">  &quot;selectedSet&quot;: [[{ &quot;kind&quot;: &quot;values&quot;, &quot;dimension&quot;: &quot;&lt;Missing_documents id&gt;&quot;,</span></div>
+                          <div class="ln ln-o"><span class="txt">                    &quot;type&quot;: &quot;string&quot;, &quot;values&quot;: [&quot;Yes&quot;], &quot;invert&quot;: false, &quot;displayType&quot;: &quot;list&quot; }]] }</span></div>
+                        </div>
+                      </div>
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm query rca $app --body rca.json</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Reading RCA</span>
+                      <p class="tip-text">The response is columnar: Total, Selected, Percentage, Attribute and Value arrays, index-aligned. Pivot it into rows (I had Claude do it) and sort by percentage. The interactive version is in the next section.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">10</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Publish, and load the published stage</h3>
+                      <span class="step-time">~10 min</span>
+                    </div>
+                    <p class="step-body">Publishing copies your transformations to the <code>published</code> stage that dashboards and colleagues use. It reports <code>IngestionNeeded: true</code>. My first published ingestion failed with "Mandatory Table 'Event_log' is missing": each stage has its own data, so upload the file to the published stage as well.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm apps publish $app</span></div>
+                          <div class="ln ln-o"><span class="txt">{ &quot;Changes&quot;: { &quot;Transformations&quot;: true, &quot;Bpmn&quot;: true }, &quot;IngestionNeeded&quot;: true }</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm files upload $app ./vendor_onboarding_events.csv --input-table Event_log --stage published</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip pm ingestions create $app --stage published --file-format csv --field-delimiter &quot;;&quot; --encoding utf-8 --wait</span></div>
+                          <div class="ln ln-ok"><span class="txt">✓ Status: SUCCESS_WITH_WARNINGS</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">11</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Open the dashboards</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">Open Process Mining in Automation Cloud and the app is on the home page: 1.80K cases and 21.39K events. Everything you built from the terminal is now a set of dashboards anyone with access can use, no CLI needed.</p>
+                    <figure class="figure shot">
+                      <img src="../assets/pm-03-overview.png" alt="The Overview dashboard of the UU Vendor Onboarding Mining app: 257 variants, 8.36 days average throughput, 1.80K cases, cases over time, variants, events per case and activity counts" width="1478" height="848" loading="lazy" />
+                      <figcaption>The Overview dashboard. 257 variants and an 8.36-day average from what everyone called "a one-week process". The total case value shows a $ sign; the values are Rand. Currency is a field setting you can change with <code>apps model fields set</code>.</figcaption>
+                    </figure>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+            <h2 id="c6">Reading the process graph</h2>
+            <p>This is the moment process mining earns its keep. Open <strong>End-to-end</strong> and expand the process graph. Thick lines are common paths, thin ones are rare, and the numbers on every arrow are case counts. Take a minute with it before you read on.</p>
+            <figure class="figure shot">
+              <img src="../assets/pm-02-graph.png" alt="The mined process graph for vendor onboarding, from Vendor request received to Welcome pack sent, with a documents-requested loop, escalations and bank detail changes" width="744" height="1454" loading="lazy" />
+              <figcaption>The real graph, showing the 16 most common variants (69% of cases). Click it to enlarge.</figcaption>
+            </figure>
+            <p>Three things jump out once you know where to look:</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Left side</p>
+                  <h3 class="info-title">The documents loop</h3>
+                  <p class="info-body">711 cases went <em>Documents requested → Reminder → Documents received → Bank account verified</em> at least once. 498 reminders went out along the way. That loop is the single biggest source of delay.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Middle</p>
+                  <h3 class="info-title">Bank verification, again</h3>
+                  <p class="info-body">Bank account verified happens 1.57 times per case on average. Every documents loop forces a re-check. Process Insights flags this as rework without being asked.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Bottom</p>
+                  <h3 class="info-title">Bank details changed after creation</h3>
+                  <p class="info-body">106 vendors had their bank details changed after they were set up in SAP. That is not slow, it is risky: it is the classic pattern behind supplier payment fraud.</p>
+                </div>
+              </li>
+            </ul>
+            <p>Test yourself before we go deeper:</p>
+            <div class="quiz" data-quiz>
+              <div class="quiz-q" data-answer="b">
+                <p class="quiz-prompt"><span>Q1</span>Most cases follow the most common path. True or false?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">True, about 80%</button>
+                  <button type="button" class="quiz-opt" data-opt="b">False, about 27%</button>
+                  <button type="button" class="quiz-opt" data-opt="c">False, under 5%</button>
+                </div>
+                <p class="quiz-why" hidden>Variant 1 covers 490 of 1,800 cases, about 27%. The other 73% are spread over 256 other paths. That is normal, and it is why you never automate the whiteboard.</p>
+              </div>
+              <div class="quiz-q" data-answer="c">
+                <p class="quiz-prompt"><span>Q2</span>Which activity does Process Insights flag as the top rework issue?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">Compliance approved</button>
+                  <button type="button" class="quiz-opt" data-opt="b">Vendor details captured</button>
+                  <button type="button" class="quiz-opt" data-opt="c">Bank account verified</button>
+                </div>
+                <p class="quiz-why" hidden>It happens 1.57 times per case, and the 11.67% of cases that repeat it take 15.3 days on average, 6.93 days more than the rest.</p>
+              </div>
+              <div class="quiz-q" data-answer="b">
+                <p class="quiz-prompt"><span>Q3</span>You change the SQL in Cases.sql. What do you run next?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">ingestions create</button>
+                  <button type="button" class="quiz-opt" data-opt="b">transformations apply</button>
+                  <button type="button" class="quiz-opt" data-opt="c">apps create</button>
+                </div>
+                <p class="quiz-why" hidden>The data is already loaded. Apply re-runs the transformations over it. Re-ingest only when the raw file or the mapping changes.</p>
+              </div>
+              <p class="quiz-score" aria-live="polite">Pick an answer for each one.</p>
+            </div>
+
+            <h2 id="c7">Process Insights: the analyst you did not hire</h2>
+            <p>Before I had written a single query, the app had already found the problems. <strong>Process Insights</strong> scans every activity for rework, unusual throughput times and other anomalies, ranks them, and links each one straight to root-cause analysis. It found 23.</p>
+            <figure class="figure shot">
+              <img src="../assets/pm-04-insights.png" alt="Process Insights showing 23 unique insights: rework on Bank account verified (High, 11.67% of cases, 15.30 days), high throughput time on bank verification, and rework on documents received and requested" width="1212" height="746" loading="lazy" />
+              <figcaption>The top four of 23 insights. The High-rated one is exactly the loop I planted in the generator, found without a hint.</figcaption>
+            </figure>
+            <aside class="callout is-note">
+              <p class="callout-label">Why this matters for discovery</p>
+              <p class="callout-text">In a real project you do not know where the problems are, which is the whole point. Process Insights gives you a ranked shortlist in minutes, with the number of cases affected and the days each one costs. That is your automation pipeline's evidence, ready for <a href="../automation-hub/">Automation Hub</a>.</p>
+            </aside>
+
+            <h2 id="c8">Root cause: why do documents go missing?</h2>
+            <p>Knowing <em>that</em> 711 cases looped is half the story. RCA tells us <em>which</em> cases. Below are the real results for two questions. Each bar shows how often the problem happens in that segment; the top three are highlighted.</p>
+            <div class="rca" data-rca>
+              <div class="rca-tabs" role="group" aria-label="Root-cause question">
+                <button type="button" class="mini-btn" data-rca-tab="docs" aria-pressed="true">Why do documents go missing?</button>
+                <button type="button" class="mini-btn" data-rca-tab="bank" aria-pressed="false">Who changes bank details later?</button>
+              </div>
+              <p class="rca-q"></p>
+              <ol class="rca-list" aria-live="polite"></ol>
+              <p class="rca-base"></p>
+              <script type="application/json">{"docs":{"question":"Selected set: cases where the vendor had to be asked for documents (Missing_documents = Yes). Which segments over-index?","base":"Across all 1,800 cases the rate is 39.5%. Hover a percentage for the raw counts.","rows":[["Type","Contractor",188,354],["Channel","Phone",148,295],["Channel","Email",497,1068],["Dept","Operations",142,321],["Region","Eastern Cape",202,472],["Region","Gauteng",185,434],["Dept","IT",130,305],["Region","KwaZulu-Natal",185,445],["Dept","Warehousing",123,307],["Dept","Facilities",114,296],["Dept","Marketing",106,284],["Type","Services",203,548],["Type","Goods",323,878],["Dept","Fleet",97,286],["Region","Western Cape",140,433],["Channel","Web form",66,439]]},"bank":{"question":"Selected set: vendors whose bank details were changed after they were created in SAP (Bank_changed_after_creation = Yes).","base":"Across all 1,800 cases the rate is 5.9%. Email sits at the top; web form at the bottom.","rows":[["Channel","Email",83,1068],["Region","KwaZulu-Natal",33,445],["Dept","Fleet",20,286],["Dept","Warehousing",21,307],["Region","Western Cape",28,433],["Dept","Facilities",19,296],["Type","Goods",55,878],["Type","Contractor",22,354],["Region","Eastern Cape",27,472],["Dept","Operations",18,321],["Type","Services",28,548],["Dept","IT",15,305],["Dept","Marketing",13,284],["Region","Gauteng",18,434],["Channel","Phone",11,295],["Channel","Web form",12,439]]}}</script>
+            </div>
+            <p>The answer is not subtle. Contractors and phone or email requests need documents chased about half the time. Web-form requests need it 15% of the time, because the form will not submit without the documents. And the risky bank-detail changes cluster on email requests, where the bank letter arrives as an attachment someone has to retype.</p>
+            <aside class="callout is-note">
+              <p class="callout-label">The honest caveat</p>
+              <p class="callout-text">RCA shows correlation, not cause. Here the story holds up because the mechanism is obvious: the web form validates documents up front. In real data, take an RCA finding back to the people doing the work before you build a business case on it.</p>
+            </aside>
+
+            <h2 id="c9">What the data says</h2>
+            <p>Put the queries, the graph and the insights together and Karoo Distribution's "one-week process" looks like this. Every number is from the app.</p>
+            <div class="eyebrow-label">Five findings · click a row</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-pink is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-8">
+                  <span class="tier-badge">1</span>
+                  <span>
+                    <span class="tier-name">The missing-documents loop</span>
+                    <span class="tier-facts"><span>711 cases · 39.5%</span><span>+5.9 days each</span></span>
+                  </span>
+                  <span class="tier-path">biggest win</span>
+                </button>
+                <p class="tier-why" id="tier-why-8">Cases that chase documents average <strong>11.9 days</strong> against 6.0 for cases that do not. Over six months that is about 4,200 case-days lost to waiting for paperwork.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-9">
+                  <span class="tier-badge">2</span>
+                  <span>
+                    <span class="tier-name">Channel decides the outcome</span>
+                    <span class="tier-facts"><span>email 9.1 days</span><span>web form 6.1 days</span></span>
+                  </span>
+                  <span class="tier-path">root cause</span>
+                </button>
+                <p class="tier-why" id="tier-why-9" hidden>Email (1,061 cases) and phone (296) average about 9.1 days; the web form (443) averages 6.1. Web-form cases average 0.20 document requests; email and phone about 0.65.</p>
+              </li>
+              <li class="tier c-purple">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-10">
+                  <span class="tier-badge">3</span>
+                  <span>
+                    <span class="tier-name">One compliance reviewer</span>
+                    <span class="tier-facts"><span>1,200 of 1,708 reviews</span><span>2.0 vs 1.1 day wait</span></span>
+                  </span>
+                  <span class="tier-path">bottleneck</span>
+                </button>
+                <p class="tier-why" id="tier-why-10" hidden>Thandi reviews 70% of cases and they wait 2.0 days for a decision; Sipho's 508 wait 1.1 days. Nothing is wrong with Thandi. The queue is.</p>
+              </li>
+              <li class="tier c-cyan">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-11">
+                  <span class="tier-badge">4</span>
+                  <span>
+                    <span class="tier-name">Bank details changed after creation</span>
+                    <span class="tier-facts"><span>106 vendors</span><span>78% via email</span></span>
+                  </span>
+                  <span class="tier-path">risk</span>
+                </button>
+                <p class="tier-why" id="tier-why-11" hidden>83 of the 106 came in by email. Changing a vendor's bank account after onboarding should trigger a call-back, and right now nothing makes that happen.</p>
+              </li>
+              <li class="tier c-slate">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-12">
+                  <span class="tier-badge">5</span>
+                  <span>
+                    <span class="tier-name">Rework on bank verification</span>
+                    <span class="tier-facts"><span>1.57× per case</span></span>
+                  </span>
+                  <span class="tier-path">symptom</span>
+                </button>
+                <p class="tier-why" id="tier-why-12" hidden>Not a separate problem: it is what the documents loop looks like from the bank-verification step. Fix finding 1 and this one shrinks with it.</p>
+              </li>
+            </ul>
+
+            <h2 id="c10">What if we fixed the front door?</h2>
+            <p>The cheapest fix is the boring one: route email and phone requests through the web form, so documents are validated before a clerk ever sees the request. Drag the slider to see what the mined averages say that is worth.</p>
+            <div class="calc" data-whatif data-cases="1800" data-moveable="1357" data-slow-days="9.114" data-fast-days="6.070" data-base-days="8.364" data-docs-slow="0.655" data-docs-fast="0.199">
+              <div class="calc-inputs">
+                <label>
+                  <span class="calc-row"><span>Email and phone requests moved to a validated web form</span><output data-out="share">50%</output></span>
+                  <input name="share" type="range" min="0" max="100" step="5" value="50" />
+                </label>
+                <p class="calc-row"><span>Requests moved (of 1,357)</span><output data-out="moved">679</output></p>
+                <p class="calc-row"><span>Document chasers avoided</span><output data-out="docs">310</output></p>
+              </div>
+              <div class="calc-out">
+                <div class="calc-stat">
+                  <span class="eyebrow-label">Average throughput</span>
+                  <output data-out="avg" aria-live="polite">7.2 days</output>
+                </div>
+                <div class="calc-stat">
+                  <span class="eyebrow-label">Case-days saved per half-year</span>
+                  <output class="is-accent" data-out="saved" aria-live="polite">2,067</output>
+                </div>
+              </div>
+            </div>
+            <aside class="callout is-note">
+              <p class="callout-label">Read this honestly</p>
+              <p class="callout-text">This is back-of-envelope, using the real averages from the app: 9.1 days for email and phone, 6.1 for web form, over 1,800 cases in six months. It assumes moved requests behave like today's web-form requests. That is the right first guess, and exactly what UiPath Process Mining's <strong>Simulation</strong> module (in the same app) lets you model properly.</p>
+            </aside>
+
+            <h2 id="c11">From insight to automation</h2>
+            <p>This is where Discover hands over to Build and Run. Each finding maps to a fix, and most fixes are not a robot.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Finding 1 + 2</p>
+                  <h3 class="info-title">Validate at the front door</h3>
+                  <p class="info-body">A UiPath App (or the existing web form) as the only way in, with document upload required. An agent can read inbound emails and reply with the form link plus a list of what is missing.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Finding 1 + 3</p>
+                  <h3 class="info-title">Run it as a case</h3>
+                  <p class="info-body">Model the process as a <a href="../maestro-case-management/">Maestro case</a>: a Missing Information lane that returns to Verification, an SLA on Risk Review, and compliance tasks shared across a group queue instead of one person.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Finding 4</p>
+                  <h3 class="info-title">Control bank changes</h3>
+                  <p class="info-body">Any bank-detail change after creation starts an approval task and a call-back to a known number. Automation is not the point here; the control is.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Then</p>
+                  <h3 class="info-title">Measure again</h3>
+                  <p class="info-body">Keep the app connected. Process mining is not a one-off audit: re-run the ingestion monthly and watch the documents loop shrink, or not.</p>
+                </div>
+              </li>
+            </ul>
+
+            <h2 id="c12">Communications Mining: the other half of the story</h2>
+            <p>Process mining reads <em>systems</em>. But look at where the vendor onboarding pain starts: an email to Procurement with "please set up this supplier" and three attachments, two of them the wrong ones. That is unstructured, and process mining cannot see inside it.</p>
+            <p><strong>UiPath Communications Mining</strong> is built for that side. It reads email, chat and ticket text, learns your taxonomy (request type, missing document, urgency, bank-change request) from a few hundred labelled examples, and turns a shared mailbox into structured, countable data. Point it at the Procurement mailbox and you could answer the questions the event log cannot: how many requests arrive without a bank letter, how many emails are vendors chasing status, and how many "please update our banking details" messages arrive outside the formal process.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Process Mining</p>
+                  <h3 class="info-title">What happened, and when</h3>
+                  <p class="info-body">Reads system events. Finds the loops, waits and variants. Answers "where does the time go?"</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Communications Mining</p>
+                  <h3 class="info-title">What people are asking for</h3>
+                  <p class="info-body">Reads messages. Finds the intents, the missing information and the hidden requests. Answers "why did this case start, and what is it waiting for?"</p>
+                </div>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Hands-on is coming</p>
+              <p class="callout-text">The UiPath skills do not cover Communications Mining yet, so there is no CLI walkthrough here. It gets a proper look in <strong>Episode 4: UiPath Process &amp; Communications Mining</strong> on Friday 20 November, 12:00 to 14:00 SAST. Register on the <a href="../../">main site</a>.</p>
+            </aside>
+
+            <h2 id="c13">Where it breaks</h2>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Data</p>
+                  <h3 class="info-title">Garbage timestamps</h3>
+                  <p class="info-body">Process mining is only as good as the clock. Batch jobs that stamp every event at midnight, or a day-first date read as month-first, produce a confident and completely wrong graph.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Scope</p>
+                  <h3 class="info-title">The case key</h3>
+                  <p class="info-body">Pick the wrong case ID (the invoice instead of the vendor, the ticket instead of the customer) and every variant and throughput time is measured against the wrong thing.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Model</p>
+                  <h3 class="info-title">Event fields vs case fields</h3>
+                  <p class="info-body">If you cannot group by something, it is probably on the event table. Promote it in <code>Cases.sql</code> and apply.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Lifecycle</p>
+                  <h3 class="info-title">Two stages, two datasets</h3>
+                  <p class="info-body">Dev and published each have their own data. Publishing moves the logic, not the rows. Upload and ingest the published stage too.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">People</p>
+                  <h3 class="info-title">Mining is not monitoring people</h3>
+                  <p class="info-body">The reviewer finding is about a queue, not a person. Share process data the way you would want yours shared, and talk to the team before the slide deck does.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-slate">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Display</p>
+                  <h3 class="info-title">Units and currency</h3>
+                  <p class="info-body">Throughput comes back in milliseconds from the API, and currency defaults to $. Fix field kinds with <code>apps model fields set</code>, and check every comparison uses the same kind.</p>
+                </div>
+              </li>
+            </ul>
+
+            <h2 id="c14">What's next</h2>
+            <p>That is the Discover pillar complete: <a href="../automation-hub/">Automation Hub</a> to capture and govern ideas, the <a href="../automation-discovery-skill/">Automation Discovery Skill</a> to find the ones nobody mentioned, <a href="../delegate-cartographer/">Delegate and Cartographer</a> to document how the work is done, and now Process Mining to prove what the work really looks like. Next, Karoo Distribution's vendor onboarding gets rebuilt properly as a <a href="../maestro-case-management/">Maestro case</a>.</p>
+            <p>If you want to try this yourself: take any export with a case ID, an activity and a timestamp (an Orchestrator queue, a ServiceNow audit trail, even a spreadsheet tracker), load the <code>uipath-process-mining</code> skill and ask your agent to build you a process app. Then look at the graph before anyone tells you what the process is.</p>
+          </div>
+        </article>
+        <aside class="post-aside">
+          <nav class="toc" aria-labelledby="toc-title">
+            <p class="eyebrow-label" id="toc-title">On this page</p>
+            <a href="#c1">Mine it before you automate it</a>
+            <a href="#c2">The use case</a>
+            <a href="#c3">An event log in three columns</a>
+            <a href="#c4">Meet the skill</a>
+            <a href="#c5">Hands-on: CSV to mined process</a>
+            <a href="#c6">Reading the process graph</a>
+            <a href="#c7">Process Insights</a>
+            <a href="#c8">Root cause</a>
+            <a href="#c9">What the data says</a>
+            <a href="#c10">What if?</a>
+            <a href="#c11">From insight to automation</a>
+            <a href="#c12">Communications Mining</a>
+            <a href="#c13">Where it breaks</a>
+            <a href="#c14">What's next</a>
+          </nav>
+          <div class="tagged">
+            <p class="eyebrow-label">Tagged</p>
+            <ul class="tag-list">
+              <li>Process Mining</li>
+              <li>uip CLI</li>
+              <li>Agentic</li>
+              <li>Vendor onboarding</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="uu-footer">
+      <div class="uu-wrap uu-footer-inner">
+        <div class="uu-footer-brand">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="26" height="26" />
+          <span>UiPath Uncharted</span>
+        </div>
+        <span class="uu-footer-note">Field notes · Season 1 · Hosted by Jarryd Scott</span>
+        <nav class="uu-footer-links" aria-label="Elsewhere">
+          <a href="mailto:jscott@i1solutions.co.za">Email</a>
+          <a href="https://www.linkedin.com/in/jarryd-scott-01498019b" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+          <a href="../../">Main site</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <button type="button" class="to-top" aria-label="Back to top">
+    <svg class="to-top-ring" viewBox="0 0 48 48" aria-hidden="true">
+      <defs>
+        <linearGradient id="to-top-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#42d6ff" />
+          <stop offset="1" stop-color="#7c5cff" />
+        </linearGradient>
+      </defs>
+      <circle class="to-top-track" cx="24" cy="24" r="22" />
+      <circle class="to-top-progress" cx="24" cy="24" r="22" pathLength="100" />
+    </svg>
+    <svg class="to-top-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+  </button>
+
+  <script src="../blog.js" defer></script>
+</body>
+</html>

@@ -92,6 +92,20 @@
   const feed = document.querySelector('[data-feed]');
   if (feed) {
     const items = [...feed.querySelectorAll('[data-post]')];
+
+    // Posts with data-new-until="YYYY-MM-DD" get a red "new" highlight until the end of that day (SAST)
+    items.forEach((item) => {
+      const until = item.dataset.newUntil;
+      if (!until || Date.now() > Date.parse(`${until}T23:59:59+02:00`)) return;
+      item.classList.add('is-new');
+      const chips = item.querySelector('.chips');
+      if (chips) {
+        const chip = document.createElement('span');
+        chip.className = 'chip chip-new';
+        chip.textContent = 'new';
+        chips.prepend(chip);
+      }
+    });
     const search = document.getElementById('post-search');
     const pillarButtons = [...document.querySelectorAll('[data-filter-pillar]')];
     const statusButtons = [...document.querySelectorAll('[data-filter-status]')];
@@ -457,4 +471,68 @@
     box.addEventListener('click', () => box.close());
     box.addEventListener('close', () => { big.removeAttribute('src'); });
   }
+
+  // Root-cause explorer: switch between the RCA questions, bars show % of each segment selected
+  document.querySelectorAll('[data-rca]').forEach((rca) => {
+    let data;
+    try { data = JSON.parse(rca.querySelector('script[type="application/json"]').textContent); } catch (e) { return; }
+    const list = rca.querySelector('.rca-list');
+    const q = rca.querySelector('.rca-q');
+    const base = rca.querySelector('.rca-base');
+    const tabs = rca.querySelectorAll('[data-rca-tab]');
+    const show = (key) => {
+      const set = data[key];
+      tabs.forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.rcaTab === key)));
+      q.textContent = set.question;
+      base.textContent = set.base;
+      const max = Math.max(...set.rows.map((r) => r[2] / r[3]));
+      list.replaceChildren(...set.rows.map((r, i) => {
+        const pct = r[2] / r[3];
+        const li = document.createElement('li');
+        li.className = 'rca-row' + (i < 3 ? ' is-top' : '');
+        const label = document.createElement('span');
+        label.className = 'rca-label';
+        const small = document.createElement('small');
+        small.textContent = r[0];
+        label.append(small, r[1]);
+        const bar = document.createElement('span');
+        bar.className = 'rca-bar';
+        const fill = document.createElement('span');
+        fill.style.setProperty('--w', '0%');
+        bar.append(fill);
+        const out = document.createElement('span');
+        out.className = 'rca-pct';
+        out.title = `${r[2]} of ${r[3]} cases`;
+        const strong = document.createElement('strong');
+        strong.textContent = `${(pct * 100).toFixed(1)}%`;
+        out.append(strong);
+        li.append(label, bar, out);
+        requestAnimationFrame(() => fill.style.setProperty('--w', `${(pct / max) * 100}%`));
+        return li;
+      }));
+    };
+    tabs.forEach((t) => t.addEventListener('click', () => show(t.dataset.rcaTab)));
+    show(tabs[0].dataset.rcaTab);
+  });
+
+  // What-if: move email/phone requests to a validated web form, using the mined averages
+  document.querySelectorAll('[data-whatif]').forEach((box) => {
+    const num = (k) => Number(box.dataset[k]);
+    const cases = num('cases'), moveable = num('moveable');
+    const slow = num('slowDays'), fast = num('fastDays'), base = num('baseDays');
+    const docsSlow = num('docsSlow'), docsFast = num('docsFast');
+    const slider = box.querySelector('input[type="range"]');
+    const out = (k) => box.querySelector(`[data-out="${k}"]`);
+    const update = () => {
+      const moved = Math.round(moveable * slider.value / 100);
+      const saved = moved * (slow - fast);
+      out('share').textContent = `${slider.value}%`;
+      out('moved').textContent = moved.toLocaleString();
+      out('avg').textContent = `${(base - saved / cases).toFixed(1)} days`;
+      out('saved').textContent = Math.round(saved).toLocaleString();
+      out('docs').textContent = Math.round(moved * (docsSlow - docsFast)).toLocaleString();
+    };
+    slider.addEventListener('input', update);
+    update();
+  });
 })();
