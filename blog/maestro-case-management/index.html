@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maestro Case Management: from blank folder to a live case · UiPath Uncharted</title>
+  <meta name="description" content="A hands-on, end-to-end build of a vendor onboarding case - stages, agents, robots, human approvals, SLAs and exception lanes - driven by the uipath-maestro-case skill from your coding agent." />
+  <meta name="theme-color" content="#060816" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="UiPath Uncharted" />
+  <meta property="og:title" content="Maestro Case Management: from blank folder to a live case · UiPath Uncharted" />
+  <meta property="og:description" content="A hands-on, end-to-end build of a vendor onboarding case - stages, agents, robots, human approvals, SLAs and exception lanes - driven by the uipath-maestro-case skill from your coding agent." />
+  <meta property="og:url" content="https://uipathuncharted.co.za/blog/maestro-case-management/" />
+  <meta property="og:image" content="https://uipathuncharted.co.za/blog/assets/case-management-cover.jpg" />
+  <meta property="og:image:width" content="1600" />
+  <meta property="og:image:height" content="893" />
+  <meta property="og:image:alt" content="Maestro Case Management: from blank folder to a live case" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://uipathuncharted.co.za/blog/maestro-case-management/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../blog.css" />
+  <link rel="icon" type="image/png" href="../../assets/uu-mark-navy.png" />
+  <link rel="apple-touch-icon" href="../../assets/uu-mark-navy.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="uu-page">
+    <div class="uu-progress" aria-hidden="true"><span></span></div>
+
+    <header class="uu-header">
+      <div class="uu-wrap uu-header-inner">
+        <a class="uu-brand" href="../" aria-label="UiPath Uncharted Field Notes, blog home">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="34" height="34" />
+          <span class="uu-brand-text">
+            <span class="uu-brand-name">UiPath Uncharted</span>
+            <span class="uu-brand-sub">Field Notes</span>
+          </span>
+        </a>
+        <nav class="uu-nav" aria-label="Blog">
+          <a href="../#feed">Writing</a>
+          <a href="../#pillars">Pillars</a>
+          <a class="nav-cross" href="../../">Podcast</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="uu-wrap post-main">
+      <a class="back-link" href="../">← All writing</a>
+      <div class="post-layout">
+        <article>
+          <header class="post-head">
+            <div class="chips">
+              <span class="chip chip-lg p-run">Run &amp; Scale</span>
+              <span class="chip chip-status c-green">shipped</span>
+              <span class="post-date">27 Oct 2026 · 26 min</span>
+            </div>
+            <h1 class="post-title">Maestro Case Management: from blank folder to a live case</h1>
+            <p class="post-lede">Some work will not fit in a straight line. It waits, loops back, needs a human decision and runs against a deadline. This is a complete, hands-on walkthrough of building that kind of work as a Maestro case, from installing the skill to operating live case instances.</p>
+            <div class="author">
+              <img src="../assets/jarryd-scott-avatar.jpg" alt="" width="40" height="40" />
+              <div class="author-text">
+                <span class="author-name">Jarryd Scott</span>
+                <span class="author-role">Technical Lead, Business Automation · host of UiPath Uncharted</span>
+              </div>
+              <span class="author-ep">Hands-on deep dive</span>
+            </div>
+            <figure class="post-hero">
+              <img src="../assets/case-management-cover.jpg" alt="Maestro Case Management: the vendor onboarding case, four stages and two exception lanes" width="1600" height="893" />
+            </figure>
+          </header>
+          <div class="prose">
+            <h2 id="c1">Why a case, not a flow</h2>
+            <p>Most automation is a straight line. A trigger fires, a few systems get updated, done. Maestro Flow is brilliant at that. But some work refuses to be a straight line: it waits days for a supplier, loops back when a document is missing, needs a human to sign off, and has a deadline someone will be shouted at about. That is a <strong>case</strong>.</p>
+            <p>Remember the Automation Discovery post? Vendor onboarding came out as a Tier 2 candidate with a Flow handoff. Look at it properly and it is a textbook case: it runs for days, it has a compliance gate, it has an exception path for missing paperwork and a terminal path for rejections, and the business measures it against an SLA. So that is exactly what we are going to build here, end to end, from an empty folder to a case running in Orchestrator.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Straight line</p>
+                  <h3 class="info-title">Maestro Flow</h3>
+                  <p class="info-body">Event-driven integration flows. Fast to build, great when the path is known and short-lived.</p>
+                  <ul class="arrow-list">
+                    <li>shape · trigger → steps → done</li>
+                    <li>lives for · seconds to minutes</li>
+                  </ul>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Modelled</p>
+                  <h3 class="info-title">Maestro BPMN</h3>
+                  <p class="info-body">Governed, modelled processes in BPMN notation. Use it when the path is known in advance and must be followed exactly.</p>
+                  <ul class="arrow-list">
+                    <li>shape · gateways and lanes</li>
+                    <li>lives for · minutes to days</li>
+                  </ul>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Decided as you go</p>
+                  <h3 class="info-title">Maestro Case</h3>
+                  <p class="info-body">Knowledge work where the next step depends on what you find. Stages, rules, exception lanes, human decisions and SLAs.</p>
+                  <ul class="arrow-list">
+                    <li>shape · stages + rules</li>
+                    <li>lives for · days to weeks</li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Rule of thumb</p>
+              <p class="callout-text">If a person ever asks <em>“where is this one at?”</em>, you probably have a case. Cases give you a single record per instance - with an ID, a current stage, an SLA clock and a full history - that people can open in the Case App and act on.</p>
+            </aside>
+
+            <h2 id="c2">The anatomy of a case</h2>
+            <p>A case definition lives in one file, <code>caseplan.json</code>. Everything below is a part of that file. It is worth learning the vocabulary before we build, because the skill will talk to you in exactly these words.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Root</p>
+                  <h3 class="info-title">The case</h3>
+                  <p class="info-body">The container: case variables, the case ID format (we will use a <code>VEND</code> prefix), the whole-case SLA, and the case exit rules that decide when it is done.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Containers</p>
+                  <h3 class="info-title">Stages</h3>
+                  <p class="info-body">The phases of the work. <strong>Primary</strong> stages are the happy path. <strong>Secondary</strong> stages are interrupting exception lanes, such as rework or rejection, that pull the case off the main path.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Work</p>
+                  <h3 class="info-title">Tasks</h3>
+                  <p class="info-body">What actually happens inside a stage. A task calls an agent, a robot, an API workflow, a person or a connector - each one is a different task type.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Movement</p>
+                  <h3 class="info-title">Rules</h3>
+                  <p class="info-body">Conditions that start tasks, move the case between stages, and close it. There are no arrows in a case: rules are the arrows.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Time</p>
+                  <h3 class="info-title">SLAs &amp; escalations</h3>
+                  <p class="info-body">Deadlines on the whole case or on one stage, with at-risk and breach thresholds that notify someone or start work.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-slate">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Start</p>
+                  <h3 class="info-title">Triggers</h3>
+                  <p class="info-body">How a case begins: manually, on a timer, or when an external event arrives through Integration Service, such as an email.</p>
+                </div>
+              </li>
+            </ul>
+            <p>Tasks come in nine types. You will rarely use all of them in one case, but our vendor onboarding case uses seven:</p>
+            <div class="eyebrow-label">Task types · click a row</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-cyan is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-1">
+                  <span class="tier-badge">AG</span>
+                  <span>
+                    <span class="tier-name">Agent</span>
+                    <span class="tier-facts"><span>type · agent</span><span>used for · extraction, screening, scoring</span></span>
+                  </span>
+                  <span class="tier-path">uipath-agents</span>
+                </button>
+                <p class="tier-why" id="tier-why-1">Calls a UiPath agent. Ideal for judgement work on unstructured input: reading a vendor email, screening names against sanctions lists, producing a risk score with reasons.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-2">
+                  <span class="tier-badge">RPA</span>
+                  <span>
+                    <span class="tier-name">RPA process</span>
+                    <span class="tier-facts"><span>type · rpa</span><span>used for · bank portal, SAP</span></span>
+                  </span>
+                  <span class="tier-path">uipath-rpa</span>
+                </button>
+                <p class="tier-why" id="tier-why-2" hidden>Runs an unattended robot. Still the right tool for systems with no API: the legacy bank verification portal and creating the vendor master record in SAP.</p>
+              </li>
+              <li class="tier c-green">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-3">
+                  <span class="tier-badge">API</span>
+                  <span>
+                    <span class="tier-name">API workflow</span>
+                    <span class="tier-facts"><span>type · api-workflow</span><span>used for · registry lookups, records</span></span>
+                  </span>
+                  <span class="tier-path">uipath-api-workflow</span>
+                </button>
+                <p class="tier-why" id="tier-why-3" hidden>A fast, headless API call. We use one to open the vendor record and one to check company registration with the registrar.</p>
+              </li>
+              <li class="tier c-pink">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-4">
+                  <span class="tier-badge">HITL</span>
+                  <span>
+                    <span class="tier-name">Human action</span>
+                    <span class="tier-facts"><span>type · action</span><span>used for · approvals, check-ins</span></span>
+                  </span>
+                  <span class="tier-path">Action app</span>
+                </button>
+                <p class="tier-why" id="tier-why-4" hidden>Assigns a task to a person or group through an action app. Compliance approval, the escalation for the Head of Procurement, and the first-week check-in are all actions.</p>
+              </li>
+              <li class="tier c-purple">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-5">
+                  <span class="tier-badge">IS</span>
+                  <span>
+                    <span class="tier-name">Connector activity</span>
+                    <span class="tier-facts"><span>type · execute-connector-activity</span><span>used for · sending email</span></span>
+                  </span>
+                  <span class="tier-path">Integration Service</span>
+                </button>
+                <p class="tier-why" id="tier-why-5" hidden>Calls an Integration Service connector directly, with no robot or workflow in between. We use the Outlook connector to email the vendor.</p>
+              </li>
+              <li class="tier c-purple">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-6">
+                  <span class="tier-badge">WAIT</span>
+                  <span>
+                    <span class="tier-name">Wait for a connector event</span>
+                    <span class="tier-facts"><span>type · wait-for-connector</span><span>used for · vendor replies</span></span>
+                  </span>
+                  <span class="tier-path">Integration Service</span>
+                </button>
+                <p class="tier-why" id="tier-why-6" hidden>Pauses until an external event arrives - here, the vendor replying with their missing documents. The case simply waits; no robot sits idle.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-7">
+                  <span class="tier-badge">TIME</span>
+                  <span>
+                    <span class="tier-name">Wait for a timer</span>
+                    <span class="tier-facts"><span>type · wait-for-timer</span><span>used for · the 7-day check-in</span></span>
+                  </span>
+                  <span class="tier-path">built in</span>
+                </button>
+                <p class="tier-why" id="tier-why-7" hidden>Pauses for a set time. After activation we wait seven days, then ask the requester whether the vendor is actually working out.</p>
+              </li>
+              <li class="tier c-slate">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-8">
+                  <span class="tier-badge">+2</span>
+                  <span>
+                    <span class="tier-name">Process and nested case</span>
+                    <span class="tier-facts"><span>type · process / case-management</span><span>not used here</span></span>
+                  </span>
+                  <span class="tier-path">built in</span>
+                </button>
+                <p class="tier-why" id="tier-why-8" hidden>A <code>process</code> task starts another orchestration process; a <code>case-management</code> task starts a whole child case. Useful when one case spawns another, such as a contract case per approved vendor.</p>
+              </li>
+            </ul>
+
+            <h2 id="c3">Rules: how a case actually moves</h2>
+            <p>This is the part that trips people up. A case has <strong>no edges</strong>. Nothing is wired with arrows. Instead, every stage and every task carries rules that say when it starts, and the case has rules that say when it ends. There are four places a rule can live:</p>
+            <div class="eyebrow-label">Where rules live · click a row</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-green is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-9">
+                  <span class="tier-badge">T</span>
+                  <span>
+                    <span class="tier-name">Task entry rules</span>
+                    <span class="tier-facts"><span>when does this task start?</span></span>
+                  </span>
+                  <span class="tier-path">per task</span>
+                </button>
+                <p class="tier-why" id="tier-why-9"><strong>Sequential</strong> (<code>runs-sequentially</code>): tasks run top to bottom in order. <strong>Parallel</strong> (<code>current-stage-entered</code>): start as soon as the stage starts. <strong>After specific tasks</strong> (<code>selected-tasks-completed</code>): a fan-in. <strong>Event-triggered</strong> (<code>wait-for-connector</code>). <strong>Ad hoc</strong>: only when a user starts it from the Case App. <strong>SLA response</strong> (<code>sla-status-change</code>): starts when an SLA goes at risk or breaches.</p>
+              </li>
+              <li class="tier c-cyan">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-10">
+                  <span class="tier-badge">SE</span>
+                  <span>
+                    <span class="tier-name">Stage entry rules</span>
+                    <span class="tier-facts"><span>when does this stage start?</span></span>
+                  </span>
+                  <span class="tier-path">per stage</span>
+                </button>
+                <p class="tier-why" id="tier-why-10" hidden>The first stage enters on <code>case-entered</code>. Every other primary stage enters when a predecessor completes (<code>selected-stage-completed</code>) or exits (<code>selected-stage-exited</code>). Secondary stages are entered by <em>interrupting</em> rules - an exception signal, an external event, or an SLA status change.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-11">
+                  <span class="tier-badge">SX</span>
+                  <span>
+                    <span class="tier-name">Stage exit rules</span>
+                    <span class="tier-facts"><span>when is this stage done, and where next?</span></span>
+                  </span>
+                  <span class="tier-path">per stage</span>
+                </button>
+                <p class="tier-why" id="tier-why-11" hidden>Three exit styles: <code>exit-only</code> (the default - the next stage is whichever one's entry rule matches), <code>wait-for-user</code> (someone decides), and <code>return-to-origin</code> (go back where you came from - perfect for rework loops). A completing exit usually fires when all <em>required</em> tasks are done.</p>
+              </li>
+              <li class="tier c-pink">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-12">
+                  <span class="tier-badge">CX</span>
+                  <span>
+                    <span class="tier-name">Case exit rules</span>
+                    <span class="tier-facts"><span>when is the whole case done?</span></span>
+                  </span>
+                  <span class="tier-path">case root</span>
+                </button>
+                <p class="tier-why" id="tier-why-12" hidden>The preferred pattern is a single rule: complete when every <em>required</em> stage has completed (<code>required-stages-completed</code>). You can add non-completing exits too - our Rejected lane ends the case without marking it complete.</p>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">The one rule to remember</p>
+              <p class="callout-text">Every task needs its own entry rule. Leave one out and validation only <em>warns</em> - but a debug run will hang forever waiting for a task that can never start. The skill writes one per task for exactly this reason.</p>
+            </aside>
+            <p><strong>Try it:</strong> five requirements from the vendor onboarding case. Pick the rule you would use for each.</p>
+            <div class="quiz" data-quiz>
+              <div class="quiz-q" data-answer="b">
+                <p class="quiz-prompt"><span>Q1</span>Run the registration, bank and sanctions checks at the same time.</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">runs-sequentially</button>
+                  <button type="button" class="quiz-opt" data-opt="b">current-stage-entered</button>
+                  <button type="button" class="quiz-opt" data-opt="c">adhoc</button>
+                </div>
+                <p class="quiz-why" hidden><strong>current-stage-entered.</strong> Every task with this rule starts the moment the stage starts, so all three checks run in parallel.</p>
+              </div>
+              <div class="quiz-q" data-answer="a">
+                <p class="quiz-prompt"><span>Q2</span>Score the vendor's risk, then send it to Compliance.</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">runs-sequentially</button>
+                  <button type="button" class="quiz-opt" data-opt="b">current-stage-entered</button>
+                  <button type="button" class="quiz-opt" data-opt="c">selected-tasks-completed</button>
+                </div>
+                <p class="quiz-why" hidden><strong>runs-sequentially.</strong> “Then” means order. Sequential tasks run top to bottom in the stage, one after the other.</p>
+              </div>
+              <div class="quiz-q" data-answer="c">
+                <p class="quiz-prompt"><span>Q3</span>Let a reviewer request a call with the vendor, only if they need one.</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">wait-for-connector</button>
+                  <button type="button" class="quiz-opt" data-opt="b">runs-sequentially</button>
+                  <button type="button" class="quiz-opt" data-opt="c">adhoc</button>
+                </div>
+                <p class="quiz-why" hidden><strong>adhoc.</strong> The task only runs when a person starts it from the Case App, and it is optional, so it never blocks the stage.</p>
+              </div>
+              <div class="quiz-q" data-answer="b">
+                <p class="quiz-prompt"><span>Q4</span>Start an escalation task when Risk Review runs past its 1-day SLA.</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">current-stage-entered</button>
+                  <button type="button" class="quiz-opt" data-opt="b">sla-status-change</button>
+                  <button type="button" class="quiz-opt" data-opt="c">wait-for-connector</button>
+                </div>
+                <p class="quiz-why" hidden><strong>sla-status-change.</strong> The task waits for the stage SLA to breach. This is the “start a task” SLA response.</p>
+              </div>
+              <div class="quiz-q" data-answer="a">
+                <p class="quiz-prompt"><span>Q5</span>Close the case once Intake, Verification, Risk Review and Activation are done.</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">required-stages-completed</button>
+                  <button type="button" class="quiz-opt" data-opt="b">selected-stage-completed</button>
+                  <button type="button" class="quiz-opt" data-opt="c">return-to-origin</button>
+                </div>
+                <p class="quiz-why" hidden><strong>required-stages-completed</strong>, as a case exit rule that marks the case complete. It waits for every stage flagged as required, so the optional exception lanes never hold it up.</p>
+              </div>
+              <p class="quiz-score" aria-live="polite">Pick an answer for each one.</p>
+            </div>
+
+            <h2 id="c4">The use case: vendor onboarding</h2>
+            <p>Here is the case we are building. A distributor onboards new suppliers every week. Requests arrive by email to a shared Procurement mailbox, and today they are tracked in a spreadsheet and a lot of chasing. The goal: one case per vendor, from first email to the first-week check-in, with every decision recorded.</p>
+            <p>Below is the shape your finished case should have: four primary stages on the happy path, and two exception lanes underneath that only open when something goes wrong. <strong>Click any task</strong> to see what it calls, when it starts and what it reads and writes. Then <strong>press a scenario</strong> to watch a case run through it, with the SLA clock and the case history ticking along like they do in the Case App.</p>
+            <div class="case-canvas wide" data-case-canvas>
+              <div class="cc-toolbar">
+                <span class="eyebrow-label">Play a scenario</span>
+                <button type="button" class="cc-btn" data-scenario="happy" aria-pressed="false"><span class="cc-dot" style="--dot: #3ddc97"></span>Happy path</button>
+                <button type="button" class="cc-btn" data-scenario="missing" aria-pressed="false"><span class="cc-dot" style="--dot: #fbbf24"></span>Missing documents</button>
+                <button type="button" class="cc-btn" data-scenario="rejected" aria-pressed="false"><span class="cc-dot" style="--dot: #fb7185"></span>Rejected</button>
+                <button type="button" class="cc-btn" data-reset>Reset</button>
+                <div class="cc-clock" aria-live="polite"><span class="cc-clock-text">Case SLA · day 0.0 of 14</span><span class="cc-clock-bar" aria-hidden="true"><span></span></span></div>
+              </div>
+              <div class="cc-board">
+                <div class="cc-grid">
+                  <p class="cc-lane-label">Primary stages · the happy path</p>
+                  <div class="cc-stage" data-stage="intake">
+                    <div class="cc-stage-head">
+                      <span class="cc-stage-n">01</span>
+                      <span class="cc-stage-name">Intake</span>
+                      <span class="cc-stage-mode">sequential</span>
+                    </div>
+                    <button type="button" class="cc-task t-agent" data-task="extract" aria-pressed="false">
+                      <span class="cc-task-name">Extract vendor details</span>
+                      <span class="cc-task-meta"><b>agent</b></span>
+                    </button>
+                    <button type="button" class="cc-task t-api" data-task="record" aria-pressed="false">
+                      <span class="cc-task-name">Open vendor record</span>
+                      <span class="cc-task-meta"><b>api</b></span>
+                    </button>
+                  </div>
+                  <div class="cc-stage" data-stage="verif">
+                    <div class="cc-stage-head">
+                      <span class="cc-stage-n">02</span>
+                      <span class="cc-stage-name">Verification</span>
+                      <span class="cc-stage-mode">parallel</span>
+                    </div>
+                    <button type="button" class="cc-task t-api" data-task="reg" aria-pressed="false">
+                      <span class="cc-task-name">Company registration</span>
+                      <span class="cc-task-meta"><b>api</b><span class="cc-badge">placeholder</span></span>
+                    </button>
+                    <button type="button" class="cc-task t-rpa" data-task="bank" aria-pressed="false">
+                      <span class="cc-task-name">Bank account</span>
+                      <span class="cc-task-meta"><b>rpa</b></span>
+                    </button>
+                    <button type="button" class="cc-task t-agent" data-task="sanctions" aria-pressed="false">
+                      <span class="cc-task-name">Sanctions screening</span>
+                      <span class="cc-task-meta"><b>agent</b></span>
+                    </button>
+                  </div>
+                  <div class="cc-stage" data-stage="risk">
+                    <div class="cc-stage-head">
+                      <span class="cc-stage-n">03</span>
+                      <span class="cc-stage-name">Risk Review</span>
+                      <span class="cc-stage-mode">SLA 1 day</span>
+                    </div>
+                    <button type="button" class="cc-task t-agent" data-task="score" aria-pressed="false">
+                      <span class="cc-task-name">Score vendor risk</span>
+                      <span class="cc-task-meta"><b>agent</b></span>
+                    </button>
+                    <button type="button" class="cc-task t-action" data-task="approve" aria-pressed="false">
+                      <span class="cc-task-name">Compliance approval</span>
+                      <span class="cc-task-meta"><b>action</b></span>
+                    </button>
+                    <button type="button" class="cc-task t-action" data-task="call" aria-pressed="false">
+                      <span class="cc-task-name">Request a call with the vendor</span>
+                      <span class="cc-task-meta"><b>action</b><span class="cc-badge">ad hoc</span></span>
+                    </button>
+                    <button type="button" class="cc-task t-action" data-task="escalate" aria-pressed="false">
+                      <span class="cc-task-name">Escalate to Head of Procurement</span>
+                      <span class="cc-task-meta"><b>action</b><span class="cc-badge">on breach</span></span>
+                    </button>
+                  </div>
+                  <div class="cc-stage" data-stage="act">
+                    <div class="cc-stage-head">
+                      <span class="cc-stage-n">04</span>
+                      <span class="cc-stage-name">Activation</span>
+                      <span class="cc-stage-mode">sequential</span>
+                    </div>
+                    <button type="button" class="cc-task t-rpa" data-task="erp" aria-pressed="false">
+                      <span class="cc-task-name">Create vendor in SAP</span>
+                      <span class="cc-task-meta"><b>rpa</b></span>
+                    </button>
+                    <button type="button" class="cc-task t-connector" data-task="welcome" aria-pressed="false">
+                      <span class="cc-task-name">Send welcome pack</span>
+                      <span class="cc-task-meta"><b>connector</b></span>
+                    </button>
+                    <button type="button" class="cc-task t-timer" data-task="wait7" aria-pressed="false">
+                      <span class="cc-task-name">Wait 7 days</span>
+                      <span class="cc-task-meta"><b>timer</b></span>
+                    </button>
+                    <button type="button" class="cc-task t-action" data-task="checkin" aria-pressed="false">
+                      <span class="cc-task-name">First-week check-in</span>
+                      <span class="cc-task-meta"><b>action</b></span>
+                    </button>
+                  </div>
+                  <p class="cc-lane-label">Secondary stages · exception lanes</p>
+                  <div class="cc-stage is-secondary cc-col-2" data-stage="missing">
+                    <div class="cc-stage-head">
+                      <span class="cc-stage-n">S1</span>
+                      <span class="cc-stage-name">Missing Information</span>
+                      <span class="cc-stage-mode">returns</span>
+                    </div>
+                    <button type="button" class="cc-task t-connector" data-task="request" aria-pressed="false">
+                      <span class="cc-task-name">Request missing documents</span>
+                      <span class="cc-task-meta"><b>connector</b></span>
+                    </button>
+                    <button type="button" class="cc-task t-wait" data-task="reply" aria-pressed="false">
+                      <span class="cc-task-name">Wait for the vendor's reply</span>
+                      <span class="cc-task-meta"><b>wait</b></span>
+                    </button>
+                  </div>
+                  <div class="cc-stage is-secondary cc-col-3" data-stage="rejected">
+                    <div class="cc-stage-head">
+                      <span class="cc-stage-n">S2</span>
+                      <span class="cc-stage-name">Rejected</span>
+                      <span class="cc-stage-mode">ends case</span>
+                    </div>
+                    <button type="button" class="cc-task t-connector" data-task="notice" aria-pressed="false">
+                      <span class="cc-task-name">Send rejection notice</span>
+                      <span class="cc-task-meta"><b>connector</b></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="cc-foot">
+                <div class="cc-detail">
+                  <p class="eyebrow-label">Task details</p>
+                  <div class="cc-detail-body" aria-live="polite"><p class="cc-empty">Click any task above to see what it does.</p></div>
+                </div>
+                <div class="cc-history">
+                  <p class="eyebrow-label">Case history</p>
+                  <ol class="cc-log" aria-live="polite"></ol>
+                </div>
+              </div>
+              <div class="cc-legend" aria-label="Task types">
+                <span class="t-agent">agent</span><span class="t-api">api-workflow</span><span class="t-rpa">rpa</span><span class="t-action">action</span><span class="t-connector">connector</span><span class="t-wait">wait for event</span><span class="t-timer">timer</span>
+              </div>
+              <script type="application/json">{"slaDays":14,"slaRisk":0.8,"tasks":[{"id":"extract","stage":"Intake","type":"agent","name":"Extract vendor details","rule":"runs-sequentially · first in the stage","calls":"Vendor Intake agent","reads":"the request email and its attachments","writes":"vendorName, vendorEmail, registrationNumber","note":"An agent rather than a template: no two vendor emails look the same.","typeLabel":"agent"},{"id":"record","stage":"Intake","type":"api","name":"Open vendor record","rule":"runs-sequentially · after Extract vendor details","calls":"Vendor Record API workflow","reads":"vendorName, vendorEmail","writes":"vendorRecordId","typeLabel":"api-workflow"},{"id":"reg","stage":"Verification","type":"api","name":"Company registration","badge":"placeholder","rule":"current-stage-entered · starts with the stage","calls":"Company Registration Check API workflow","reads":"registrationNumber","writes":"registrationStatus","note":"If this does not exist on your tenant yet, the build keeps it as a placeholder. If a document is missing, this check diverts the case to Missing Information.","typeLabel":"api-workflow"},{"id":"bank","stage":"Verification","type":"rpa","name":"Bank account","rule":"current-stage-entered · starts with the stage","calls":"Bank Portal robot (unattended)","reads":"the bank confirmation letter","writes":"bankVerified","note":"The bank portal has no API, so a robot it is.","typeLabel":"rpa"},{"id":"sanctions","stage":"Verification","type":"agent","name":"Sanctions screening","rule":"current-stage-entered · starts with the stage","calls":"Sanctions Screening agent","reads":"vendorName and the directors' names","writes":"sanctionsHit","typeLabel":"agent"},{"id":"score","stage":"Risk Review","type":"agent","name":"Score vendor risk","rule":"runs-sequentially · first in the stage","calls":"Risk Scoring agent","reads":"every verification result","writes":"riskScore, riskBand","note":"The agent writes its reasons too, so Compliance sees why, not just a number.","typeLabel":"agent"},{"id":"approve","stage":"Risk Review","type":"action","name":"Compliance approval","rule":"runs-sequentially · after Score vendor risk","calls":"Vendor Approval action app · Compliance group","reads":"riskScore, riskBand, the verification evidence","writes":"complianceDecision","note":"Approved moves on to Activation. Rejected routes the case to the Rejected lane.","typeLabel":"action"},{"id":"call","stage":"Risk Review","type":"action","name":"Request a call with the vendor","badge":"ad hoc","rule":"adhoc · a reviewer starts it from the Case App","calls":"Vendor Approval action app","note":"Optional and not required, so it never blocks the stage.","typeLabel":"action"},{"id":"escalate","stage":"Risk Review","type":"action","name":"Escalate to Head of Procurement","badge":"on breach","rule":"sla-status-change · Risk Review SLA breached","calls":"Escalation action app · Head of Procurement","note":"Starts only if Risk Review runs past 1 day. The approval keeps running alongside it.","typeLabel":"action"},{"id":"erp","stage":"Activation","type":"rpa","name":"Create vendor in SAP","rule":"runs-sequentially · first in the stage","calls":"SAP Vendor robot (unattended)","reads":"the verified vendor details","writes":"erpVendorId","typeLabel":"rpa"},{"id":"welcome","stage":"Activation","type":"connector","name":"Send welcome pack","rule":"runs-sequentially · after Create vendor in SAP","calls":"Outlook · Send email (Integration Service)","reads":"vendorEmail, erpVendorId","typeLabel":"execute-connector-activity"},{"id":"wait7","stage":"Activation","type":"timer","name":"Wait 7 days","rule":"runs-sequentially · after Send welcome pack","calls":"built-in timer","note":"Nothing runs while it waits. The case simply sleeps for a week.","typeLabel":"wait-for-timer"},{"id":"checkin","stage":"Activation","type":"action","name":"First-week check-in","rule":"runs-sequentially · after Wait 7 days","calls":"Check-in action app · the requester","writes":"checkinOutcome","typeLabel":"action"},{"id":"request","stage":"Missing Information","type":"connector","name":"Request missing documents","rule":"runs-sequentially · first in the stage","calls":"Outlook · Send email (Integration Service)","reads":"vendorEmail, registrationStatus","typeLabel":"execute-connector-activity"},{"id":"reply","stage":"Missing Information","type":"wait","name":"Wait for the vendor's reply","rule":"runs-sequentially · after the request","calls":"Outlook · new email from this vendor","writes":"documents","note":"When the reply lands, the stage completes and the case returns to Verification (return-to-origin).","typeLabel":"wait-for-connector"},{"id":"notice","stage":"Rejected","type":"connector","name":"Send rejection notice","rule":"runs-sequentially · first in the stage","calls":"Outlook · Send email (Integration Service)","reads":"vendorEmail, complianceDecision","note":"Then the case ends without being marked complete, so rejections never count as onboardings.","typeLabel":"execute-connector-activity"}],"scenarios":{"happy":[{"enter":"intake","run":["extract"],"day":0,"log":["Day 0 09:12","VEND-0042 created from a \"New vendor\" email"]},{"done":["extract"],"run":["record"],"day":0.02,"log":["Day 0 09:13","Details extracted: Acme Paper Supplies"]},{"done":["record"],"complete":"intake","log":["Day 0 09:14","Vendor record opened · Intake complete","ok"]},{"enter":"verif","run":["reg","bank","sanctions"],"day":0.05,"log":["Day 0 09:15","Verification: three checks start in parallel"]},{"done":["sanctions"],"day":0.1,"log":["Day 0 09:40","Sanctions screening: no hits"]},{"done":["reg","bank"],"complete":"verif","day":0.9,"log":["Day 0 17:05","Registration and bank verified · Verification complete","ok"]},{"enter":"risk","run":["score"],"day":1,"log":["Day 1 08:30","Risk Review: scoring the vendor"]},{"done":["score"],"run":["approve"],"day":1.05,"log":["Day 1 08:31","Risk score 22 · band Low · approval sent to Compliance"]},{"done":["approve"],"complete":"risk","day":1.6,"log":["Day 1 15:20","Compliance approved","ok"]},{"enter":"act","run":["erp"],"day":1.65,"log":["Day 1 15:21","Activation: creating the vendor in SAP"]},{"done":["erp"],"run":["welcome"],"day":1.68,"log":["Day 1 15:26","Vendor 100482 created in SAP"]},{"done":["welcome"],"run":["wait7"],"day":1.7,"log":["Day 1 15:27","Welcome pack sent · waiting 7 days"]},{"done":["wait7"],"run":["checkin"],"day":8.7,"log":["Day 8 15:30","7 days up · check-in sent to the requester"]},{"done":["checkin"],"complete":"act","end":"complete","day":8.85,"log":["Day 8 17:05","Requester says it is going well · case completed inside the SLA","ok"]}],"missing":[{"enter":"intake","run":["extract"],"day":0,"log":["Day 0 09:12","VEND-0042 created from a \"New vendor\" email"]},{"done":["extract"],"run":["record"],"day":0.02,"log":["Day 0 09:13","Details extracted: Acme Paper Supplies"]},{"done":["record"],"complete":"intake","log":["Day 0 09:14","Vendor record opened · Intake complete","ok"]},{"enter":"verif","run":["reg","bank","sanctions"],"day":0.05,"log":["Day 0 09:15","Verification: three checks start in parallel"]},{"done":["sanctions"],"day":0.1,"log":["Day 0 09:40","Sanctions screening: no hits"]},{"done":["reg"],"day":0.3,"log":["Day 0 11:30","Registration check: company letter missing","warn"]},{"enter":"missing","pause":"verif","run":["request"],"log":["Day 0 11:31","Diverted to Missing Information · Verification paused","warn"]},{"done":["request"],"run":["reply"],"day":0.32,"log":["Day 0 11:32","Email sent to the vendor · waiting for a reply"]},{"done":["reply"],"complete":"missing","day":2.4,"log":["Day 2 10:05","Vendor replied with the documents","ok"]},{"resume":"verif","enter":"verif","reset":["reg","bank"],"run":["reg","bank"],"day":2.42,"log":["Day 2 10:06","Returned to Verification · checks re-run"]},{"done":["reg","bank"],"complete":"verif","day":2.9,"log":["Day 2 16:50","Verification complete","ok"]},{"enter":"risk","run":["score"],"day":3,"log":["Day 3 08:30","Risk Review: scoring the vendor"]},{"done":["score"],"run":["approve"],"day":3.05,"log":["Day 3 08:31","Risk score 31 · band Low · approval sent to Compliance"]},{"run":["escalate"],"day":4.1,"log":["Day 4 08:31","Risk Review past 1 day · SLA breached · escalation started","bad"]},{"done":["approve","escalate"],"complete":"risk","day":4.3,"log":["Day 4 14:10","Head of Procurement chased it · Compliance approved","ok"]},{"enter":"act","run":["erp"],"day":4.35,"log":["Day 4 15:21","Activation: creating the vendor in SAP"]},{"done":["erp"],"run":["welcome"],"day":4.38,"log":["Day 4 15:26","Vendor 100482 created in SAP"]},{"done":["welcome"],"run":["wait7"],"day":4.3999999999999995,"log":["Day 4 15:27","Welcome pack sent · waiting 7 days"]},{"day":11.25,"log":["Day 11 09:00","Case SLA at 80% · Procurement Lead notified","warn"]},{"done":["wait7"],"run":["checkin"],"day":11.399999999999999,"log":["Day 11 15:30","7 days up · check-in sent to the requester"]},{"done":["checkin"],"complete":"act","end":"complete","day":11.55,"log":["Day 11 17:05","Requester says it is going well · case completed inside the SLA","ok"]}],"rejected":[{"enter":"intake","run":["extract"],"day":0,"log":["Day 0 09:12","VEND-0042 created from a \"New vendor\" email"]},{"done":["extract"],"run":["record"],"day":0.02,"log":["Day 0 09:13","Details extracted: Acme Paper Supplies"]},{"done":["record"],"complete":"intake","log":["Day 0 09:14","Vendor record opened · Intake complete","ok"]},{"enter":"verif","run":["reg","bank","sanctions"],"day":0.05,"log":["Day 0 09:15","Verification: three checks start in parallel"]},{"done":["sanctions"],"day":0.1,"log":["Day 0 09:40","Sanctions screening: no hits"]},{"done":["reg","bank"],"complete":"verif","day":0.9,"log":["Day 0 17:05","Registration and bank verified · Verification complete","ok"]},{"enter":"risk","run":["score"],"day":1,"log":["Day 1 08:30","Risk Review: scoring the vendor"]},{"done":["score"],"run":["approve"],"day":1.05,"log":["Day 1 08:31","Risk score 78 · band High · approval sent to Compliance"]},{"done":["approve"],"day":1.7,"log":["Day 1 16:45","Compliance rejected: unclear ownership structure","bad"]},{"enter":"rejected","run":["notice"],"log":["Day 1 16:46","Routed to the Rejected lane","bad"]},{"done":["notice"],"complete":"rejected","end":"rejected","day":1.72,"log":["Day 1 16:47","Rejection sent · case ended, not marked complete","bad"]}]}}</script>
+            </div>
+            <p>That is a diagram, built so you can click around it. Here is the real thing: the case exactly as the skill built it on my dev tenant, open in the Studio Web designer.</p>
+            <figure class="figure shot">
+              <img src="../assets/case-03-designer.png" alt="The VendorOnboarding case plan in the Studio Web designer: two triggers, Intake, Verification, Risk Review and Activation stages, with Missing Information and Rejected lanes below" width="1600" height="884" loading="lazy" />
+              <figcaption>The real build in Studio Web: two triggers, four primary stages, and the Missing Information and Rejected lanes underneath. The asterisks mark tasks still waiting for a real resource.</figcaption>
+            </figure>
+            <p>The build kept the shared case variables to just four: <code>vendorName</code> and <code>vendorEmail</code> from the trigger, <code>documentsMissing</code>, which drives the divert to Missing Information, and <code>approvalDecision</code>, which drives the divert to Rejected. Everything else passes straight from one task to the next. The whole case has a 14-day SLA (it has to cover the 7-day wait before the check-in), and Risk Review has its own 1-day SLA.</p>
+
+            <h2 id="c5">Meet the skill: uipath-maestro-case</h2>
+            <p><code>uipath-maestro-case</code> is a UiPath skill: a pack of instructions your coding agent (Claude Code, Cursor, Codex, Copilot and others) reads so it knows how to design, build, validate and ship a case through the <code>uip</code> CLI. You describe the case in plain language. The agent does the rest - and stops to ask you before anything touches a live system.</p>
+            <p>It works in a fixed sequence. Here is what each phase does, straight from the skill:</p>
+            <ol class="phase-list">
+              <li>
+                <span class="phase-n">P0</span>
+                <div>
+                  <div class="phase-title">Design</div>
+                  <p class="phase-body">From your description it makes the design calls, checks your tenant for the agents, robots and apps you mentioned, and shows you <strong>one review packet</strong>. Your answer is the go-ahead. The approved design is saved as <code>sdd.md</code>.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P1</span>
+                <div>
+                  <div class="phase-title">Resolution</div>
+                  <p class="phase-body">Logs in, refreshes the local resource cache (<code>uip maestro case registry pull</code>) and binds every task to a real tenant resource - or marks it as a placeholder if it does not exist yet.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P2</span>
+                <div>
+                  <div class="phase-title">Prototyping</div>
+                  <p class="phase-body">Creates the solution and writes the case structure: triggers, variables, stages, tasks, rules and SLAs. Optionally pauses here so you can preview the flow in Studio Web.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P3</span>
+                <div>
+                  <div class="phase-title">Implementation</div>
+                  <p class="phase-body">Wires every task's inputs and outputs, fetches connector schemas, and fills in the connector-driven rules.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P4</span>
+                <div>
+                  <div class="phase-title">Validate</div>
+                  <p class="phase-body">Runs <code>uip maestro case validate --strict --sdd sdd.md</code>, which checks the case against the approved design, element by element. Fixes and retries up to three times.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P5</span>
+                <div>
+                  <div class="phase-title">Publish</div>
+                  <p class="phase-body"><strong>Asks you</strong> whether to upload to Studio Web, and gives you the designer link.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P6</span>
+                <div>
+                  <div class="phase-title">Debug</div>
+                  <p class="phase-body"><strong>Asks you</strong> whether to run the case for real. A debug run sends real emails and calls real APIs.</p>
+                </div>
+              </li>
+              <li>
+                <span class="phase-n">P7</span>
+                <div>
+                  <div class="phase-title">Publish to Orchestrator</div>
+                  <p class="phase-body"><strong>Asks you</strong> whether to pack and publish the solution to your tenant feed.</p>
+                </div>
+              </li>
+            </ol>
+            <aside class="callout is-note">
+              <p class="callout-label">Why I trust it on a real tenant</p>
+              <p class="callout-text">The skill never debugs or publishes on its own: P5, P6 and P7 each need your explicit yes. It never invents resource IDs either - anything it cannot find becomes a clearly marked placeholder that you fill in later.</p>
+            </aside>
+
+            <h2 id="c6">Hands-on: from zero to a live case</h2>
+            <p>Enough theory. This is the full path on a clean machine. Budget about an hour the first time, most of it reading what the agent shows you.</p>
+            <div class="walkthrough" data-os="mac">
+              <div class="prereqs">
+                <span class="eyebrow-label">You need</span>
+                <span class="prereq">Node.js 20+</span>
+                <span class="prereq">A coding agent - Claude Code, Cursor, Codex, Copilot</span>
+                <span class="prereq">A UiPath Automation Cloud tenant with Maestro</span>
+                <span class="prereq">An Outlook connection in Integration Service</span>
+              </div>
+              <div class="os-toggle">
+                <span id="os-label">Show commands for</span>
+                <div class="seg" role="group" aria-labelledby="os-label">
+                  <button type="button" data-os-choice="mac" aria-pressed="true">macOS / Linux</button>
+                  <button type="button" data-os-choice="win" aria-pressed="false">Windows</button>
+                </div>
+              </div>
+              <ol class="steps">
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">01</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Install the UiPath CLI</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body"><code>uip</code> is the UiPath command-line interface. The installer checks for Node.js, installs <code>@uipath/cli</code> plus the runtimes it needs, and is safe to re-run.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file"><span class="os-mac">Terminal - macOS / Linux</span><span class="os-win">PowerShell - Windows</span></span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-c"><span class="txt"># one-liner: CLI + runtimes</span></div>
+                          <div class="ln ln-p os-mac"><span class="pfx" aria-hidden="true">$ </span><span class="txt">curl -fsSL https://download.uipath.com/uipath-cli/install.sh | bash</span></div>
+                          <div class="ln ln-p os-win"><span class="pfx" aria-hidden="true">$ </span><span class="txt">irm https://download.uipath.com/uipath-cli/install.ps1 | iex</span></div>
+                          <div class="ln ln-c"><span class="txt"># already have Node? CLI only</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">npm -g install @uipath/cli</span></div>
+                          <div class="ln ln-c"><span class="txt"># verify</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip --version</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Check</span>
+                      <p class="tip-text"><code>uip --version</code> prints a version number. Mine is 1.203 while writing this; anything from 1.202 up has the strict validation this walkthrough relies on.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">02</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Install the skills into your coding agent</h3>
+                      <span class="step-time">~2 min</span>
+                    </div>
+                    <p class="step-body"><code>uip skills install</code> installs the whole UiPath skills catalog for your agent. Install the full catalog rather than one skill: the case skill hands the design conversation to <code>uipath-planner</code>, and can build missing agents or API workflows with <code>uipath-agents</code> and <code>uipath-api-workflow</code>.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-c"><span class="txt"># auto-detects your agent, or target one</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip skills install --agent claude</span></div>
+                          <div class="ln ln-c"><span class="txt"># what does the case skill do?</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip skills show uipath-maestro-case</span></div>
+                          <div class="ln ln-c"><span class="txt"># not sure which skill you need?</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip skills search &quot;case management&quot;</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Claude Code</span>
+                      <p class="tip-text">For Claude Code the skills arrive as a plugin. Restart the agent after installing so it picks them up, then type <code>/uipath-maestro-case</code> to call the skill directly.</p>
+                    </div>
+                    <figure class="figure shot">
+                      <img src="../assets/case-01-skills.png" alt="PowerShell showing uip skills install installing 27 UiPath skills for Claude Code, then uip skills show uipath-maestro-case" width="992" height="720" loading="lazy" />
+                      <figcaption>My actual install: 27 skills for Claude Code, including <code>uipath-maestro-case</code>.</figcaption>
+                    </figure>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">03</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Authenticate to your tenant</h3>
+                      <span class="step-time">~2 min</span>
+                    </div>
+                    <p class="step-body">Everything from here touches your tenant, so log in. The browser opens; pick the organisation and tenant you want the case to live in.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login</span></div>
+                          <div class="ln ln-c"><span class="txt"># browser opens → choose organisation + tenant</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login status --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login tenant list</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login tenant set &lt;tenant-name&gt;</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Security</span>
+                      <p class="tip-text">Use a non-production tenant for your first case. A debug run in step 09 sends real emails.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">04</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Get the building blocks ready</h3>
+                      <span class="step-time">~10 min</span>
+                    </div>
+                    <p class="step-body">A case orchestrates things that already exist: agents, robots, API workflows, action apps and connections. The skill looks them up in a local cache of your tenant, so refresh it and see what it finds.</p>
+                    <p class="step-body">Here is the honest bit: I ran this on the Training folder of my dev tenant, which has none of these yet. No Vendor Intake or Risk Scoring agent, no Bank Portal or SAP robot, no approval app. That is fine, and it is how most people will start. The design does not need them, and at build time anything missing becomes a placeholder.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-c"><span class="txt"># refresh the local resource cache (lasts 24 hours)</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case registry pull</span></div>
+                          <div class="ln ln-c"><span class="txt"># what can the case use?</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case registry search &quot;Vendor&quot; --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case registry search &quot;Risk&quot; --type agent --output json</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Beginner tip</span>
+                      <p class="tip-text">You do not need everything built first. Anything the skill cannot find becomes a placeholder task. The case still builds and validates; you bind the real resource later.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">05</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Describe the case</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">Now the interesting part. Open your agent in an empty folder and describe the case like you would to a colleague. Name the stages, the people, the systems and the deadlines. The more you name, the fewer questions come back.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Claude Code - prompt</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">/uipath-maestro-case</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Build a Vendor Onboarding case. Requests arrive in the</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">vendor-onboarding@ Outlook mailbox with subject &quot;New vendor&quot;;</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Procurement can also start one manually. Case IDs start VEND.</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Intake: Vendor Intake agent extracts details, then the</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Vendor Record API workflow opens the record.</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Verification, in parallel: company registration (API workflow),</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">bank account (Bank Portal robot), sanctions screening (agent).</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Missing documents divert to a Missing Information lane that</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">emails the vendor, waits for the reply, returns to Verification.</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Risk Review: Risk Scoring agent, then Compliance approves in</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">the Vendor Approval app (Compliance group). Rejections go to a</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Rejected lane that emails the vendor and ends the case.</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Reviewers can start an ad hoc &quot;Request a call with the vendor&quot;.</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Activation: SAP Vendor robot, welcome pack email, wait 7 days,</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">then a first-week check-in for the requester.</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">SLA: case 14 days, notify the Procurement Lead at 80%. Risk</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Review 1 day; on breach, start an escalation task for the</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Head of Procurement.</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Why so specific</span>
+                      <p class="tip-text">Words like “then”, “after” and “in parallel” become task rules. “Ends the case” and “returns to” become exit styles. Ambiguity is fine - the skill makes a call and shows it to you - but specific words save a review round.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">06</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Review the design packet</h3>
+                      <span class="step-time">~10 min</span>
+                    </div>
+                    <p class="step-body">Before it builds anything, the skill shows you one review packet with eight sections (the next section of this post walks through each one). Read it properly. This is the cheapest moment to change your mind.</p>
+                    <p class="step-body">Reply with corrections in plain language, and it re-shows only the sections that changed. When it looks right, choose a build option: straight through, or pause at a mid-build preview.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Claude Code - prompt</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Two changes: remind the vendor after 3 days on the Missing</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Information wait, and let reviewers request a call during</span></div>
+                          <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">Verification too. Then build it, and pause at the build preview.</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <figure class="figure shot">
+                      <img src="../assets/case-02-review.png" alt="Claude Code showing the real Case Review packet for VendorOnboarding: Case Snapshot and Primary Journey tables" width="1200" height="1110" loading="lazy" />
+                      <figcaption>My real review packet (first two of eight sections), from a design-only run on my dev tenant. The two changes above answer items from its own Review Flags.</figcaption>
+                    </figure>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">07</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Watch it build</h3>
+                      <span class="step-time">~10 min</span>
+                    </div>
+                    <p class="step-body">From here it runs on its own until the next decision. You will see it log in, resolve every resource, create the solution, write the case, wire inputs and outputs, and validate. The progress looks roughly like this (an outline of the phases, not a copy of my log):</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Build progress (outline)</span>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-o"><span class="txt">● Login          tenant: &lt;your dev tenant&gt;</span></div>
+                          <div class="ln ln-o"><span class="txt">● Registry       pulled · resources cached for 24h</span></div>
+                          <div class="ln ln-o"><span class="txt">● Resolved       anything that exists in the folder</span></div>
+                          <div class="ln ln-o"><span class="txt">● Placeholder    every resource it cannot find, e.g.</span></div>
+                          <div class="ln ln-o"><span class="txt">                 Company Registration Check (api-workflow)</span></div>
+                          <div class="ln ln-o"><span class="txt">● Solution       uip solution init VendorOnboarding</span></div>
+                          <div class="ln ln-o"><span class="txt">● Prototype      6 stages · 16 tasks · rules · 2 SLAs</span></div>
+                          <div class="ln ln-o"><span class="txt">● Preview        validate --skeleton-v2 → Valid</span></div>
+                          <div class="ln ln-o"><span class="txt">● Implement      inputs/outputs bound · Outlook schemas fetched</span></div>
+                          <div class="ln ln-ok"><span class="txt">✓ Validate      validate --strict --sdd sdd.md → Valid (strict)</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Placeholder?</span>
+                      <p class="tip-text">If the Company Registration Check does not exist, the task is kept as a placeholder with its name, stage and rules intact. It is listed in <code>build-issues.md</code>. Build the API workflow later, refresh, and bind it.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">08</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Preview it in Studio Web</h3>
+                      <span class="step-time">~3 min</span>
+                    </div>
+                    <p class="step-body">Because I asked it to pause at the preview, the skill asks whether to upload. Yes. It refreshes the solution's resources and uploads, then prints a link straight into the Studio Web designer. Mine came back <code>Imported</code>, strict validation clean, with 17 placeholder tasks for the resources my Training folder does not have yet.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">What the agent runs</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution resources refresh --solution-folder ./VendorOnboarding --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution upload ./VendorOnboarding --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">{ &quot;Status&quot;: &quot;Success&quot;, &quot;Action&quot;: &quot;Imported&quot;, &quot;DesignerUrl&quot;: &quot;https://cloud.uipath.com/…&quot; }</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Imported vs Overwritten</span>
+                      <p class="tip-text"><code>Imported</code> means a new solution in Studio Web. <code>Overwritten</code> means it replaced what was there - including any edits someone made in the browser. Say no if a colleague has been editing it.</p>
+                    </div>
+                    <figure class="figure shot">
+                      <img src="../assets/case-04-rules.png" alt="The Rules tab in Studio Web listing every case, stage and task rule for VendorOnboarding, with conditions such as vars.documentsMissing === true" width="1390" height="696" loading="lazy" />
+                      <figcaption>Switch the designer to <strong>Rules</strong> and every rule the skill wrote is in one table. Note the two diverts with exactly opposite conditions, and the red <em>Select a connector</em> on the email trigger: a placeholder waiting for an Outlook connection.</figcaption>
+                    </figure>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">09</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Debug it - for real</h3>
+                      <span class="step-time">~10 min</span>
+                    </div>
+                    <p class="step-body">Next it asks whether to run a debug session. A debug run is not a simulation: it uploads the case and runs it, so the Outlook connector really sends email and robots really start. Use a test mailbox and a test vendor.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">What the agent runs</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution resources refresh --solution-folder ./VendorOnboarding --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case debug ./VendorOnboarding/VendorOnboarding --log-level debug --output json</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Test data</span>
+                      <p class="tip-text">Send yourself a “New vendor” email from a test address with a dummy company. Leave out the bank letter to watch the Missing Information lane kick in.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">10</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Publish and deploy to Orchestrator</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">Last gate: publish to Orchestrator? On yes, the skill runs four commands in order. The case pack step is not optional - it compiles <code>caseplan.json</code> into the <code>.bpmn</code> file the runtime actually executes.</p>
+                    <p class="step-body">Publishing puts the package on your tenant feed. Deploying it into a folder is one more command, which you run yourself.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">What the agent runs</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution resources refresh --solution-folder ./VendorOnboarding --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case pack ./VendorOnboarding/VendorOnboarding ./VendorOnboarding/dist --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution pack ./VendorOnboarding ./VendorOnboarding/dist --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution publish ./VendorOnboarding/dist/VendorOnboarding_1.0.0.zip --wait --output json</span></div>
+                        </div>
+                      </div>
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Then you deploy</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution deploy run --package-name VendorOnboarding --package-version 1.0.0 --folder-name &quot;Vendor Onboarding&quot; --parent-folder-path Shared --wait</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution deploy list</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Version bumps</span>
+                      <p class="tip-text">The feed rejects a name and version it already has. On your second publish, pack with <code>--version 1.0.1</code>.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">11</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Run and operate it</h3>
+                      <span class="step-time">ongoing</span>
+                    </div>
+                    <p class="step-body">The case is live. New emails start cases on their own, but you can start one by hand and follow it from the CLI. Every case instance can be inspected, paused, resumed, retried or cancelled.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Start one and follow it</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case process list --folder-key &lt;folder-guid&gt;</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case process run &lt;process-key&gt; &lt;folder-guid&gt; --inputs @vendor.json --validate</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case job traces &lt;job-key&gt; --pretty</span></div>
+                        </div>
+                      </div>
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Operate instances</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case instance list --process-key &lt;process-key&gt; --folder-key &lt;folder-guid&gt;</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case instance variables &lt;instance-id&gt;</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case instance pause &lt;instance-id&gt; --comment &quot;Waiting on legal&quot;</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case instance resume &lt;instance-id&gt;</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case instance incidents &lt;instance-id&gt;</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+            <h2 id="c7">The review packet, section by section</h2>
+            <p>Step 06 is where you earn your money, so here is what each of the eight sections showed me for this case, and what to look for.</p>
+            <div class="eyebrow-label">The eight sections · click a row</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-purple is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-13">
+                  <span class="tier-badge">1</span>
+                  <span>
+                    <span class="tier-name">Case Snapshot</span>
+                    <span class="tier-facts"><span>what, who, how it starts</span></span>
+                  </span>
+                  <span class="tier-path">check the trigger</span>
+                </button>
+                <p class="tier-why" id="tier-why-13">A short table: objective, how it starts (a “New vendor” email or manual), who is involved, what counts as success (Onboarded) and the other ending (Rejected), VEND prefix, SLAs. Check the trigger first - a wrong trigger means no cases at all.</p>
+              </li>
+              <li class="tier c-cyan">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-14">
+                  <span class="tier-badge">2</span>
+                  <span>
+                    <span class="tier-name">Primary Journey</span>
+                    <span class="tier-facts"><span>the happy path, stage by stage</span></span>
+                  </span>
+                  <span class="tier-path">check order</span>
+                </button>
+                <p class="tier-why" id="tier-why-14" hidden>Every stage and task in order, with its type and whether it runs sequentially or in parallel. Mine showed Verification's three checks in parallel and everything else sequential - exactly what I asked for.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-15">
+                  <span class="tier-badge">3</span>
+                  <span>
+                    <span class="tier-name">Other Paths Considered</span>
+                    <span class="tier-facts"><span>exceptions and edge cases</span></span>
+                  </span>
+                  <span class="tier-path">check gaps</span>
+                </button>
+                <p class="tier-why" id="tier-why-15" hidden>Every exception with how it is modelled and why. Mine listed my four (missing documents, rejection, the ad hoc call, the late Risk Review) and two I never mentioned: a robot or connector failing, and a vendor withdrawing. Both marked “not modelled” - deliberately visible rather than silently ignored.</p>
+              </li>
+              <li class="tier c-pink">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-16">
+                  <span class="tier-badge">4</span>
+                  <span>
+                    <span class="tier-name">SLA and Escalations</span>
+                    <span class="tier-facts"><span>deadlines and who hears about them</span></span>
+                  </span>
+                  <span class="tier-path">check recipients</span>
+                </button>
+                <p class="tier-why" id="tier-why-16" hidden>Mine had four rows, two of which I never asked for: a case breach that notifies the Head of Procurement, and a Risk Review at-risk alert to Compliance at 75%. Each row says whether it was user-stated or an inferred default. Check that every recipient is a real person or group.</p>
+              </li>
+              <li class="tier c-green">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-17">
+                  <span class="tier-badge">5</span>
+                  <span>
+                    <span class="tier-name">Rules and Outcomes</span>
+                    <span class="tier-facts"><span>how the case moves and ends</span></span>
+                  </span>
+                  <span class="tier-path">check endings</span>
+                </button>
+                <p class="tier-why" id="tier-why-17" hidden>Which rule moves the case into each stage, which exits return or end, and what counts as a completed case. Rejected ends the case <em>without</em> marking it complete - confirm that matches how you report.</p>
+              </li>
+              <li class="tier c-cyan">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-18">
+                  <span class="tier-badge">6</span>
+                  <span>
+                    <span class="tier-name">Resources and Integrations</span>
+                    <span class="tier-facts"><span>what it found on your tenant</span></span>
+                  </span>
+                  <span class="tier-path">check names</span>
+                </button>
+                <p class="tier-why" id="tier-why-18" hidden>Each task next to the resource it intends to call: agent, API workflow, robot, action app or Outlook connector, all in the Training folder. Anything that does not exist when you build becomes a placeholder.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-19">
+                  <span class="tier-badge">7</span>
+                  <span>
+                    <span class="tier-name">Decisions I Made</span>
+                    <span class="tier-facts"><span>calls it made on your behalf</span></span>
+                  </span>
+                  <span class="tier-path">read every line</span>
+                </button>
+                <p class="tier-why" id="tier-why-19" hidden>The most important section. Seventeen rows for me, each tagged user-stated or inferred. The inferred ones are what to read: “waits for the reply” became a wait-for-callback, and the ad hoc call was placed in Risk Review only.</p>
+              </li>
+              <li class="tier c-slate">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-20">
+                  <span class="tier-badge">8</span>
+                  <span>
+                    <span class="tier-name">Review Flags</span>
+                    <span class="tier-facts"><span>things it is unsure about</span></span>
+                  </span>
+                  <span class="tier-path">answer these</span>
+                </button>
+                <p class="tier-why" id="tier-why-20" hidden>Things it wants you to look at, each with the default if you say nothing. Mine: the Missing Information wait has no timeout, there is no failure lane for the robots and connectors, and the ad hoc call only exists in Risk Review. Two of those became my step 06 reply.</p>
+              </li>
+            </ul>
+
+            <h2 id="c8">What the build writes</h2>
+            <p>When the build finishes, this is your workspace. The case is a normal UiPath solution, so it versions in Git, deploys like anything else, and opens in Studio Web.</p>
+            <div class="term">
+              <div class="code-head">
+                <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                <span class="code-file">Workspace after the build</span>
+              </div>
+              <div class="term-body">
+                <div class="ln ln-o"><span class="txt">VendorOnboarding/                 ← the solution</span></div>
+                <div class="ln ln-o"><span class="txt">├─ VendorOnboarding.uipx</span></div>
+                <div class="ln ln-o"><span class="txt">└─ VendorOnboarding/              ← the case project</span></div>
+                <div class="ln ln-o"><span class="txt">   ├─ caseplan.json               the case: stages, tasks, rules, SLAs</span></div>
+                <div class="ln ln-o"><span class="txt">   ├─ entry-points.json           the case's inputs and outputs</span></div>
+                <div class="ln ln-o"><span class="txt">   ├─ bindings_v2.json            tenant resources the case uses</span></div>
+                <div class="ln ln-o"><span class="txt">   ├─ project.uiproj</span></div>
+                <div class="ln ln-o"><span class="txt">   ├─ operate.json</span></div>
+                <div class="ln ln-o"><span class="txt">   └─ package-descriptor.json</span></div>
+                <div class="ln ln-o"><span class="txt">sdd.md                            the approved design</span></div>
+                <div class="ln ln-o"><span class="txt">tasks/registry-resolved.json      which resource each task bound to</span></div>
+                <div class="ln ln-o"><span class="txt">build-issues.md                   anything left for you to finish</span></div>
+              </div>
+            </div>
+            <p>Two files deserve a closer look. <code>sdd.md</code> is the approved design, and it stays the source of truth: the final validation checks <code>caseplan.json</code> against it and names anything missing. Keep it in Git next to the solution. <code>build-issues.md</code> is your to-do list - placeholders to bind, recipients to confirm, anything the skill could not finish on its own.</p>
+            <p>One quiet detail I liked: parallel tasks pass their outputs directly to the next task instead of through shared case variables. That avoids two tasks in Verification overwriting each other's result when they finish at the same moment.</p>
+            <div class="term">
+              <div class="code-head">
+                <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                <span class="code-file">Check it yourself, any time</span>
+                <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+              </div>
+              <div class="term-body">
+                <div class="ln ln-c"><span class="txt"># full check against the approved design</span></div>
+                <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case validate ./VendorOnboarding/VendorOnboarding/caseplan.json --strict --sdd sdd.md --output json</span></div>
+                <div class="ln ln-ok"><span class="txt">{ &quot;Status&quot;: &quot;Valid&quot;, &quot;Profile&quot;: &quot;strict&quot; }</span></div>
+              </div>
+            </div>
+
+            <h2 id="c9">SLAs and escalations in practice</h2>
+            <p>An SLA has a duration (minutes, hours, days, weeks or months), an at-risk threshold, and a breach. What makes case SLAs powerful is that each one can do more than send an email. There are five possible responses:</p>
+            <div class="eyebrow-label">SLA responses · click a row</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-slate is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-21">
+                  <span class="tier-badge">1</span>
+                  <span>
+                    <span class="tier-name">Notify only</span>
+                    <span class="tier-facts"><span>someone gets told</span></span>
+                  </span>
+                  <span class="tier-path">used · case at 80%</span>
+                </button>
+                <p class="tier-why" id="tier-why-21">The default. At 80% of the case's 14 days (day 11.2), the Procurement Lead gets a heads-up. Nothing in the case changes.</p>
+              </li>
+              <li class="tier c-pink">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-22">
+                  <span class="tier-badge">2</span>
+                  <span>
+                    <span class="tier-name">Start a task</span>
+                    <span class="tier-facts"><span>new work appears</span></span>
+                  </span>
+                  <span class="tier-path">used · Risk Review breach</span>
+                </button>
+                <p class="tier-why" id="tier-why-22" hidden>When Risk Review breaches its 1-day SLA, an escalation action starts for the Head of Procurement. The original approval keeps running - the escalation is extra work, not a replacement.</p>
+              </li>
+              <li class="tier c-cyan">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-23">
+                  <span class="tier-badge">3</span>
+                  <span>
+                    <span class="tier-name">Enter a stage</span>
+                    <span class="tier-facts"><span>the case changes lane</span></span>
+                  </span>
+                  <span class="tier-path">secondary stage</span>
+                </button>
+                <p class="tier-why" id="tier-why-23" hidden>Moves the case into a secondary stage, for example an “Expedite” lane with its own tasks. Use it when a breach changes how the work is done, not just who knows about it.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-24">
+                  <span class="tier-badge">4</span>
+                  <span>
+                    <span class="tier-name">Exit the stage</span>
+                    <span class="tier-facts"><span>stop this stage</span></span>
+                  </span>
+                  <span class="tier-path">rare</span>
+                </button>
+                <p class="tier-why" id="tier-why-24" hidden>Leaves the current stage on breach. Useful for time-boxed stages where “no answer” is itself an answer.</p>
+              </li>
+              <li class="tier c-green">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-25">
+                  <span class="tier-badge">5</span>
+                  <span>
+                    <span class="tier-name">Exit the case</span>
+                    <span class="tier-facts"><span>give up</span></span>
+                  </span>
+                  <span class="tier-path">missing-documents lane</span>
+                </button>
+                <p class="tier-why" id="tier-why-25" hidden>Ends the case. I use it on the Missing Information lane: if the vendor has not replied in 10 days, the case closes and Procurement can reopen it when the vendor comes back.</p>
+              </li>
+            </ul>
+            <p><strong>Try it:</strong> drag the sliders to move time forward and watch what fires. The amber line is the at-risk threshold, the pink line is the breach.</p>
+            <div class="sla-sim">
+              <div class="sla-meter" data-sla-meter data-limit="14" data-risk="0.8" data-unit="days" data-ok-msg="On track. Nothing fires." data-risk-msg="At risk (80%, day 11.2): the Procurement Lead gets a notification. Nothing else changes." data-breach-msg="Breached: the case is now over its 14-day SLA, and it shows as breached in reporting.">
+                <div class="sla-top"><strong>Whole case · 14-day SLA</strong><span>elapsed <output>0 days</output></span></div>
+                <div class="sla-track" aria-hidden="true">
+                  <span class="sla-fill"></span>
+                  <span class="sla-mark" style="--at: 65.88235294117648%"></span>
+                  <span class="sla-mark" style="--at: 82.35294117647058%; --mark: #fb7185"></span>
+                </div>
+                <input type="range" min="0" max="17" step="0.5" value="0" aria-label="Whole case · 14-day SLA, time elapsed" />
+                <p class="sla-status" aria-live="polite">On track. Nothing fires.</p>
+              </div>
+              <div class="sla-meter" data-sla-meter data-limit="24" data-risk="0.75" data-unit="hours" data-ok-msg="On track. Nothing fires." data-risk-msg="At risk (75%, hour 18): the Compliance Lead is notified." data-breach-msg="Breached: the escalation task starts for the Head of Procurement. The approval keeps running.">
+                <div class="sla-top"><strong>Risk Review · 1-day SLA</strong><span>elapsed <output>0 hours</output></span></div>
+                <div class="sla-track" aria-hidden="true">
+                  <span class="sla-fill"></span>
+                  <span class="sla-mark" style="--at: 60%"></span>
+                  <span class="sla-mark" style="--at: 80%; --mark: #fb7185"></span>
+                </div>
+                <input type="range" min="0" max="30" step="1" value="0" aria-label="Risk Review · 1-day SLA, time elapsed" />
+                <p class="sla-status" aria-live="polite">On track. Nothing fires.</p>
+              </div>
+            </div>
+            <p>You can also make an SLA conditional. For example: if <code>riskBand</code> is High, Risk Review gets 4 hours instead of a day. Conditional rules are checked in order, and the plain duration is the fallback.</p>
+
+            <h2 id="c10">Day two: changing a live case</h2>
+            <p>Requirements change the week after go-live. They always do. The skill handles targeted edits to an existing case, and the important habit is to start from the latest version, because someone may have edited it in Studio Web.</p>
+            <ol class="steps">
+              <li class="step">
+                <span class="step-n" aria-hidden="true">01</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Pull the latest version</h3>
+                    <span class="step-time">~1 min</span>
+                  </div>
+                  <p class="step-body">If anyone has touched the case in Studio Web, get their changes first, or your upload will overwrite them.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Terminal</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution download</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <span class="step-n" aria-hidden="true">02</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Ask for the change</h3>
+                    <span class="step-time">~5 min</span>
+                  </div>
+                  <p class="step-body">Describe the change in plain language. The skill edits just that part of <code>caseplan.json</code>, keeps every existing ID, and validates.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Claude Code - prompt</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">/uipath-maestro-case</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">In Verification, add a B-BBEE certificate check as a fourth</span></div>
+                        <div class="ln ln-a"><span class="pfx" aria-hidden="true">› </span><span class="txt">parallel task using the BBBEE Check agent. It is required.</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <span class="step-n" aria-hidden="true">03</span>
+                <div class="step-card">
+                  <div class="step-head">
+                    <h3>Ship it and move running cases</h3>
+                    <span class="step-time">~5 min</span>
+                  </div>
+                  <p class="step-body">Publish as before with a bumped version. Cases already in flight stay on the version they started on; move them across when you are ready.</p>
+                  <div class="term-stack">
+                    <div class="term">
+                      <div class="code-head">
+                        <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                        <span class="code-file">Terminal</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <div class="term-body">
+                        <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case instance migrate &lt;instance-id&gt; 1.0.1</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tip">
+                    <span class="tip-label">Careful</span>
+                    <p class="tip-text">Migrating a case that is mid-stage can skip or repeat work. Test it on one instance before you migrate a batch.</p>
+                  </div>
+                </div>
+              </li>
+            </ol>
+
+            <h2 id="c11">Where it breaks</h2>
+            <p>The skill is genuinely good, but here are the sharp edges I hit or nearly hit. Every one of them is in the skill's own rules, which tells you how often people have met them.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Hangs</p>
+                  <h3 class="info-title">A task with no entry rule</h3>
+                  <p class="info-body">Validation only warns, and the debug run waits forever. If you hand-edit the case, give every task a rule.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Real emails</p>
+                  <h3 class="info-title">Debug is not a dry run</h3>
+                  <p class="info-body">It sends real mail and starts real robots. Use test mailboxes, test vendors and a non-production tenant.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Silent</p>
+                  <h3 class="info-title">Groups without folder access</h3>
+                  <p class="info-body">An action assigned to a group that has no role on the folder is created and reaches nobody. The case cannot grant that access; your admin must.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Stale</p>
+                  <h3 class="info-title">Skipping case pack</h3>
+                  <p class="info-body">Pack and publish both succeed without it, but ship an old or missing <code>.bpmn</code>. Always run <code>case pack</code> first.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Placeholders</p>
+                  <h3 class="info-title">Builds that look finished</h3>
+                  <p class="info-body">A placeholder task passes validation but does nothing at runtime. Read <code>build-issues.md</code> before you go live.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-slate">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Overwrites</p>
+                  <h3 class="info-title">Uploading over browser edits</h3>
+                  <p class="info-body">An upload replaces what is in Studio Web. Download first if anyone else works on the case.</p>
+                </div>
+              </li>
+            </ul>
+
+            <h2 id="c12">What's next</h2>
+            <p>Maestro Case Management gets its own episode later in Season 1, in the Run &amp; Scale pillar. If you build a case off the back of this post, I would love to hear what it does - and where it broke. Find me on LinkedIn, and subscribe to the show so you catch the episode when it lands.</p>
+            <div class="btn-row">
+              <a class="btn-outline is-accent" href="https://www.youtube.com/@uipathuncharted" target="_blank" rel="noreferrer noopener">YouTube</a>
+              <a class="btn-outline" href="https://open.spotify.com/show/0344mY363tx1Oy0OOfkJDg" target="_blank" rel="noreferrer noopener">Spotify</a>
+            </div>
+          </div>
+        </article>
+        <aside class="post-aside">
+          <nav class="toc" aria-labelledby="toc-title">
+            <p class="eyebrow-label" id="toc-title">On this page</p>
+            <a href="#c1">Why a case, not a flow</a>
+            <a href="#c2">The anatomy of a case</a>
+            <a href="#c3">Rules: how a case moves</a>
+            <a href="#c4">The use case</a>
+            <a href="#c5">Meet the skill</a>
+            <a href="#c6">Hands-on: zero to live</a>
+            <a href="#c7">The review packet</a>
+            <a href="#c8">What the build writes</a>
+            <a href="#c9">SLAs and escalations</a>
+            <a href="#c10">Day two: changes</a>
+            <a href="#c11">Where it breaks</a>
+            <a href="#c12">What's next</a>
+          </nav>
+          <div class="tagged">
+            <p class="eyebrow-label">Tagged</p>
+            <ul class="tag-list">
+              <li>Maestro</li>
+              <li>Case Management</li>
+              <li>Agentic</li>
+              <li>Vendor onboarding</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="uu-footer">
+      <div class="uu-wrap uu-footer-inner">
+        <div class="uu-footer-brand">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="26" height="26" />
+          <span>UiPath Uncharted</span>
+        </div>
+        <span class="uu-footer-note">Field notes · Season 1 · Hosted by Jarryd Scott</span>
+        <nav class="uu-footer-links" aria-label="Elsewhere">
+          <a href="mailto:jscott@i1solutions.co.za">Email</a>
+          <a href="https://www.linkedin.com/in/jarryd-scott-01498019b" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+          <a href="../../">Main site</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <button type="button" class="to-top" aria-label="Back to top">
+    <svg class="to-top-ring" viewBox="0 0 48 48" aria-hidden="true">
+      <defs>
+        <linearGradient id="to-top-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#42d6ff" />
+          <stop offset="1" stop-color="#7c5cff" />
+        </linearGradient>
+      </defs>
+      <circle class="to-top-track" cx="24" cy="24" r="22" />
+      <circle class="to-top-progress" cx="24" cy="24" r="22" pathLength="100" />
+    </svg>
+    <svg class="to-top-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+  </button>
+
+  <script src="../blog.js" defer></script>
+</body>
+</html>
