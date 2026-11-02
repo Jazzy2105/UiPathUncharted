@@ -67,12 +67,56 @@
           <!-- Hero action buttons ("Become a Guest" / "How It Works") removed - were being
                confused with the episode Register CTA. Re-add here (or elsewhere) later. -->
 
-          <div class="episode-countdown" data-target="2026-11-20T12:00:00+02:00">
-            <p class="ec-eyebrow"><span class="ec-live-dot"></span> Episode 4 &middot; UiPath Process &amp; Communications Mining</p>
-            <p class="ec-date">20 November 2026</p>
+          <div class="episode-countdown is-fusion" data-target="2026-11-19T13:00:00+02:00" data-duration-hours="1.5">
+            <!-- UiPath Fusion Cape Town banner: light ribbons + floating cubes behind the Fusion logo -->
+            <div class="fx-art" aria-hidden="true">
+              <svg class="fx-ribbons" viewBox="0 0 1200 360" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="fxOrange" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#ff3d14" stop-opacity="0" />
+                    <stop offset="0.25" stop-color="#ff5a1f" />
+                    <stop offset="0.6" stop-color="#ff9a6b" />
+                    <stop offset="1" stop-color="#ffd2bd" stop-opacity="0" />
+                  </linearGradient>
+                  <linearGradient id="fxCyan" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#bdf3ff" stop-opacity="0" />
+                    <stop offset="0.4" stop-color="#5fdcf5" />
+                    <stop offset="0.75" stop-color="#18b6d9" />
+                    <stop offset="1" stop-color="#0a8fb3" stop-opacity="0" />
+                  </linearGradient>
+                  <filter id="fxGlow" x="-10%" y="-50%" width="120%" height="200%"><feGaussianBlur stdDeviation="5" /></filter>
+                </defs>
+                <g class="fx-ribbon fx-ribbon-left" fill="none" stroke="url(#fxOrange)">
+                  <path d="M-40 250 C 120 120, 260 300, 420 170 S 600 120, 640 190" stroke-width="26" opacity="0.55" filter="url(#fxGlow)" />
+                  <path d="M-40 240 C 120 110, 260 290, 420 160 S 600 110, 640 180" stroke-width="3" opacity="0.95" />
+                  <path d="M-40 262 C 130 140, 250 310, 420 186 S 590 136, 640 206" stroke-width="2" opacity="0.7" />
+                  <path d="M-40 226 C 110 96, 270 276, 420 146 S 610 96, 640 166" stroke-width="1.5" opacity="0.6" />
+                  <path d="M-40 276 C 140 160, 240 324, 420 204 S 580 156, 640 226" stroke-width="1" opacity="0.5" />
+                </g>
+                <g class="fx-ribbon fx-ribbon-right" fill="none" stroke="url(#fxCyan)">
+                  <path d="M560 200 C 640 110, 780 120, 860 190 S 1080 300, 1240 140" stroke-width="26" opacity="0.5" filter="url(#fxGlow)" />
+                  <path d="M560 190 C 640 100, 780 110, 860 180 S 1080 290, 1240 130" stroke-width="3" opacity="0.95" />
+                  <path d="M560 214 C 650 126, 770 136, 860 204 S 1070 314, 1240 156" stroke-width="2" opacity="0.7" />
+                  <path d="M560 176 C 630 86, 790 96, 860 166 S 1090 276, 1240 116" stroke-width="1.5" opacity="0.6" />
+                  <path d="M560 228 C 660 140, 760 150, 860 218 S 1060 328, 1240 170" stroke-width="1" opacity="0.5" />
+                </g>
+              </svg>
+              <span class="fx-cube is-orange" style="--x: 9%; --y: 30%; --s: 22px; --d: 0s"></span>
+              <span class="fx-cube is-cyan" style="--x: 21%; --y: 62%; --s: 16px; --d: -2s"></span>
+              <span class="fx-cube is-orange" style="--x: 30%; --y: 22%; --s: 14px; --d: -4s"></span>
+              <span class="fx-cube is-cyan" style="--x: 70%; --y: 26%; --s: 18px; --d: -1s"></span>
+              <span class="fx-cube is-orange" style="--x: 80%; --y: 60%; --s: 15px; --d: -3s"></span>
+              <span class="fx-cube is-cyan" style="--x: 91%; --y: 34%; --s: 24px; --d: -5s"></span>
+            </div>
+            <div class="fx-brand">
+              <img class="fx-logo" src="assets/fusion-logo.png" alt="UiPath Fusion" width="1057" height="347" />
+              <p class="fx-city">Cape Town</p>
+            </div>
+            <p class="ec-eyebrow"><span class="ec-live-dot"></span> Episode 4 &middot; Recorded live at UiPath Fusion</p>
+            <p class="ec-date">Thursday, 19 November 2026</p>
             <p class="ec-time">
-              12:00 - 14:00 SAST
-              <span class="ec-zoom"><em class="ec-zoom-icon">&#127909;</em> Live on Teams</span>
+              13:00 - 14:30 SAST
+              <span class="ec-zoom"><em class="ec-zoom-icon">&#128205;</em> Live from Cape Town</span>
             </p>
             <div class="ec-timer" id="episodeCountdown" role="timer" aria-label="Time remaining until episode 4">
               <div class="ec-unit"><span class="ec-num" data-cd="days">00</span><span class="ec-label">Days</span></div>

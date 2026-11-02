@@ -714,6 +714,164 @@ img {
 
 .episode-countdown.is-live .ec-live-dot { animation-duration: 0.9s; }
 
+/* ─── UiPath Fusion Cape Town banner (Episode 4) ────── */
+
+.episode-countdown.is-fusion {
+  max-width: 920px;
+  padding-top: 30px;
+  background:
+    radial-gradient(70% 55% at 12% 20%, rgba(255, 90, 31, 0.2), transparent 70%),
+    radial-gradient(70% 55% at 88% 20%, rgba(24, 182, 217, 0.22), transparent 70%),
+    radial-gradient(120% 140% at 50% -20%, rgba(124, 92, 255, 0.16), transparent 60%),
+    linear-gradient(180deg, #0a0d24 0%, #070a1c 100%);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 30px 90px rgba(255, 90, 31, 0.14),
+    0 30px 90px rgba(24, 182, 217, 0.14);
+  isolation: isolate;
+}
+
+/* Orange-to-cyan glowing frame */
+.episode-countdown.is-fusion::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(110deg, #ff5a1f, rgba(255, 154, 107, 0.4) 35%, rgba(124, 92, 255, 0.35) 50%, rgba(95, 220, 245, 0.4) 65%, #18b6d9);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.episode-countdown.is-fusion::before { display: none; }
+
+.fx-art {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 300px;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
+  mask-image: linear-gradient(180deg, #000 55%, transparent);
+}
+
+.fx-ribbons {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.fx-ribbon {
+  animation: fxDrift 9s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+.fx-ribbon-right { animation-delay: -4.5s; }
+
+@keyframes fxDrift {
+  from { transform: translate3d(-14px, 6px, 0) scaleY(0.94); }
+  to { transform: translate3d(14px, -8px, 0) scaleY(1.06); }
+}
+
+.fx-cube {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  border-radius: 3px;
+  transform: rotate(28deg);
+  animation: fxFloat 6s ease-in-out infinite;
+  animation-delay: var(--d);
+}
+
+.fx-cube.is-orange {
+  background: linear-gradient(135deg, #ff8a5c, #e8380d 55%, #9c1f04);
+  box-shadow: 0 0 18px rgba(255, 90, 31, 0.55);
+}
+
+.fx-cube.is-cyan {
+  background: linear-gradient(135deg, #b8f4ff, #2fc3e3 50%, #0b6f8c);
+  box-shadow: 0 0 18px rgba(47, 195, 227, 0.5);
+}
+
+@keyframes fxFloat {
+  0%, 100% { transform: translateY(0) rotate(28deg); }
+  50% { transform: translateY(-12px) rotate(58deg); }
+}
+
+.fx-brand {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin: 4px auto 22px;
+}
+
+.fx-logo {
+  width: min(400px, 74%);
+  height: auto;
+  filter: drop-shadow(0 6px 30px rgba(0, 0, 0, 0.55));
+}
+
+.fx-city {
+  margin: 0;
+  font-size: clamp(0.95rem, 2vw, 1.2rem);
+  font-weight: 700;
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
+}
+
+.is-fusion .ec-eyebrow { color: #ffb08f; }
+
+.is-fusion .ec-date {
+  background: linear-gradient(110deg, #ffd2bd 0%, #ffffff 40%, #ffffff 60%, #9fe9fb 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.is-fusion .ec-zoom {
+  background: rgba(255, 90, 31, 0.12);
+  border-color: rgba(255, 120, 70, 0.35);
+  color: #ffc2a8;
+}
+
+.is-fusion .ec-sep { color: rgba(255, 120, 70, 0.55); }
+
+.is-fusion .ec-join:not(.is-disabled) {
+  background: linear-gradient(110deg, #ff5a1f, #ff7a3d 55%, #ff9a6b);
+  box-shadow: 0 12px 34px rgba(255, 90, 31, 0.38);
+}
+
+.is-fusion .ec-join:not(.is-disabled):hover {
+  box-shadow: 0 16px 42px rgba(255, 90, 31, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-ribbon, .fx-cube { animation: none; }
+}
+
+@media (max-width: 620px) {
+  .fx-art { height: 220px; }
+  .fx-logo { width: 86%; }
+  .fx-cube { display: none; }
+  .fx-cube:nth-of-type(1), .fx-cube:nth-of-type(6) { display: block; }
+}
+
+@media (max-width: 420px) {
+  .ec-timer { gap: 6px; flex-wrap: nowrap; }
+  .ec-unit { min-width: 0; flex: 1 1 0; padding: 12px 4px 10px; }
+  .ec-num { font-size: 2.2rem; }
+  .ec-label { font-size: 0.6rem; letter-spacing: 0.08em; }
+}
+
 @media (max-width: 620px) {
   .episode-countdown { padding: 28px 20px 26px; }
   .ec-sep { display: none; }

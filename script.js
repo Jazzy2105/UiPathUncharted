@@ -77,7 +77,8 @@ const countdownEl = document.getElementById('episodeCountdown');
 
 if (countdownWrap && countdownEl) {
   const target = new Date(countdownWrap.dataset.target).getTime();
-  const eventEndMs = 2 * 60 * 60 * 1000; // event runs ~2 hours
+  // How long the "live" state lasts after the countdown hits zero (data-duration-hours, default 2)
+  const eventEndMs = (Number(countdownWrap.dataset.durationHours) || 2) * 60 * 60 * 1000;
   const nums = {
     days: countdownEl.querySelector('[data-cd="days"]'),
     hours: countdownEl.querySelector('[data-cd="hours"]'),
@@ -100,7 +101,7 @@ if (countdownWrap && countdownEl) {
       countdownWrap.classList.add('is-live');
       const dateEl = countdownWrap.querySelector('.ec-date');
       const timeEl = countdownWrap.querySelector('.ec-time');
-      // Show a live state during the ~2h window, then a wrap-up message
+      // Show a live state during the event window, then a wrap-up message
       if (Date.now() - target < eventEndMs) {
         if (dateEl) dateEl.textContent = 'We are live now!';
       } else if (dateEl) {
@@ -131,8 +132,9 @@ const joinLink = document.getElementById('episodeJoinLink');
 
 if (calBtn) {
   const meetingUrl = joinLink ? joinLink.href : '';
-  const DTSTART = '20261120T100000Z'; // 12:00 SAST (UTC+2)
-  const DTEND = '20261120T120000Z';   // 14:00 SAST (UTC+2)
+  // 19 Nov 2026, 13:00-14:30 SAST (UTC+2) expressed in UTC
+  const DTSTART = '20261119T110000Z';
+  const DTEND = '20261119T123000Z';
 
   // Escape text per RFC 5545 (backslash, semicolon, comma, newline)
   const esc = (s) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
@@ -153,13 +155,13 @@ if (calBtn) {
       'CALSCALE:GREGORIAN',
       'METHOD:PUBLISH',
       'BEGIN:VEVENT',
-      'UID:ep4-20261120@uipathuncharted.co.za',
+      'UID:ep4-20261119@uipathuncharted.co.za',
       'DTSTAMP:' + stamp,
       'DTSTART:' + DTSTART,
       'DTEND:' + DTEND,
-      fold('SUMMARY:' + esc('UiPath Uncharted - Episode 4 (UiPath Process & Communications Mining)')),
-      fold('DESCRIPTION:' + esc('Episode 4 of UiPath Uncharted - UiPath Process & Communications Mining, live on Microsoft Teams. Register: ' + meetingUrl)),
-      fold('LOCATION:' + esc('Microsoft Teams')),
+      fold('SUMMARY:' + esc('UiPath Uncharted - Episode 4, live at UiPath Fusion Cape Town')),
+      fold('DESCRIPTION:' + esc('Episode 4 of UiPath Uncharted, recorded live at UiPath Fusion Cape Town. 13:00 - 14:30 SAST. Register:' + meetingUrl)),
+      fold('LOCATION:' + esc('UiPath Fusion, Cape Town, South Africa')),
       fold('URL:' + meetingUrl),
       'STATUS:CONFIRMED',
       'END:VEVENT',
