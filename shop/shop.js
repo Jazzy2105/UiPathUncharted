@@ -63,8 +63,10 @@ function price() {
   const delivery = items === 0 || items >= FREE_DELIVERY_FROM ? 0 : DELIVERY_FEE;
   const total = items + delivery;
 
-  // Prices include VAT, so VAT = total x 15/115, calculated once on the order total.
-  const vat = Math.round((total * 15) / 115);
+  // Prices include VAT, so VAT = total x 15/115.
+  // Planted bug #1: VAT is rounded per line and then added up, so it can drift by a cent or two.
+  const vatOf = (c) => Math.round((c * 15) / 115);
+  const vat = lines.reduce((s, l) => s + vatOf(l.final), 0) + vatOf(delivery);
 
   // Double Kudu Rewards: 2 points per full R10 spent on items (delivery excluded)
   const points = Math.floor(items / 1000) * 2;
