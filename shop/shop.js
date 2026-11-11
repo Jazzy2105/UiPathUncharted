@@ -51,8 +51,9 @@ function price() {
   for (const l of lines) {
     l.deal = l.freeUnits * l.price;
     l.afterDeal = l.gross - l.deal;
-    // BLACKFRIDAY excludes items already on the 3 for 2 deal, so the two promotions never stack.
-    l.code = promoApplied && l.cat !== 'pantry' ? Math.round(l.afterDeal * PROMO_RATE) : 0;
+    // BLACKFRIDAY is meant to exclude items already on the 3 for 2 deal.
+    // Planted bug #2: it is applied to every line, so the two promotions stack.
+    l.code = promoApplied ? Math.round(l.afterDeal * PROMO_RATE) : 0;
     l.final = l.afterDeal - l.code;
   }
 
