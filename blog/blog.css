@@ -1562,6 +1562,12 @@ input {
   margin: 12px 0 0;
 }
 
+/* Tall, narrow screenshots (side panels) */
+.figure.shot.is-narrow {
+  max-width: 420px;
+  margin: 12px auto 0;
+}
+
 .figure.shot figcaption {
   padding: 8px 12px;
   border-top: 1px solid var(--uu-border);

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Dark Testing Factory: lights out, quality on · UiPath Uncharted</title>
+  <meta name="description" content="A hands-on build of UiPath's dark testing factory on a Black Friday checkout: requirements, AI-written test cases, Playwright on cloud robots, defects, a nightly schedule and an autonomous agent that explores the shop with no script. What works today, what is still a vision." />
+  <meta name="theme-color" content="#060816" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="UiPath Uncharted" />
+  <meta property="og:title" content="The Dark Testing Factory: lights out, quality on · UiPath Uncharted" />
+  <meta property="og:description" content="A hands-on build of UiPath's dark testing factory on a Black Friday checkout: requirements, AI-written test cases, Playwright on cloud robots, defects, a nightly schedule and an autonomous agent that explores the shop with no script." />
+  <meta property="og:url" content="https://uipathuncharted.co.za/blog/dark-testing-factory/" />
+  <meta property="og:image" content="https://uipathuncharted.co.za/blog/assets/dark-testing-factory-cover.jpg" />
+  <meta property="og:image:width" content="1600" />
+  <meta property="og:image:height" content="893" />
+  <meta property="og:image:alt" content="The Dark Testing Factory: lights out, quality on" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://uipathuncharted.co.za/blog/dark-testing-factory/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../blog.css" />
+  <link rel="icon" type="image/png" href="../../assets/uu-mark-navy.png" />
+  <link rel="apple-touch-icon" href="../../assets/uu-mark-navy.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="uu-page">
+    <div class="uu-progress" aria-hidden="true"><span></span></div>
+
+    <header class="uu-header">
+      <div class="uu-wrap uu-header-inner">
+        <a class="uu-brand" href="../" aria-label="UiPath Uncharted Field Notes, blog home">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="34" height="34" />
+          <span class="uu-brand-text">
+            <span class="uu-brand-name">UiPath Uncharted</span>
+            <span class="uu-brand-sub">Field Notes</span>
+          </span>
+        </a>
+        <nav class="uu-nav" aria-label="Blog">
+          <a href="../#feed">Writing</a>
+          <a href="../#pillars">Pillars</a>
+          <a class="nav-cross" href="../../">Podcast</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="uu-wrap post-main">
+      <a class="back-link" href="../">← All writing</a>
+      <div class="post-layout">
+        <article>
+          <header class="post-head">
+            <div class="chips">
+              <span class="chip chip-lg p-run">Run &amp; Scale</span>
+              <span class="chip chip-status c-green">shipped</span>
+              <span class="post-date">11 Nov 2026 · 18 min</span>
+            </div>
+            <h1 class="post-title">The Dark Testing Factory: lights out, quality on</h1>
+            <p class="post-lede">Black Friday is two weeks away, the promotions team just changed the deal rules, and the code freeze is on Friday. I built UiPath's "dark testing factory" for a fictional retailer's checkout to see how much of it is real today: AI-written test cases, robots in the cloud, a schedule that runs while everyone sleeps, and an agent that tests the shop with no script at all. Mistakes included.</p>
+            <div class="author">
+              <img src="../assets/jarryd-scott-avatar.jpg" alt="" width="40" height="40" />
+              <div class="author-text">
+                <span class="author-name">Jarryd Scott</span>
+                <span class="author-role">Technical Lead, Business Automation · host of UiPath Uncharted</span>
+              </div>
+              <span class="author-ep">Hands-on deep dive</span>
+            </div>
+            <figure class="post-hero">
+              <img src="../assets/dark-testing-factory-cover.jpg" alt="The Dark Testing Factory: a glowing summoning circle with testing runes around the ring and a green check mark at its centre" width="1600" height="893" />
+            </figure>
+          </header>
+          <div class="prose">
+            <h2 id="c1">Lights out, quality on</h2>
+            <p>In manufacturing, a <strong>dark factory</strong> is a plant so automated it can run with the lights off. Robots build, inspect and move product through the night, and people show up to decide what gets built next. UiPath borrowed the idea for software testing and called it the <strong>dark testing factory</strong>: a quality system where test generation, execution, analysis and maintenance run around the clock inside the delivery pipeline.</p>
+            <p>It sounds like a slide. So I did what this blog always does and built it. Not on a client, not on a sandbox demo someone else prepared, but on my own dev tenant, against a real (small) web shop, with every command, error and screenshot left in.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-slate">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Lights on</p>
+                  <h3 class="info-title">Testing today</h3>
+                  <p class="info-body">Three testers, a spreadsheet of test cases, a regression pack that takes two days by hand, and a release that waits for all of it.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Lights out</p>
+                  <h3 class="info-title">The factory</h3>
+                  <p class="info-body">AI writes the tests from the requirements, robots run them on every change and every night, failures become defects on their own, and agents go looking for the bugs nobody wrote a test for.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">The catch</p>
+                  <h3 class="info-title">Humans still decide</h3>
+                  <p class="info-body">UiPath is clear that the factory is about removing people from repetitive testing work, not from quality. Somebody still decides what "ready to ship" means.</p>
+                </div>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Before you read on: a challenge</p>
+              <p class="callout-text">The shop in this post is live at <a href="../../shop/" target="_blank" rel="noopener">uipathuncharted.co.za/shop</a>. It has <strong>two deliberate bugs</strong> that cost money. Give yourself five minutes to find them before the robots spoil it for you. The answers are in section 6.</p>
+            </aside>
+
+            <h2 id="c2">The use case: Black Friday Eve at Kudu &amp; Co</h2>
+            <p>Meet <strong>Kudu &amp; Co</strong>, a made-up online retailer. Think biltong, rooibos, coffee, air fryers and a kettle braai, all on special. Two weeks before Black Friday the promotions team drops the final deal rules: 3 for 2 on Pantry items, 20% off with a promo code, free delivery over R750, double loyalty points and a limit of 5 per product. The code freeze is in five days. The test team is three people.</p>
+            <p>If you have ever worked retail in South Africa (or anywhere, really), you know how this ends: somebody tests the happy path, somebody else tests the code on one product, and on the night a customer discovers that two deals stack and the shop gives away margin until Monday.</p>
+            <figure class="figure shot">
+              <img src="../assets/dtf-01-shop.png" alt="The Kudu &amp; Co demo shop: a Black Friday banner with four deals, Pantry products marked 3 for 2, and a basket with biltong, rooibos and a Bluetooth speaker with the BLACKFRIDAY code applied" width="1360" height="860" loading="lazy" />
+              <figcaption>The system under test. Biltong, rooibos and a speaker, with BLACKFRIDAY applied. Look closely at the promo code saving.</figcaption>
+            </figure>
+            <aside class="callout is-note">
+              <p class="callout-label">About the shop</p>
+              <p class="callout-text">Kudu &amp; Co is fictional. The shop is one HTML page I built for this post, with no backend, and nothing is for sale. Everything else is real: the Test Manager project, the AI output, the Playwright runs on UiPath's cloud robots, the defects and the autonomous agent all ran on my dev tenant, and every screenshot is from there. I planted two bugs in the pricing code, the kind that slip through a busy release: one that costs money on every order, and one that is only off by a cent.</p>
+            </aside>
+            <p>The promotions brief became seven requirements. They are short on purpose, the way real ones are:</p>
+            <ul class="meta-pills">
+              <li>BF-01 3 for 2 on Pantry</li>
+              <li>BF-02 BLACKFRIDAY code</li>
+              <li>BF-03 Delivery</li>
+              <li>BF-04 VAT</li>
+              <li>BF-05 Rewards points</li>
+              <li>BF-06 Limit of 5</li>
+              <li>BF-07 Place an order</li>
+            </ul>
+
+            <h2 id="c3">From lights on to lights out</h2>
+            <p>UiPath describes the factory as a maturity path, not a product you buy. Here is that path as I would explain it to a client, with an honest label on each step: what you can use today, what is in preview, and what is still a vision. Click through.</p>
+            <div class="stages" data-stages>
+              <div class="stage-tabs" role="tablist" aria-label="The testing maturity path">
+                <button type="button" class="stage-tab" role="tab" id="dstage-tab-1" aria-controls="dstage-panel-1" aria-selected="true">
+                  <span class="stage-tab-n">01</span><span>Manual</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="dstage-tab-2" aria-controls="dstage-panel-2" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">02</span><span>Scripted</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="dstage-tab-3" aria-controls="dstage-panel-3" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">03</span><span>AI-assisted</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="dstage-tab-4" aria-controls="dstage-panel-4" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">04</span><span>Agentic</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="dstage-tab-5" aria-controls="dstage-panel-5" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">05</span><span>Dark</span>
+                </button>
+              </div>
+              <div class="stage-body">
+                <div class="stage-bar" aria-hidden="true"><span></span></div>
+                <div class="stage-panel" role="tabpanel" id="dstage-panel-1" aria-labelledby="dstage-tab-1">
+                  <h3 class="stage-title">People click through test scripts</h3>
+                  <p class="stage-text">Test cases live in a tool or a spreadsheet and a tester runs each one by hand. Thorough when there is time, skipped when there is not. Most teams still have a lot of this.</p>
+                  <ul class="meta-pills">
+                    <li>Available today</li>
+                    <li>Test Manager manual runs</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="dstage-panel-2" aria-labelledby="dstage-tab-2" hidden>
+                  <h3 class="stage-title">Robots run the scripts</h3>
+                  <p class="stage-text">Studio test automation or, new this year, your own Playwright suite, packaged and run by Test Manager on cloud robots. A person still writes every test and decides when to run it.</p>
+                  <ul class="meta-pills">
+                    <li>Available today</li>
+                    <li>Used in this post</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="dstage-panel-3" aria-labelledby="dstage-tab-3" hidden>
+                  <h3 class="stage-title">AI writes and reviews the tests</h3>
+                  <p class="stage-text">Test Manager reads a requirement and proposes test cases, critiques the requirement itself, and flags test cases that no longer match. A person reviews what it produces.</p>
+                  <ul class="meta-pills">
+                    <li>Available today</li>
+                    <li>Used in this post</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="dstage-panel-4" aria-labelledby="dstage-tab-4" hidden>
+                  <h3 class="stage-title">Agents test on their own</h3>
+                  <p class="stage-text">You give an agent a mission and a URL and it explores the application, invents its own scenarios and reports findings with screenshots and repro steps. UiPath has also announced Autopilot running a manual test case with no automation behind it.</p>
+                  <ul class="meta-pills">
+                    <li>Preview</li>
+                    <li>Autonomous Exploration used in this post</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="dstage-panel-5" aria-labelledby="dstage-tab-5" hidden>
+                  <h3 class="stage-title">Governed autonomy</h3>
+                  <p class="stage-text">Agents generate, run, triage and repair tests continuously inside the pipeline, under policy. People set the rules: acceptable risk, who signs off and what "done" means for a release. UiPath's words: testers "move from running tests to governing the system that runs them".</p>
+                  <ul class="meta-pills">
+                    <li>Vision</li>
+                    <li>Building blocks exist</li>
+                  </ul>
+                </div>
+                <div class="stage-nav">
+                  <button type="button" class="mini-btn" data-prev>← prev</button>
+                  <button type="button" class="mini-btn is-accent" data-next>next →</button>
+                </div>
+              </div>
+            </div>
+            <p>The rest of this post climbs that path one step at a time on the Kudu &amp; Co checkout: scripts first, then AI, then an agent, and an honest look at how close step five really is.</p>
+
+            <h2 id="c4">Hands-on: building the factory</h2>
+            <p>I drove all of this from Claude Code with the UiPath skills loaded, mostly the <code>uipath-test</code> skill, which teaches the agent to use <code>uip tm</code>, the Test Manager part of the UiPath CLI. Every command below is one that ran, and every output is real (trimmed for length). The screens at the end are Test Manager in the browser.</p>
+            <div class="walkthrough">
+              <div class="prereqs">
+                <span class="eyebrow-label">You need</span>
+                <span class="prereq">The UiPath CLI (uip)</span>
+                <span class="prereq">A coding agent with the UiPath skills</span>
+                <span class="prereq">Test Manager on your tenant</span>
+                <span class="prereq">Node.js for Playwright</span>
+              </div>
+              <ol class="steps">
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">01</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Check the tenant, then create a project</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">Confirm you are in the right tenant before you create anything, then create a Test Manager project and give it a default Orchestrator folder. Runs resolve packages and robots through that folder.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip login status --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm project create --name "Kudu &amp; Co Black Friday" --project-key KUDU --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">"ProjectKey": "KUDU", "Name": "Kudu &amp; Co Black Friday"</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm project set-default-folder --project-key KUDU --folder-key &lt;folder-key&gt; --output json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"Result": "Updated"</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">02</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Load the requirements</h3>
+                      <span class="step-time">~15 min</span>
+                    </div>
+                    <p class="step-body">Each Black Friday rule becomes a requirement with rules and acceptance examples. This is the most important step in the whole factory: every AI feature downstream reads these descriptions, so vague requirements give you vague tests.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm requirements create --project-key KUDU --name "BF-02 BLACKFRIDAY promo code" --description "$(cat bf-02.md)" --external-reference PROMO-102 --output json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"Key": "KUDU:2"</span></div>
+                          <div class="ln ln-c"><span class="txt"># ...and six more, KUDU:1 to KUDU:7</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <figure class="figure shot">
+                      <img src="../assets/dtf-02-requirement.png" alt="The BF-02 BLACKFRIDAY promo code requirement in Test Manager, with rules, acceptance examples, and buttons for Autonomous Exploration, Optimize coverage and Evaluate Requirement" width="1176" height="612" loading="lazy" />
+                      <figcaption>BF-02 in Test Manager. Note the AI buttons: Evaluate Requirement, Optimize coverage and Autonomous Exploration. We use all three ideas in this post.</figcaption>
+                    </figure>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">03</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Let the AI write test cases</h3>
+                      <span class="step-time">~1 min each</span>
+                    </div>
+                    <p class="step-body">One command starts a background AI job that reads the requirement and proposes test cases with steps and expected results. Each start uses AI units, so start it once and reuse the job id to review and create. I ran it on the three money rules: 3 for 2, the promo code and VAT.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm requirements generate-testcases --project-key KUDU --requirement-key KUDU:2 --wait --timeout 540 --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">[wait] AI activity ca7f178a... reached terminal status: Processed (took 00:00:30)</span></div>
+                          <div class="ln ln-o"><span class="txt"> #1  Validate promo code BLACKFRIDAY applies 20% discount to non-discounted item</span></div>
+                          <div class="ln ln-o"><span class="txt"> #5  Validate promo code applies only to non-discounted items in mixed basket</span></div>
+                          <div class="ln ln-o"><span class="txt">#10  Validate promo code with leading and trailing spaces is rejected</span></div>
+                          <div class="ln ln-c"><span class="txt"># 10 proposals. I kept six. More on #10 below.</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm requirements generate-testcases --project-key KUDU --activity-id ca7f178a... --create --select 1 2 4 5 6 9 --output json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"Result": "Success"  (6 created, labelled autopilot-generated)</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Review, don't rubber-stamp</span>
+                      <p class="tip-text">Across three requirements the AI proposed 30 test cases in about 30 seconds each. I kept 17. Section 5 explains the 13 I rejected, because that is where the human earns their place.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">04</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Let the AI critique a requirement</h3>
+                      <span class="step-time">~1 min</span>
+                    </div>
+                    <p class="step-body">The same AI can review a requirement before anyone builds against it. I pointed it at the delivery rule. It came back with twelve suggestions, and some were sharp.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm requirements evaluate --project-key KUDU --requirement-key KUDU:3 --wait --timeout 540 --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">* The R99.00 delivery fee doesn't say whether it includes VAT. In South Africa, VAT typically applies to delivery fees.</span></div>
+                          <div class="ln ln-o"><span class="txt">* Define whether R749.99, R750.00 and R750.01 each qualify for free delivery.</span></div>
+                          <div class="ln ln-o"><span class="txt">* The requirement mentions '3 for 2 deal' but provides no details about how this promotion works.</span></div>
+                          <div class="ln ln-c"><span class="txt"># ...12 in total</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Read between the lines</span>
+                      <p class="tip-text">The VAT-on-delivery question is a genuinely good catch: my requirement never said. The third one shows a limit: the 3 for 2 rules are fully defined in BF-01, but the AI reads each requirement on its own, so it cannot see them.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">05</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Automate with Playwright</h3>
+                      <span class="step-time">~1 hour</span>
+                    </div>
+                    <p class="step-body">The AI test cases describe what to check; something still has to click. I wrote a 17-test Playwright suite, one <code>describe</code> block per requirement, using the shop's <code>data-testid</code> attributes. Here is the test that matters most:</p>
+                    <div class="code-win">
+                      <div class="code-head">
+                        <span class="code-file">tests/black-friday.spec.ts</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <pre><code>test.describe('BF-02 BLACKFRIDAY promo code', () =&gt; {
+  test('mixed basket: code applies to the speaker only', { tag: ['@pricing', '@money'] }, async ({ page }) =&gt; {
+    await add(page, 'BILTONG-250', 2);
+    await add(page, 'ROOIBOS-80');
+    await add(page, 'SPEAKER-BT');
+    await applyCode(page, 'BLACKFRIDAY');
+    // 20% of the speaker only. The biltong and rooibos are already on 3 for 2.
+    await expect(page.getByTestId('code-discount')).toHaveText('-R259.80');
+  });
+});</code></pre>
+                    </div>
+                    <p class="step-body">My first local run had five failures. Three were the planted bugs. The other two were <strong>my</strong> bug: the shop shows a zero saving as <code>R0.00</code> and my test expected <code>-R0.00</code>. Tests have bugs too, and a red test is a question, not a verdict.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">npx playwright test</span></div>
+                          <div class="ln ln-o"><span class="txt">Expected: "-R0.00"   Received: "R0.00"</span></div>
+                          <div class="ln ln-o"><span class="txt">  5 failed, 12 passed (56.7s)</span></div>
+                          <div class="ln ln-c"><span class="txt"># fix the test, not the shop</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">npx playwright test</span></div>
+                          <div class="ln ln-o"><span class="txt">  3 failed, 14 passed (41.9s)</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">06</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Pack it for Test Manager</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">This is the part that was "coming soon" in UiPath's September announcement and simply worked on my tenant in November. <code>uip tm pack</code> turns a normal Playwright project into a package. Upload it to Orchestrator and Test Manager creates one test case per Playwright test, with labels for the file, suite, tags and browser.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm pack --project-path pw --type playwright --project-key KUDU --name KuduBlackFridayTests --package-version 1.0.0 -o out --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">"Package": "KuduBlackFridayTests@1.0.0", "TestCount": 17</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip or packages upload out/KuduBlackFridayTests.1.0.0.nupkg --output json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"Status": "OK"</span></div>
+                          <div class="ln ln-c"><span class="txt"># about 20 seconds later: 17 test cases, labelled PW_File_*, PW_Suite_*, PW_Tag_money ...</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">07</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Build a test set that maintains itself</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">A test set assigned by <strong>dynamic label</strong> picks up every test in the spec file, including ones added next week, without anyone editing the set. Then link each automated test to its requirement so coverage means something.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm testsets create --project-key KUDU --name "Black Friday Regression" --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">"TestSetKey": "KUDU:42"</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm testcases add --test-set-key KUDU:42 --labels "PW_File_tests/black-friday.spec.ts" --dynamic --output json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"MatchedTestCases": 17, "Result": "Added"</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm requirements testcases --project-key KUDU --requirement-id &lt;id&gt; --add-testcase-ids &lt;ids&gt; --output json</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <figure class="figure shot">
+                      <img src="../assets/dtf-03-tests.png" alt="The Test Cases tab of requirement BF-02: five automated Playwright test cases from package KuduBlackFridayTests showing Passed, and six AI-generated manual test cases showing None" width="1176" height="802" loading="lazy" />
+                      <figcaption>One requirement, two kinds of test. Top: the automated Playwright tests, linked to the package. Bottom: the AI-written manual test cases, never run by a robot. Test Manager's dashboard calls this 100% coverage and 50% automation.</figcaption>
+                    </figure>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">08</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Run it on cloud robots</h3>
+                      <span class="step-time">~1 min</span>
+                    </div>
+                    <p class="step-body">No laptop, no VM, no robot to keep logged in. The test set runs on UiPath's serverless cloud robots against the live shop. The folder needs a serverless machine and a robot account that can run unattended; mine already had both.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm testsets run --test-set-key KUDU:42 --playwright-project chromium --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">"ExecutionId": "1ef670d4...", "Status": "Pending"</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm wait --execution-id 1ef670d4... --project-key KUDU --timeout 120 --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">"Status": "Finished", "Duration": "00:00:36"</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm executions get-stats --execution-id 1ef670d4... --project-key KUDU --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">"Passed": 14, "Failed": 3</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">09</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Turn failures into defects</h3>
+                      <span class="step-time">~2 min</span>
+                    </div>
+                    <p class="step-body">A defect is raised from one failed result and carries the test, the run and the evidence. With Jira or Azure DevOps connected it syncs across; without one it lives in Test Manager. I made the two stacking bugs High (they lose money on every order) and the VAT bug Medium.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm executions testcaselogs list --execution-id 1ef670d4... --project-key KUDU --only-failed --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm defects create --project-key KUDU --execution-id 1ef670d4... --test-case-id &lt;id&gt; --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">"Name": "BF-02 BLACKFRIDAY promo code &gt; code does not stack on 3 for 2 items - Failed"</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm defects update --project-key KUDU --defect-id &lt;id&gt; --priority High --output json</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">10</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Switch the lights off: a nightly schedule</h3>
+                      <span class="step-time">~2 min</span>
+                    </div>
+                    <p class="step-body">This is the "dark" part in its simplest form: the regression runs at 02:00 every night whether anyone remembers or not. Watch the cron: Test Manager uses Quartz, which starts with seconds, not Unix cron. I created mine switched off, with an end date, because a demo should never keep running on a tenant after the blog post is done.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm schedules create --test-set-key KUDU:42 --name "Lights out - nightly Black Friday regression" --cron "0 0 2 1/1 * ? *" --cron-details '{"type":4,"daily":{"atHour":2,"atMinute":0,"frequencyIndays":1}}' --recurrence recurrence --timezone Africa/Johannesburg --start-time 2026-11-11T18:00 --disable-time 2026-11-18T23:59 --disabled --output json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"IsEnabled": false, "Action": "Created"</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">11</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Try a load test (and hit a wall)</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">Black Friday is a load problem as much as a logic problem, and Test Manager has performance scenarios. I set one up for 200 virtual shoppers on the checkout test. The dry run refused the package.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip tm perf-scenario execute --scenario-key KUDU:43 --wait --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">"Message": "HTTP 400: Failed to restore or download package KuduBlackFridayTests. Project metadata file not found in package."</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Honest result</span>
+                      <p class="tip-text">Performance scenarios want a Studio-built test package, not a Playwright one, and a full run needs performance testing licence units (my dev tenant has none). Load testing is part of the factory, just not for this suite on this tenant. I left it as a known gap rather than fake it.</p>
+                    </div>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+            <h2 id="c5">What the AI got right, and wrong</h2>
+            <p>Generating test cases is the headline feature, so it deserves a proper review. Thirty proposals, seventeen kept. Here is what the other thirteen taught me.</p>
+            <div class="eyebrow-label">Four lessons · click a row</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-green is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-1">
+                  <span class="tier-badge">1</span>
+                  <span>
+                    <span class="tier-name">It reads acceptance examples closely</span>
+                    <span class="tier-facts"><span>kept 17 of 30</span></span>
+                  </span>
+                  <span class="tier-path">good</span>
+                </button>
+                <p class="tier-why" id="tier-why-1">Every example I wrote in a requirement came back as a test case with the exact numbers, including the mixed basket that catches the stacking bug. Write good examples and you get good tests almost for free.</p>
+              </li>
+              <li class="tier c-pink">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-2">
+                  <span class="tier-badge">2</span>
+                  <span>
+                    <span class="tier-name">It invents rules</span>
+                    <span class="tier-facts"><span>" BLACKFRIDAY " must be rejected?</span></span>
+                  </span>
+                  <span class="tier-path">rejected</span>
+                </button>
+                <p class="tier-why" id="tier-why-2" hidden>One proposal insisted a code typed with spaces around it must be rejected. The requirement never says that, and most shops would trim the spaces. A test like that fails for the wrong reason and somebody wastes an afternoon "fixing" correct code.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-3">
+                  <span class="tier-badge">3</span>
+                  <span>
+                    <span class="tier-name">It tests the impossible</span>
+                    <span class="tier-facts"><span>R0.01 and R999,999.99 baskets</span></span>
+                  </span>
+                  <span class="tier-path">rejected</span>
+                </button>
+                <p class="tier-why" id="tier-why-3" hidden>Boundary thinking is good, but the cheapest product is R64.99 and you can buy at most five of anything, so neither basket can exist. It also proposed a test for an item "priced at R99.99" that is not in the catalogue. The AI knows the requirement, not the product.</p>
+              </li>
+              <li class="tier c-purple">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-4">
+                  <span class="tier-badge">4</span>
+                  <span>
+                    <span class="tier-name">It repeats itself</span>
+                    <span class="tier-facts"><span>uppercase · lowercase · MiXeD</span></span>
+                  </span>
+                  <span class="tier-path">trimmed</span>
+                </button>
+                <p class="tier-why" id="tier-why-4" hidden>Three test cases for case sensitivity, nine for 3 for 2 quantities. Cheap to generate, not cheap to maintain. I kept one of each pattern. Generated tests still cost money every time they run and every time the UI changes.</p>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">The takeaway</p>
+              <p class="callout-text">AI test generation turns a tester from a writer into an editor. That is a big speed-up, and it moves the skill to two places: writing requirements with sharp examples, and saying no to plausible-looking tests that check the wrong thing.</p>
+            </aside>
+
+            <h2 id="c6">Red, amber, green</h2>
+            <p>Here are the answers to the challenge. The first cloud run found exactly the two planted bugs, through three failing tests:</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Bug 1 · High</p>
+                  <h3 class="info-title">The deals stack</h3>
+                  <p class="info-body">BLACKFRIDAY is meant to skip items already on 3 for 2. It does not. On 2 biltong, 1 rooibos and a speaker the shop gives <strong>R335.80</strong> off instead of R259.80. Three rooibos get R26.00 off when they should get nothing. Every Black Friday basket with Pantry items leaks margin.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Bug 2 · Medium</p>
+                  <h3 class="info-title">VAT is out by a cent</h3>
+                  <p class="info-body">VAT is rounded on every line and then added up, instead of once on the total. On a R618.98 order the shop shows <strong>R80.73</strong>; the right answer is R80.74. No customer will notice. Finance will, at month end, across thousands of orders.</p>
+                </div>
+              </li>
+            </ul>
+            <p>Then I fixed the shop one bug at a time, pushed each fix live and re-ran the same test set on the cloud robots. Three runs, one afternoon:</p>
+            <figure class="figure shot">
+              <img src="../assets/dtf-04-runs.png" alt="Three automated executions of the Black Friday Regression test set, 17 tests each: the oldest with a large red section, the next with a small red section, the newest all green" width="1500" height="448" loading="lazy" />
+              <figcaption>Bottom to top: 14 passed and 3 failed, then 16 and 1 after the stacking fix, then all 17 green after the VAT fix. 36, 24 and 20 seconds on cloud robots.</figcaption>
+            </figure>
+            <p>The part I did not expect: open a failed result and Test Manager shows Playwright's own error report, which is written <em>for an AI to read</em>. It literally starts with instructions: explain why the test failed, be concise, provide a fix. Hand it to your coding agent and you have the start of automated triage.</p>
+            <figure class="figure shot">
+              <img src="../assets/dtf-05-failure.png" alt="A failed test result in Test Manager for BF-04 VAT is calculated once on the order total, with the error VAT on R618.98 and Playwright's error context starting with instructions to explain why the test failed and provide a fix" width="1166" height="887" loading="lazy" />
+              <figcaption>The VAT failure: expected 8074 cents, received 8073. Note the Trace tab and five attachments: Playwright's trace and screenshot travel with the result.</figcaption>
+            </figure>
+
+            <h2 id="c7">Letting the agent loose</h2>
+            <p>Everything so far is scripted. A person wrote every check. The step that makes the factory "dark" is different: an agent that tests what nobody wrote a test for. In Test Manager it is called <strong>Autonomous Exploration</strong>, it is in preview, and it lives on the requirement page. Before running it I put both bugs back in the shop, so it had something real to find.</p>
+            <figure class="figure shot is-narrow">
+              <img src="../assets/dtf-06-explore-setup.png" alt="The Autonomous Exploration panel in Test Manager with free-text instructions to test the Kudu and Co Black Friday checkout like a deal-hunting customer, the shop URL, a 10 minute timebox and the Gemini 3 Flash Preview model" width="600" height="940" loading="lazy" />
+              <figcaption>The whole setup: a mission in plain English, a URL and a timebox. Then you pick a folder and it runs on a serverless cloud robot. Preview credits are included (50,000 on my tenant).</figcaption>
+            </figure>
+            <p>My mission was simple: explore like a deal-hunting customer, check the maths on every line, report anything that looks wrong. Eleven minutes later:</p>
+            <figure class="figure shot">
+              <img src="../assets/dtf-07-explore-overview.png" alt="The Autonomous Exploration result: status Finished, duration 11 minutes 11 seconds, two findings, and ten scenarios the agent created, one Completed and nine Incomplete" width="1166" height="852" loading="lazy" />
+              <figcaption>The agent planned ten scenarios on its own, from promo codes to quantity limits to VAT. Look at the right-hand column.</figcaption>
+            </figure>
+            <figure class="figure shot">
+              <img src="../assets/dtf-08-explore-finding.png" alt="A High finding from the agent: BLACKFRIDAY promo discount incorrectly applied to Pantry items, with expected and observed behaviour, R335.80 instead of R259.80, a screenshot and steps to reproduce" width="1166" height="852" loading="lazy" />
+              <figcaption>No script, no selectors: the agent found the stacking bug, rated it High, did the maths (R335.80 instead of R259.80) and attached a screenshot and steps to reproduce.</figcaption>
+            </figure>
+            <p>Three things happened, and all three matter:</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Found</p>
+                  <h3 class="info-title">The expensive bug</h3>
+                  <p class="info-body">It found the stacking bug with no test written for it, and noticed something my tests did not: Pantry items get the 20% even when the 3 for 2 has not kicked in yet.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">False alarm</p>
+                  <h3 class="info-title">"Double points" is not doubled</h3>
+                  <p class="info-body">It reported a Medium bug: the banner says double points, so it expected 4 per R10, not 2. The shop is correct, but the banner never says what normal is. Not a bug, but a fair point about the copy.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Ran out of time</p>
+                  <h3 class="info-title">VAT never got checked</h3>
+                  <p class="info-body">Only 1 of the 10 scenarios completed. Serverless exploration is capped at 10 minutes, and the VAT scenario was cut off. The cent bug went unreported.</p>
+                </div>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Scripts guard, agents explore</p>
+              <p class="callout-text">Put the two side by side. The scripted suite caught both bugs every run in 36 seconds, but only because someone knew to check them. The agent found the expensive bug with no script, but missed the subtle one and raised a false alarm. That is not a weakness of either: the factory needs both, and a person to triage what the agent says.</p>
+            </aside>
+
+            <h2 id="c8">Where the lights stay on</h2>
+            <p>After a day in the factory, this is where I still needed a human, and where I think you will too.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Input</p>
+                  <h3 class="info-title">Requirements are the product</h3>
+                  <p class="info-body">Every AI feature reads the requirement text. Good examples gave me good tests; a missing rule (VAT on delivery) went untested until the AI asked. Garbage in is now automated garbage out.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Judgement</p>
+                  <h3 class="info-title">Triage</h3>
+                  <p class="info-body">Five red tests on day one: three real bugs, two broken tests. One agent finding was a false alarm. Somebody has to decide which is which before a developer loses a day.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Limits</p>
+                  <h3 class="info-title">Timeboxes and licences</h3>
+                  <p class="info-body">Exploration stops at 10 minutes on serverless. Load testing needs Studio packages and licence units. AI generation spends AI units on every start. Plan for these like any other capacity.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Risk</p>
+                  <h3 class="info-title">What "ready" means</h3>
+                  <p class="info-body">Is a one-cent VAT bug a release blocker on Black Friday Eve? A robot cannot answer that. Someone who owns the risk can.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Hygiene</p>
+                  <h3 class="info-title">Clean up after demos</h3>
+                  <p class="info-body">Schedules, preview credits and test data outlive the experiment. My schedule was created switched off with an end date for exactly that reason.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-slate">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Maintenance</p>
+                  <h3 class="info-title">Someone owns the suite</h3>
+                  <p class="info-body">Seventeen tests is easy. Seventeen hundred generated ones is a codebase. UiPath's vision has agents repairing tests too; until then, somebody does.</p>
+                </div>
+              </li>
+            </ul>
+
+            <h2 id="c9">The next few years</h2>
+            <p>UiPath calls the full dark testing factory a longer-term vision, with some building blocks available today. Having built what exists, here is how I read the road ahead. This part is opinion, and I have labelled it that way.</p>
+            <div class="eyebrow-label">My read · click a row</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-green is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-5">
+                  <span class="tier-badge">Now</span>
+                  <span>
+                    <span class="tier-name">Lights dimmed</span>
+                    <span class="tier-facts"><span>AI writes · robots run · people decide</span></span>
+                  </span>
+                  <span class="tier-path">real today</span>
+                </button>
+                <p class="tier-why" id="tier-why-5">Everything in the hands-on section works today: AI test generation and requirement review, your own Playwright suite in Test Manager, serverless cloud robots, defects and schedules. A team could run its Black Friday regression lights-out tonight. Most of the effort is writing the requirements well.</p>
+              </li>
+              <li class="tier c-cyan">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-6">
+                  <span class="tier-badge">Next</span>
+                  <span>
+                    <span class="tier-name">Agents on the night shift</span>
+                    <span class="tier-facts"><span>exploration · autonomous execution · triage</span></span>
+                  </span>
+                  <span class="tier-path">preview now</span>
+                </button>
+                <p class="tier-why" id="tier-why-6" hidden>Autonomous Exploration is usable in preview and already finds real bugs. UiPath has announced Autopilot running manual test cases with no automation, and self-healing for Playwright selectors. My bet: within a year or so, the normal setup is scripted regression on every change plus an agent exploring every night, with a person triaging the agent's findings in the morning.</p>
+              </li>
+              <li class="tier c-purple">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-7">
+                  <span class="tier-badge">Later</span>
+                  <span>
+                    <span class="tier-name">Governed autonomy</span>
+                    <span class="tier-facts"><span>policy gates · agents maintain tests</span></span>
+                  </span>
+                  <span class="tier-path">vision</span>
+                </button>
+                <p class="tier-why" id="tier-why-7" hidden>The full factory: agents notice a change, decide what to test, run it, triage the failures, repair broken tests and route real defects, inside the pipeline, under policy. People set acceptable risk and sign off. The building blocks are visible; joining them up safely, with audit trails a regulator would accept, is the real work. I would want to see that running at a bank before I called it done.</p>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Why now</p>
+              <p class="callout-text">UiPath's argument is that AI coding tools let teams ship code much faster than they can test it, and that testing has to scale the same way. After watching my own coding agent write a shop and a test suite in an afternoon, I find that hard to argue with. If code is cheap, checking it has to get cheap too.</p>
+            </aside>
+
+            <h2 id="c10">Test yourself</h2>
+            <div class="quiz" data-quiz>
+              <div class="quiz-q" data-answer="c">
+                <p class="quiz-prompt"><span>Q1</span>Which planted bug did the autonomous agent miss?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">The stacking deals</button>
+                  <button type="button" class="quiz-opt" data-opt="b">Neither, it found both</button>
+                  <button type="button" class="quiz-opt" data-opt="c">The one-cent VAT bug</button>
+                </div>
+                <p class="quiz-why" hidden>It found the expensive stacking bug, but the 10-minute serverless timebox cut off its VAT scenario. The scripted test caught it on every run.</p>
+              </div>
+              <div class="quiz-q" data-answer="b">
+                <p class="quiz-prompt"><span>Q2</span>On the first local run, five tests failed. How many were real bugs in the shop?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">Five</button>
+                  <button type="button" class="quiz-opt" data-opt="b">Three</button>
+                  <button type="button" class="quiz-opt" data-opt="c">Two</button>
+                </div>
+                <p class="quiz-why" hidden>Three failing tests, covering the two planted bugs. The other two failures were my test expecting "-R0.00" where the shop correctly shows "R0.00".</p>
+              </div>
+              <div class="quiz-q" data-answer="a">
+                <p class="quiz-prompt"><span>Q3</span>How do you add next week's new Playwright tests to the Black Friday test set?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">You don't: the dynamic label picks them up</button>
+                  <button type="button" class="quiz-opt" data-opt="b">Re-create the test set</button>
+                  <button type="button" class="quiz-opt" data-opt="c">Link each one with link-automation</button>
+                </div>
+                <p class="quiz-why" hidden>The set was filled with --dynamic on the spec file's PW_File label, so anything ingested from that file joins automatically. And never use link-automation on Playwright cases: ingestion links them.</p>
+              </div>
+              <p class="quiz-score" aria-live="polite">Pick an answer for each one.</p>
+            </div>
+
+            <h2 id="c11">Your turn: beat the robots</h2>
+            <p>Both bugs are back in the <a href="../../shop/" target="_blank" rel="noopener">Kudu &amp; Co shop</a>, exactly as the robots found them. Now that you know what they are, here are three things to try:</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Easy</p>
+                  <h3 class="info-title">Reproduce the stack</h3>
+                  <p class="info-body">Two biltong, one rooibos, one speaker, code BLACKFRIDAY. Work out what the promo saving should be before you look.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Harder</p>
+                  <h3 class="info-title">Find the missing cent</h3>
+                  <p class="info-body">One biltong and one coffee. Is the VAT really 15/115 of the total? Find another basket where it is wrong.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Bonus</p>
+                  <h3 class="info-title">Out-test the agent</h3>
+                  <p class="info-body">Point your own Playwright suite or agent at the shop. Find something none of us reported and tell me on LinkedIn.</p>
+                </div>
+              </li>
+            </ul>
+
+            <h2 id="c12">What's next</h2>
+            <p>This post sits in the <strong>Run &amp; Scale</strong> pillar, next to Maestro Case Management. Building an automation is half the job; running it at scale means knowing it still works tonight, tomorrow and on the busiest day of the year, and that is what a testing factory is for. Next on the blog is <strong>Maestro</strong>, where we compare orchestrating a process with automating it, and how to choose between Flow, BPMN and Case Management.</p>
+            <p>And on the show: <strong>Episode 4 is recorded live at UiPath Fusion Cape Town</strong> on Thursday 19 November, 13:00 to 14:30. If you are there, come and say hi. Details are on the <a href="../../">main site</a>.</p>
+            <p>If you want to try this yourself: install the UiPath skills, load <code>uipath-test</code> in your coding agent, write three requirements with sharp examples and ask it to build you a factory. Then switch the lights off and see what is still standing in the morning.</p>
+          </div>
+        </article>
+        <aside class="post-aside">
+          <nav class="toc" aria-labelledby="toc-title">
+            <p class="eyebrow-label" id="toc-title">On this page</p>
+            <a href="#c1">Lights out, quality on</a>
+            <a href="#c2">The use case</a>
+            <a href="#c3">Lights on to lights out</a>
+            <a href="#c4">Hands-on: building the factory</a>
+            <a href="#c5">What the AI got right and wrong</a>
+            <a href="#c6">Red, amber, green</a>
+            <a href="#c7">Letting the agent loose</a>
+            <a href="#c8">Where the lights stay on</a>
+            <a href="#c9">The next few years</a>
+            <a href="#c10">Test yourself</a>
+            <a href="#c11">Your turn</a>
+            <a href="#c12">What's next</a>
+          </nav>
+          <div class="tagged">
+            <p class="eyebrow-label">Tagged</p>
+            <ul class="tag-list">
+              <li>Test Manager</li>
+              <li>Test Cloud</li>
+              <li>Playwright</li>
+              <li>Agentic</li>
+              <li>uip CLI</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="uu-footer">
+      <div class="uu-wrap uu-footer-inner">
+        <div class="uu-footer-brand">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="26" height="26" />
+          <span>UiPath Uncharted</span>
+        </div>
+        <span class="uu-footer-note">Field notes · Season 1 · Hosted by Jarryd Scott</span>
+        <nav class="uu-footer-links" aria-label="Elsewhere">
+          <a href="mailto:jscott@i1solutions.co.za">Email</a>
+          <a href="https://www.linkedin.com/in/jarryd-scott-01498019b" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+          <a href="../../">Main site</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <button type="button" class="to-top" aria-label="Back to top">
+    <svg class="to-top-ring" viewBox="0 0 48 48" aria-hidden="true">
+      <defs>
+        <linearGradient id="to-top-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#42d6ff" />
+          <stop offset="1" stop-color="#7c5cff" />
+        </linearGradient>
+      </defs>
+      <circle class="to-top-track" cx="24" cy="24" r="22" />
+      <circle class="to-top-progress" cx="24" cy="24" r="22" pathLength="100" />
+    </svg>
+    <svg class="to-top-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+  </button>
+
+  <script src="../blog.js" defer></script>
+</body>
+</html>
