@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Kudu &amp; Co - Black Friday (demo shop)</title>
+  <meta name="description" content="A demo shop built for the UiPath Uncharted blog. Not a real store. It contains deliberate bugs for test automation practice." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shop.css" />
+</head>
+<body>
+  <!-- Demo notice: this is a fictional store used as the system under test in the Dark Testing Factory post -->
+  <div class="demo-bar" data-testid="demo-notice">
+    Demo shop for the <a href="../blog/">UiPath Uncharted blog</a>. Kudu &amp; Co is not a real store, nothing here is for sale, and it has a couple of deliberate bugs. Can you find them?
+  </div>
+
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="./" aria-label="Kudu &amp; Co home">
+        <span class="brand-mark" aria-hidden="true">K</span>
+        <span class="brand-name">Kudu <em>&amp;</em> Co</span>
+      </a>
+      <div class="bf-clock" aria-live="polite">
+        <span class="bf-tag">Black Friday</span>
+        <span class="bf-time" id="bfClock">27 November</span>
+      </div>
+      <button class="cart-btn" type="button" data-testid="cart-toggle" aria-controls="basket">
+        Basket <span class="cart-count" data-testid="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <p class="hero-eyebrow">Black Friday is here</p>
+      <h1>Big deals. <span>Zero queues.</span></h1>
+      <ul class="hero-deals">
+        <li><strong>3 for 2</strong> on all Pantry items</li>
+        <li><strong>20% off</strong> with code <code>BLACKFRIDAY</code></li>
+        <li><strong>Free delivery</strong> over R750</li>
+        <li><strong>Double</strong> Kudu Rewards points</li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="wrap shop">
+    <section class="catalogue" aria-label="Products">
+      <div class="cat-head">
+        <h2>Today's deals</h2>
+        <p class="cat-note">Prices include 15% VAT. Limit of 5 per product per order.</p>
+      </div>
+      <div class="grid" id="productGrid"></div>
+    </section>
+
+    <aside class="basket" id="basket" aria-label="Basket" data-testid="basket">
+      <div class="basket-card" id="basketView">
+        <h2>Your basket</h2>
+        <p class="empty" data-testid="basket-empty">Your basket is empty. The deals are not going to buy themselves.</p>
+        <ul class="lines" id="basketLines" data-testid="basket-lines"></ul>
+        <p class="limit-msg" data-testid="limit-message" role="alert" hidden></p>
+
+        <form class="promo" id="promoForm" autocomplete="off">
+          <label for="promoInput">Promo code</label>
+          <div class="promo-row">
+            <input id="promoInput" data-testid="promo-input" type="text" placeholder="e.g. BLACKFRIDAY" />
+            <button type="submit" data-testid="promo-apply">Apply</button>
+          </div>
+          <p class="promo-msg" data-testid="promo-message" role="status"></p>
+        </form>
+
+        <dl class="totals">
+          <div><dt>Subtotal</dt><dd data-testid="subtotal">R0.00</dd></div>
+          <div class="is-saving"><dt>3 for 2 savings</dt><dd data-testid="deal-discount">-R0.00</dd></div>
+          <div class="is-saving"><dt>Promo code</dt><dd data-testid="code-discount">-R0.00</dd></div>
+          <div><dt>Delivery</dt><dd data-testid="delivery">R0.00</dd></div>
+          <div class="grand"><dt>Total</dt><dd data-testid="total">R0.00</dd></div>
+          <div class="vat"><dt>Includes VAT (15%)</dt><dd data-testid="vat">R0.00</dd></div>
+          <div class="points"><dt>Kudu Rewards points</dt><dd data-testid="points">0</dd></div>
+        </dl>
+
+        <p class="free-hint" data-testid="free-delivery-hint"></p>
+        <button class="checkout" type="button" data-testid="checkout" disabled>Place order</button>
+      </div>
+
+      <div class="basket-card confirm" id="confirmView" data-testid="confirmation" hidden>
+        <p class="confirm-tick" aria-hidden="true">&#10003;</p>
+        <h2>Order placed</h2>
+        <p>Order number <strong data-testid="order-number"></strong></p>
+        <p>Total paid <strong data-testid="order-total"></strong></p>
+        <p class="confirm-note">This is a demo shop, so nothing ships and nobody is charged.</p>
+        <button class="checkout" type="button" data-testid="new-order">Start a new order</button>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">Kudu &amp; Co is fictional. Built for <a href="../">UiPath Uncharted</a> as the system under test for the Dark Testing Factory post.</div>
+  </footer>
+
+  <script src="shop.js"></script>
+</body>
+</html>
