@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orchestrate vs Automate: one lost bag, three Maestro tools · UiPath Uncharted</title>
+  <meta name="description" content="A hands-on build of one lost-luggage story in all three UiPath Maestro tools: a Flow that traces the bag in minutes, a BPMN process that gets it home under an SLA, and a Case that settles the claim over weeks, with an AI assessor and a human sign-off. When to automate, when to orchestrate, and what broke along the way." />
+  <meta name="theme-color" content="#060816" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="UiPath Uncharted" />
+  <meta property="og:title" content="Orchestrate vs Automate: one lost bag, three Maestro tools · UiPath Uncharted" />
+  <meta property="og:description" content="One lost-luggage story built in all three UiPath Maestro tools: Flow, BPMN and Case. When to automate, when to orchestrate, and what broke along the way." />
+  <meta property="og:url" content="https://uipathuncharted.co.za/blog/maestro-orchestrate-vs-automate/" />
+  <meta property="og:image" content="https://uipathuncharted.co.za/blog/assets/maestro-orchestrate-cover.jpg" />
+  <meta property="og:image:width" content="1600" />
+  <meta property="og:image:height" content="893" />
+  <meta property="og:image:alt" content="Orchestrate vs Automate: one lost bag, three Maestro tools" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://uipathuncharted.co.za/blog/maestro-orchestrate-vs-automate/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../blog.css" />
+  <link rel="icon" type="image/png" href="../../assets/uu-mark-navy.png" />
+  <link rel="apple-touch-icon" href="../../assets/uu-mark-navy.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="uu-page">
+    <div class="uu-progress" aria-hidden="true"><span></span></div>
+
+    <header class="uu-header">
+      <div class="uu-wrap uu-header-inner">
+        <a class="uu-brand" href="../" aria-label="UiPath Uncharted Field Notes, blog home">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="34" height="34" />
+          <span class="uu-brand-text">
+            <span class="uu-brand-name">UiPath Uncharted</span>
+            <span class="uu-brand-sub">Field Notes</span>
+          </span>
+        </a>
+        <nav class="uu-nav" aria-label="Blog">
+          <a href="../#feed">Writing</a>
+          <a href="../#pillars">Pillars</a>
+          <a class="nav-cross" href="../../">Podcast</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="uu-wrap post-main">
+      <a class="back-link" href="../">← All writing</a>
+      <div class="post-layout">
+        <article>
+          <header class="post-head">
+            <div class="chips">
+              <span class="chip chip-lg p-run">Run &amp; Scale</span>
+              <span class="chip chip-status c-green">shipped</span>
+              <span class="post-date">12 Nov 2026 · 16 min</span>
+            </div>
+            <h1 class="post-title">Orchestrate vs Automate: one lost bag, three Maestro tools</h1>
+            <p class="post-lede">Your bag didn't land. Over the next three weeks one airline has to trace it, get it home and, if that fails, pay you for it. I built that whole story on my own tenant in all three UiPath Maestro tools: a Flow, a BPMN process and a Case. Doing the same story three ways turned out to be the clearest way I have found to answer the question clients keep asking me: when do you automate, and when do you orchestrate?</p>
+            <div class="author">
+              <img src="../assets/jarryd-scott-avatar.jpg" alt="" width="40" height="40" />
+              <div class="author-text">
+                <span class="author-name">Jarryd Scott</span>
+                <span class="author-role">Technical Lead, Business Automation · host of UiPath Uncharted</span>
+              </div>
+              <span class="author-ep">Hands-on deep dive</span>
+            </div>
+            <figure class="post-hero">
+              <img src="../assets/maestro-orchestrate-cover.jpg" alt="Orchestrate vs Automate: a glowing suitcase that didn't land at OR Tambo, fed by bag tag scans, the flight schedule, the passenger, the Outlook inbox and a claims officer, routed to three Maestro lanes (Flow: where's my bag, minutes; BPMN: get it home, days; Case: settle the claim, weeks) and three outcomes: bag delivered, bag found late, claim settled" width="1600" height="893" />
+            </figure>
+          </header>
+          <div class="prose">
+            <h2 id="c1">Your bag didn't land</h2>
+            <p>You have been on the carousel at OR Tambo for forty minutes. Everyone from your flight has gone home. The belt stops. Somewhere between London and Johannesburg your bag took a different route, and you are about to find out how good your airline's processes really are.</p>
+            <p>From the airline's side, that one missing bag is three very different kinds of work:</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Minutes</p>
+                  <h3 class="info-title">Where is it?</h3>
+                  <p class="info-body">Look up the bag tag, see where it was last scanned, and tell the passenger something useful before they reach the parking lot.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Days</p>
+                  <h3 class="info-title">Get it home</h3>
+                  <p class="info-body">A fixed procedure: wait for the flight it is on, scan it, check it, courier it, and give up after five days if it never shows.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Weeks</p>
+                  <h3 class="info-title">Settle the claim</h3>
+                  <p class="info-body">Receipts, a contents list, a liability limit, a person who signs off the money, and a bag that might still turn up halfway through.</p>
+                </div>
+              </li>
+            </ul>
+            <p>UiPath Maestro gives you three tools for exactly this. When you open a Maestro project in Studio Web now, the welcome screen says it plainly: <strong>"Build using Case, Flow, or BPMN."</strong> The marketing answer to "which one?" is "it depends". This post is my attempt at a better answer, built rather than drawn.</p>
+            <aside class="callout is-note">
+              <p class="callout-label">Automate vs orchestrate, in one line each</p>
+              <p class="callout-text"><strong>Automate</strong>: take a piece of work and finish it, start to end, as fast as possible, with nobody waiting on anything. <strong>Orchestrate</strong>: coordinate people, systems, agents and time across a process that lives for days or weeks, keep its state, enforce its deadlines and show everyone where it is.</p>
+            </aside>
+
+            <h2 id="c2">The use case: Jacaranda Air</h2>
+            <p>Meet <strong>Jacaranda Air</strong>, a made-up South African airline named after the purple trees that take over Joburg every November. Our passenger, Thandi Mokoena, flew in from London on JA 101. Her bag was late off a connecting flight from Manchester, missed the transfer at Heathrow and was put on the next evening's JA 103. A second passenger on the same flight is less lucky: their bag was checked in and never scanned again.</p>
+            <p>Two bags, two endings, and three Maestro projects in one solution, each passing the bag to the next:</p>
+            <div class="stages" data-stages>
+              <div class="stage-tabs" role="tablist" aria-label="The journey of a lost bag">
+                <button type="button" class="stage-tab" role="tab" id="mstage-tab-1" aria-controls="mstage-panel-1" aria-selected="true">
+                  <span class="stage-tab-n">01</span><span>Hour one</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="mstage-tab-2" aria-controls="mstage-panel-2" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">02</span><span>Days 1 to 5</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="mstage-tab-3" aria-controls="mstage-panel-3" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">03</span><span>Weeks 1 to 3</span>
+                </button>
+              </div>
+              <div class="stage-body">
+                <div class="stage-bar" aria-hidden="true"><span></span></div>
+                <div class="stage-panel" role="tabpanel" id="mstage-panel-1" aria-labelledby="mstage-tab-1">
+                  <h3 class="stage-title">Flow: Where's my bag?</h3>
+                  <p class="stage-text">Trace the tag, have an agent write a warm update, email the passenger, then hand off: a bag on the next flight goes to the delivery process, a bag with no trace becomes a claim. Runs in seconds.</p>
+                  <ul class="meta-pills">
+                    <li>Automate</li>
+                    <li>WheresMyBag</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="mstage-panel-2" aria-labelledby="mstage-tab-2" hidden>
+                  <h3 class="stage-title">BPMN: Delayed bag delivery</h3>
+                  <p class="stage-text">Open a delayed-bag file, wait for the flight, scan and inspect the bag on arrival, then book a courier and email the passenger at the same time. A five-day SLA timer watches the whole thing and declares the bag lost if it never arrives.</p>
+                  <ul class="meta-pills">
+                    <li>Orchestrate</li>
+                    <li>DelayedBagDelivery</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="mstage-panel-3" aria-labelledby="mstage-tab-3" hidden>
+                  <h3 class="stage-title">Case: Lost bag claim</h3>
+                  <p class="stage-text">Ask for evidence, wait for the passenger, let an AI agent assess the claim against the Montreal Convention limit, have a Claims Officer approve or reject, and settle. A bag that turns up mid-claim can interrupt everything.</p>
+                  <ul class="meta-pills">
+                    <li>Orchestrate and manage</li>
+                    <li>LostBagClaim</li>
+                  </ul>
+                </div>
+                <div class="stage-nav">
+                  <button type="button" class="mini-btn" data-prev>← prev</button>
+                  <button type="button" class="mini-btn is-accent" data-next>next →</button>
+                </div>
+              </div>
+            </div>
+            <aside class="callout is-note">
+              <p class="callout-label">What is real here</p>
+              <p class="callout-text">Jacaranda Air, Thandi and the bag tags are fictional, and the airline's baggage tracing system is a small script that stands in for the real thing. Everything else is real: all three projects were built with the UiPath CLI from my coding agent, ran on my dev tenant, and sent real emails (to my own inbox). Every screenshot is Studio Web.</p>
+            </aside>
+
+            <h2 id="c3">Automate: the Flow</h2>
+            <p>The first hour is classic automation. Something happens, a few systems get touched, a person gets told, done. Nobody waits on anybody. That is what Maestro Flow is for.</p>
+            <figure class="figure shot">
+              <img src="../assets/mo-01-flow.png" alt="The WheresMyBag flow in Studio Web: Manual trigger, traceBag script, writeUpdate agent, houseStyle script, emailPassenger Outlook step, and a bagLocated decision with two End nodes" width="1380" height="320" loading="lazy" />
+              <figcaption>WheresMyBag: trace, write, tidy, send, decide. Seven nodes, a few seconds per run.</figcaption>
+            </figure>
+            <p>I built it the way I now build every Flow: in TypeScript with the Maestro builder SDK, compiled down to the <code>.flow</code> file that Studio Web opens. My coding agent drove it with the <code>uipath-maestro-flow</code> skill.</p>
+            <div class="walkthrough">
+              <div class="prereqs">
+                <span class="eyebrow-label">You need</span>
+                <span class="prereq">The UiPath CLI (uip)</span>
+                <span class="prereq">A coding agent with the UiPath skills</span>
+                <span class="prereq">The Maestro builder SDK</span>
+                <span class="prereq">An Outlook 365 connection</span>
+              </div>
+              <ol class="steps">
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">01</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>One solution for all three</h3>
+                      <span class="step-time">~2 min</span>
+                    </div>
+                    <p class="step-body">All three projects live in one solution, so they deploy together and can share connections. The Flow is scaffolded with its TypeScript source, so you never hand-write the flow id.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution init "JacarandaBags"</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">cd JacarandaBags &amp;&amp; uip maestro flow init WheresMyBag --sdk-source</span></div>
+                          <div class="ln ln-ok"><span class="txt">flow-decompile: wrote WheresMyBag.flow.ts · "Status": "Registered"</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro registry search 'outlook send email' --limit 5</span></div>
+                          <div class="ln ln-o"><span class="txt">"NodeType": "uipath.connector.uipath-microsoft-outlook365.send-email"</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">02</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Trace, write, send, decide</h3>
+                      <span class="step-time">~20 min</span>
+                    </div>
+                    <p class="step-body">A script looks up the scan trail. An inline agent (Claude Sonnet, through my tenant's model list) writes the passenger email from the trail and is told never to invent facts. The Outlook connector sends it. A branch decides the hand-off: <em>located</em> goes to the delivery process, <em>no trace</em> goes to a claim.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro flow check .flow-sdk/WheresMyBag.flow.ts --source</span></div>
+                          <div class="ln ln-o"><span class="txt">✗ [INLINE_AGENT_COMPOSITE_INPUT] input `events` is bound to a computed expression ... its value does not reach the agent</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">The checker earned its keep</span>
+                      <p class="tip-text">I had passed the scan trail to the agent as <code>JSON.stringify(...)</code> of a step's output. That compiles, validates and runs, and the agent silently receives nothing, because the platform only passes plain references through to an agent. The source check caught it before a single run. The fix: build the text in the script and pass that.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">03</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Run it for real</h3>
+                      <span class="step-time">seconds</span>
+                    </div>
+                    <p class="step-body">A debug run is a real run: it uploads the solution to your personal workspace in Studio Web and executes every node, email included. (Point it at a shared folder and it fails; debug runs belong in your personal workspace.)</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro flow debug WheresMyBag --inputs @in-located.json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"status": "Completed", "st": "located", "eta": "2026-11-12 07:55 at OR Tambo"</span></div>
+                          <div class="ln ln-o"><span class="txt">"next": "Start the delayed-bag delivery process (BPMN)"</span></div>
+                          <div class="ln ln-o"><span class="txt">"subj": "Update on Your Bag Tag JA482193 \u2013 Jacaranda Air"</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="step-body">Look at that subject line. My house style (and this blog's) is no long dashes, and I had written exactly that into the agent's prompt. It used one anyway. So I tightened the prompt and ran it again. It used one again.</p>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">04</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>A rule is code, not a request</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">The fix was not a better prompt. It was one deterministic step after the agent that enforces the rule every time:</p>
+                    <div class="code-win">
+                      <div class="code-head">
+                        <span class="code-file">.flow-sdk/WheresMyBag.flow.ts</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <pre><code>// House style is a rule, not a request: enforce it in code, not in the prompt.
+.step("houseStyle", script({
+  code: `
+const fix = (x) =&gt; String(x || '').replace(/ *[\u2013\u2014] */g, ' - ');
+return { subject: fix($vars.writeUpdate.output.subject),
+         html: fix($vars.writeUpdate.output.html) };`,
+}))</code></pre>
+                    </div>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro flow debug WheresMyBag --inputs @in-located.json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"status": "Completed", "failed": [], "subj": "Update on your bag - Tag JA482193"</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ol>
+            </div>
+            <aside class="callout is-note">
+              <p class="callout-label">The whole post in one bug</p>
+              <p class="callout-text">That dash is the automate-versus-orchestrate argument in miniature. The agent is brilliant at the fuzzy part, writing a kind, specific email from a scan trail. It is unreliable at the hard rule. So you let the model do the reading and writing, and you put the rules in plain, boring, deterministic steps around it. Every good Maestro design I have seen follows that shape.</p>
+            </aside>
+
+            <h2 id="c4">Orchestrate: the BPMN process</h2>
+            <p>Thandi's bag is on JA 103. Now the airline has to get it from the aircraft to her front door, and this part is not "do it fast". It is "do it <em>the same way every time</em>, wait when you have to, and never let it fall through the cracks". That is a process with a known shape, and BPMN is the language for known shapes.</p>
+            <figure class="figure shot">
+              <img src="../assets/mo-02-bpmn.png" alt="The DelayedBagDelivery BPMN process in Studio Web: Delayed bag reported, Open delayed-bag file, a subprocess Get the bag to OR Tambo with a Wait for JA 103 to land timer and an Arrival scan and inspection task, a 5-day SLA breached boundary timer leading to Declare lost: open claim case, a Bag damaged? gateway, and a parallel Deliver split into Email passenger and Book courier, joined at Both done before Bag delivered" width="1765" height="432" loading="lazy" />
+              <figcaption>DelayedBagDelivery. The rounded box is a subprocess guarded by a five-day SLA timer on its border.</figcaption>
+            </figure>
+            <p>Four things in that picture are hard to do cleanly in a straight-line automation, and they are the reason to reach for BPMN:</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Waiting</p>
+                  <h3 class="info-title">A timer is a step</h3>
+                  <p class="info-body">"Wait for JA 103 to land" is a real node. The process sleeps, costs nothing, and wakes up on time. In my demo it waits one minute; in production it would wait until the ETA.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Deadlines</p>
+                  <h3 class="info-title">An SLA you can see</h3>
+                  <p class="info-body">The clock on the subprocess border is a five-day boundary timer. If the bag never makes it, it interrupts whatever is happening inside and declares the bag lost.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Decisions</p>
+                  <h3 class="info-title">Routes, not if-statements</h3>
+                  <p class="info-body">"Bag damaged?" is a gateway with labelled paths. An auditor can read it. A damaged bag leaves the delivery process and becomes a claim.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Parallel</p>
+                  <h3 class="info-title">Two things at once</h3>
+                  <p class="info-body">Booking the courier and emailing the passenger happen in parallel, and "Both done" waits for both. Nobody has to remember to do the second one.</p>
+                </div>
+              </li>
+            </ul>
+            <p>The <code>uipath-maestro-bpmn</code> skill splits the work in a way I liked. The registry hands you the exact XML for each UiPath node (the Outlook send, the script tasks), already filled in for your tenant. The BPMN structure (subprocess, boundary event, gateways) is written by hand from the spec. Then the CLI lays out the diagram and validates it.</p>
+            <div class="code-win">
+              <div class="code-head">
+                <span class="code-file">DelayedBagDelivery.bpmn (the SLA)</span>
+                <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+              </div>
+              <pre><code>&lt;bpmn:boundaryEvent id="Boundary_SLA" name="5-day SLA breached"
+                   attachedToRef="Sub_GetBagHome" cancelActivity="true"&gt;
+  &lt;bpmn:outgoing&gt;Flow_SLA&lt;/bpmn:outgoing&gt;
+  &lt;bpmn:timerEventDefinition&gt;
+    &lt;bpmn:timeDuration xsi:type="bpmn:tFormalExpression"&gt;P5D&lt;/bpmn:timeDuration&gt;
+  &lt;/bpmn:timerEventDefinition&gt;
+&lt;/bpmn:boundaryEvent&gt;</code></pre>
+            </div>
+            <div class="term-stack">
+              <div class="term">
+                <div class="code-head">
+                  <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                  <span class="code-file">Terminal</span>
+                  <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                </div>
+                <div class="term-body">
+                  <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro bpmn format DelayedBagDelivery/DelayedBagDelivery.bpmn</span></div>
+                  <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro bpmn validate DelayedBagDelivery/DelayedBagDelivery.bpmn --output json</span></div>
+                  <div class="ln ln-ok"><span class="txt">"Status": "Valid", "UiPathExtensionCount": 13</span></div>
+                  <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro bpmn debug DelayedBagDelivery --inputs @in-bpmn-ok.json --output json</span></div>
+                  <div class="ln ln-ok"><span class="txt">FinalStatus: Completed</span></div>
+                  <div class="ln ln-o"><span class="txt">Event_start, Task_OpenFile, Sub_GetBagHome, Timer_Landing, Task_ArrivalScan ... Completed</span></div>
+                  <div class="ln ln-o"><span class="txt">Gw_Damaged, Gw_Fork, Task_BookCourier, Task_EmailPassenger, Gw_Join, End_Delivered ... Completed</span></div>
+                  <div class="ln ln-c"><span class="txt">Boundary_SLA ... Terminated</span></div>
+                </div>
+              </div>
+            </div>
+            <p>My favourite line in that output is the last one. <strong>Terminated</strong> is the good news: the bag arrived inside five days, so the engine cancelled the SLA timer for me. That is orchestration doing its quiet job, keeping a promise and then tidying up after itself.</p>
+            <aside class="callout is-note">
+              <p class="callout-label">What is missing on purpose</p>
+              <p class="callout-text">There is no human in this process. A real ground handler would confirm the arrival inspection, and BPMN can create that task, but it needs a deployed Action App for the form and my tenant has none. I left it out rather than fake it. It also makes the next point for me: the moment a person's judgment is the main event, you are probably looking at a case.</p>
+            </aside>
+
+            <h2 id="c5">Manage: the Case</h2>
+            <p>The second bag never turned up, and the bag that arrived damaged needs a claim too. Now everything about the shape changes. The passenger has to send receipts, and might take a day or a week. Someone has to judge what is reasonable. A Claims Officer has to approve real money. The claim can be rejected. And the bag can turn up halfway through and make half of it irrelevant.</p>
+            <p>You can draw that in BPMN, but you will end up with arrows from every box to every other box. Case Management models it the way the business talks about it: <strong>stages</strong> a claim moves through, <strong>tasks</strong> inside them, <strong>rules</strong> that move it on, and <strong>exception lanes</strong> that can interrupt it.</p>
+            <figure class="figure shot">
+              <img src="../assets/mo-03-case.png" alt="The LostBagClaim case plan in Studio Web: Trigger 1, then stages Claim Lodged, Evidence from Passenger (SLA 7 days), Assessment, Claims Officer Approval and Settlement, each with one task, and two secondary stages Claim Rejected and Bag Found Late, both marked Ends case" width="1890" height="530" loading="lazy" />
+              <figcaption>LostBagClaim. Five stages on the main path, two exception lanes that end the case.</figcaption>
+            </figure>
+            <p>I built this one design-first, the same way as the <a href="../maestro-case-management/">Case Management post</a>. My agent, using the <code>uipath-planner</code> and <code>uipath-maestro-case</code> skills, proposed the whole case as one review: stages, tasks, the other paths it considered, SLAs, rules, resources and every decision it made for me. I answered two questions and said "build it". It then wrote a design document, checked it against a 35-point template, and turned it into the case plan.</p>
+            <div class="term-stack">
+              <div class="term">
+                <div class="code-head">
+                  <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                  <span class="code-file">Terminal</span>
+                  <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                </div>
+                <div class="term-body">
+                  <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case sdd resolve sdd.md --out tasks/registry-resolved.json</span></div>
+                  <div class="ln ln-o"><span class="txt">unresolved: Jacaranda Claim Assessor (agent, creatable) · Claims Officer Approval (action)</span></div>
+                  <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case init LostBagClaim</span></div>
+                  <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case sdd convert sdd.md --resolved tasks/registry-resolved.json --out LostBagClaim/caseplan.case</span></div>
+                  <div class="ln ln-o"><span class="txt">7 stages · 7 tasks · 25 conditions · 7 variables</span></div>
+                  <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip maestro case validate LostBagClaim/caseplan.case --strict --sdd sdd.md</span></div>
+                  <div class="ln ln-ok"><span class="txt">"Status": "Valid", "Profile": "strict" · 2 warnings (the approval placeholder)</span></div>
+                </div>
+              </div>
+            </div>
+            <p>Three design choices are worth calling out, because they are the case-shaped ones:</p>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-cyan is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-1">
+                  <span class="tier-badge">1</span>
+                  <span>
+                    <span class="tier-name">The case waits on the passenger</span>
+                    <span class="tier-facts"><span>wait for email · 7-day SLA</span></span>
+                  </span>
+                  <span class="tier-path">external wait</span>
+                </button>
+                <p class="tier-why" id="tier-why-1">"Evidence from Passenger" is a real Outlook "email received" wait, filtered on the bag tag in the subject. The case sits there for as long as it takes, with a seven-day SLA that warns the Claims Officers at 70% and tells Customer Relations if it is breached. Waiting is a first-class state, not a polling loop.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-2">
+                  <span class="tier-badge">2</span>
+                  <span>
+                    <span class="tier-name">A bag can turn up at any moment</span>
+                    <span class="tier-facts"><span>one global event · interrupts the case</span></span>
+                  </span>
+                  <span class="tier-path">exception lane</span>
+                </button>
+                <p class="tier-why" id="tier-why-2" hidden>"Bag Found Late" is entered by one email event (the Baggage Desk sends FOUND plus the tag) no matter which stage the claim is in. It interrupts the case, tells the passenger, refunds essentials only and closes the claim. Modelling that once, as a lane, instead of on every stage is exactly what Case Management is good at.</p>
+              </li>
+              <li class="tier c-pink">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-3">
+                  <span class="tier-badge">3</span>
+                  <span>
+                    <span class="tier-name">The decision routes the case</span>
+                    <span class="tier-facts"><span>Approve → Settlement · Reject → Claim Rejected</span></span>
+                  </span>
+                  <span class="tier-path">human decides</span>
+                </button>
+                <p class="tier-why" id="tier-why-3" hidden>The Claims Officer's button is the routing fact. Reject leaves the approval stage through a guarded exit into the Claim Rejected lane; Approve completes it with the exact opposite guard and Settlement follows. The agent recommends, a person decides, the rules do the routing.</p>
+              </li>
+            </ul>
+
+            <h3>The AI assessor: the model reads, the code decides</h3>
+            <p>The Assessment stage needed an agent my tenant did not have, so the build created one: <strong>JacarandaClaimAssessor</strong>, a small coded agent. Its design is the dash lesson again, deliberately. A language model reads the passenger's messy email and turns it into line items (what it is, whether it is content, an essential or a repair, the amount, and whether there is a receipt). Then plain Python applies the policy and the liability cap. The model never does the maths on the money.</p>
+            <div class="code-win">
+              <div class="code-head">
+                <span class="code-file">JacarandaClaimAssessor/main.py (excerpt)</span>
+                <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+              </div>
+              <pre><code>MONTREAL_LIMIT_SDR = 1519  # liability limit for checked baggage
+
+for line in extraction.lines:
+    if line.category in EXCLUDED_CATEGORIES:
+        rejected.append(f"{line.description} (cash is not covered)")
+    elif line.kind == "essential" and not line.hasReceipt:
+        rejected.append(f"{line.description} (essential with no receipt)")
+    elif line.kind == "repair" and reason != "damaged":
+        rejected.append(f"{line.description} (bag repair only applies to damaged bags)")
+    else:
+        accepted.append(line)
+
+limit = round(MONTREAL_LIMIT_SDR * state.sdrToZarRate, 2)
+recommended = min(claimed_total, limit)</code></pre>
+            </div>
+            <p>In its one local test, a fictional passenger claimed R31,800 of contents and R1,800 of receipted essentials, plus R500 cash and a phone charger with no receipt. The agent recommended <strong>R33,600</strong>: it dropped the cash and the charger, and stayed under the Montreal Convention cap of 1,519 SDR (about R36,456 at the demo's R24 per SDR). It also flagged the claim for review because it had excluded lines, which is exactly what you want a Claims Officer to see.</p>
+            <aside class="callout is-note">
+              <p class="callout-label">Honest status</p>
+              <p class="callout-text">The case is built, strictly validated and in Studio Web, but I have not run it end to end. Two reasons. The Claims Officer approval is a placeholder until a real Action App exists for it. And a case debug run does not start an agent that lives inside the same solution; that only works after a full deploy. Both are next on my list, and I would rather tell you that than show you a run I faked.</p>
+            </aside>
+
+            <h2 id="c6">What broke along the way</h2>
+            <p>No build like this goes cleanly, and the failures were more useful than the successes. Here is the list, in the order it happened:</p>
+            <div class="eyebrow-label">Six lessons · click a row</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-pink is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-4">
+                  <span class="tier-badge">1</span>
+                  <span>
+                    <span class="tier-name">The agent ignored a style rule</span>
+                    <span class="tier-facts"><span>twice, in the subject line</span></span>
+                  </span>
+                  <span class="tier-path">Flow</span>
+                </button>
+                <p class="tier-why" id="tier-why-4">Covered above. Prompts are requests. Rules belong in code. A two-line script step fixed it for good.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-5">
+                  <span class="tier-badge">2</span>
+                  <span>
+                    <span class="tier-name">My fix for the fix was broken</span>
+                    <span class="tier-facts"><span>"bag  -  Tag"</span></span>
+                  </span>
+                  <span class="tier-path">Flow</span>
+                </button>
+                <p class="tier-why" id="tier-why-5" hidden>The first version of that script used <code>\s</code> in a regular expression inside a TypeScript template string, where the backslash quietly disappears. The subject came out with double spaces. A small reminder that the deterministic step needs its own test run too.</p>
+              </li>
+              <li class="tier c-purple">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-6">
+                  <span class="tier-badge">3</span>
+                  <span>
+                    <span class="tier-name">A connection Studio Web could not see</span>
+                    <span class="tier-facts"><span>"Resource connection is not found" ×6</span></span>
+                  </span>
+                  <span class="tier-path">all three</span>
+                </button>
+                <p class="tier-why" id="tier-why-6" hidden>My first Outlook connection worked perfectly in every debug run, but it was not in the tenant's Resource Catalog, so the Case designer lit up with six errors after upload. Switching all three projects to a catalogued connection (which signs into the same mailbox) cleared it. Lesson: a run passing does not mean the designer, and the next person to open it, can resolve your resources.</p>
+              </li>
+              <li class="tier c-cyan">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-7">
+                  <span class="tier-badge">4</span>
+                  <span>
+                    <span class="tier-name">I put a placeholder in my own design</span>
+                    <span class="tier-facts"><span>STRICT_SDD_INPUT_EMPTY</span></span>
+                  </span>
+                  <span class="tier-path">Case</span>
+                </button>
+                <p class="tier-why" id="tier-why-7" hidden>The design document had an input row with no real field name, a leftover from me not knowing the connector's filter field yet. Ordinary validation passed. Strict validation against the design caught it and refused to call the build complete. The builder did the right thing and did not guess.</p>
+              </li>
+              <li class="tier c-green">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-8">
+                  <span class="tier-badge">5</span>
+                  <span>
+                    <span class="tier-name">The agent's name had spaces</span>
+                    <span class="tier-facts"><span>"Jacaranda Claim Assessor"</span></span>
+                  </span>
+                  <span class="tier-path">Case</span>
+                </button>
+                <p class="tier-why" id="tier-why-8" hidden>The Python packaging tool behind coded agents rejects spaces in a project name, so the agent became JacarandaClaimAssessor and the design document was updated to match, with my permission. Small, but it is the kind of thing that breaks a rebuild six months later if nobody writes it down.</p>
+              </li>
+              <li class="tier c-slate">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-9">
+                  <span class="tier-badge">6</span>
+                  <span>
+                    <span class="tier-name">Debug runs have edges</span>
+                    <span class="tier-facts"><span>403 in a shared folder · no in-solution agents</span></span>
+                  </span>
+                  <span class="tier-path">platform</span>
+                </button>
+                <p class="tier-why" id="tier-why-9" hidden>Flow debug runs belong in your personal workspace; pointing one at a shared folder was refused. And a case debug run does not start an agent sitting in the same solution. Neither is a bug as such, but both are worth knowing before you plan a demo.</p>
+              </li>
+            </ul>
+
+            <h2 id="c7">How I would choose now</h2>
+            <p>After building the same story three ways, this is the checklist I will use with clients. It is opinion, not product documentation, but it is opinion with three working projects behind it.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Automate</p>
+                  <h3 class="info-title">Pick Flow when...</h3>
+                  <p class="info-body">it finishes in minutes, nobody waits on anybody, and the steps are system calls, scripts and maybe an agent. Think "react to an event and get it done": trace a bag, enrich a record, notify a person.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Orchestrate</p>
+                  <h3 class="info-title">Pick BPMN when...</h3>
+                  <p class="info-body">the path is known and must be followed the same way every time, with timers, deadlines, parallel work and decisions an auditor will want to read. Think "a procedure": deliver a bag, onboard a supplier, close a month.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Manage</p>
+                  <h3 class="info-title">Pick Case when...</h3>
+                  <p class="info-body">it lives for days or weeks, waits on people outside your walls, needs judgment and sign-off, and can be interrupted by events at any point. Think "a file with a person's name on it": a claim, a complaint, an investigation.</p>
+                </div>
+              </li>
+            </ul>
+            <p>And the real answer, the one the Jacaranda Air story makes obvious: <strong>you rarely pick one</strong>. The Flow hands a found bag to the BPMN process and a missing one to the Case. The BPMN process hands a damaged or overdue bag to the Case. Each tool does the part it is good at, and the hand-offs are where the design work is. Automate the minutes, orchestrate the days, manage the weeks.</p>
+            <aside class="callout is-note">
+              <p class="callout-label">A quick test for any process</p>
+              <p class="callout-text">Ask three questions. <strong>How long does one instance live?</strong> (minutes, days, weeks) <strong>Is the path known in advance?</strong> (yes, mostly, no) <strong>Who has to decide something?</strong> (nobody, a rule, a person). Mostly left-hand answers: Flow. Middle: BPMN. Right-hand: Case. Mixed: you have more than one process, and that is fine.</p>
+            </aside>
+
+            <h2 id="c8">Test yourself</h2>
+            <div class="quiz" data-quiz>
+              <div class="quiz-q" data-answer="a">
+                <p class="quiz-prompt"><span>Q1</span>A bank wants to email a customer the moment a card transaction is flagged, with a short AI-written explanation. Which tool?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">Flow</button>
+                  <button type="button" class="quiz-opt" data-opt="b">BPMN</button>
+                  <button type="button" class="quiz-opt" data-opt="c">Case</button>
+                </div>
+                <p class="quiz-why" hidden>Minutes, no waiting, system calls plus an agent: that is automation. If the customer then disputes the transaction, that dispute is a case.</p>
+              </div>
+              <div class="quiz-q" data-answer="c">
+                <p class="quiz-prompt"><span>Q2</span>In the BPMN debug run, the "5-day SLA breached" timer showed Terminated. What does that mean?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">The SLA was breached</button>
+                  <button type="button" class="quiz-opt" data-opt="b">The timer crashed</button>
+                  <button type="button" class="quiz-opt" data-opt="c">The bag arrived in time, so the engine cancelled it</button>
+                </div>
+                <p class="quiz-why" hidden>A boundary timer only fires if its subprocess is still running when time runs out. The bag arrived inside five days, so the timer was cancelled. That is the good outcome.</p>
+              </div>
+              <div class="quiz-q" data-answer="b">
+                <p class="quiz-prompt"><span>Q3</span>The agent kept putting a long dash in the email subject even though the prompt said not to. What fixed it?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">A stricter prompt</button>
+                  <button type="button" class="quiz-opt" data-opt="b">A deterministic script step after the agent</button>
+                  <button type="button" class="quiz-opt" data-opt="c">A bigger model</button>
+                </div>
+                <p class="quiz-why" hidden>The stricter prompt was tried and failed. A two-line script that rewrites the text enforces the rule on every run. Let models do the fuzzy work and put hard rules in code.</p>
+              </div>
+              <p class="quiz-score" aria-live="polite">Pick an answer for each one.</p>
+            </div>
+
+            <h2 id="c9">What's next</h2>
+            <p>This post sits in the <strong>Run &amp; Scale</strong> pillar with the <a href="../maestro-case-management/">Case Management build</a> and the <a href="../dark-testing-factory/">Dark Testing Factory</a>. Next for Jacaranda Air: a real Action App for the Claims Officer, a full deploy so the assessor agent runs inside the case, and wiring the hand-offs so the Flow actually starts the BPMN process and the BPMN process actually opens the case. When that runs end to end, you will read about it here.</p>
+            <p>And on the show: <strong>Episode 4 is recorded live at UiPath Fusion Cape Town</strong> on Thursday 19 November, 13:00 to 14:30. If you are there, come and say hi, and bring your own "which Maestro tool?" argument. Details are on the <a href="../../">main site</a>.</p>
+            <p>If you want to try this yourself: install the UiPath skills, load <code>uipath-maestro-flow</code>, <code>uipath-maestro-bpmn</code> and <code>uipath-maestro-case</code> in your coding agent, pick a process you know well, and ask it to build the same story three ways. You will learn more about your process than about the tools.</p>
+          </div>
+        </article>
+        <aside class="post-aside">
+          <nav class="toc" aria-labelledby="toc-title">
+            <p class="eyebrow-label" id="toc-title">On this page</p>
+            <a href="#c1">Your bag didn't land</a>
+            <a href="#c2">The use case</a>
+            <a href="#c3">Automate: the Flow</a>
+            <a href="#c4">Orchestrate: the BPMN</a>
+            <a href="#c5">Manage: the Case</a>
+            <a href="#c6">What broke</a>
+            <a href="#c7">How I would choose</a>
+            <a href="#c8">Test yourself</a>
+            <a href="#c9">What's next</a>
+          </nav>
+          <div class="tagged">
+            <p class="eyebrow-label">Tagged</p>
+            <ul class="tag-list">
+              <li>Maestro</li>
+              <li>Flow</li>
+              <li>BPMN</li>
+              <li>Case Management</li>
+              <li>Agentic</li>
+              <li>uip CLI</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="uu-footer">
+      <div class="uu-wrap uu-footer-inner">
+        <div class="uu-footer-brand">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="26" height="26" />
+          <span>UiPath Uncharted</span>
+        </div>
+        <span class="uu-footer-note">Field notes · Season 1 · Hosted by Jarryd Scott</span>
+        <nav class="uu-footer-links" aria-label="Elsewhere">
+          <a href="mailto:jscott@i1solutions.co.za">Email</a>
+          <a href="https://www.linkedin.com/in/jarryd-scott-01498019b" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+          <a href="../../">Main site</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <button type="button" class="to-top" aria-label="Back to top">
+    <svg class="to-top-ring" viewBox="0 0 48 48" aria-hidden="true">
+      <defs>
+        <linearGradient id="to-top-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#42d6ff" />
+          <stop offset="1" stop-color="#7c5cff" />
+        </linearGradient>
+      </defs>
+      <circle class="to-top-track" cx="24" cy="24" r="22" />
+      <circle class="to-top-progress" cx="24" cy="24" r="22" pathLength="100" />
+    </svg>
+    <svg class="to-top-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+  </button>
+
+  <script src="../blog.js" defer></script>
+</body>
+</html>
