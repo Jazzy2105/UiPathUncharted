@@ -2401,3 +2401,189 @@ img {
     height: 44px;
   }
 }
+
+/* ─── Season break (festive) card ─────────────────────
+   Shown between seasons in place of the episode countdown. */
+.season-break {
+  margin: 44px auto 0;
+  max-width: 860px;
+  padding: 64px 40px 36px;
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  background:
+    radial-gradient(90% 120% at 0% 0%, rgba(124, 92, 255, 0.32), transparent 55%),
+    radial-gradient(80% 110% at 100% 100%, rgba(66, 214, 255, 0.22), transparent 55%),
+    radial-gradient(60% 80% at 85% 0%, rgba(251, 191, 36, 0.14), transparent 60%),
+    radial-gradient(60% 80% at 10% 100%, rgba(251, 113, 133, 0.12), transparent 60%),
+    linear-gradient(160deg, rgba(14, 18, 44, 0.95), rgba(8, 11, 28, 0.95));
+  border: 1px solid rgba(124, 92, 255, 0.35);
+  box-shadow: 0 24px 70px rgba(124, 92, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.sb-lights {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 56px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.sb-wire {
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 1.5;
+}
+
+.sb-bulbs circle {
+  fill: var(--c);
+  filter: drop-shadow(0 0 6px var(--c));
+  animation: sbTwinkle 2.4s ease-in-out infinite;
+  animation-delay: var(--d);
+}
+
+@keyframes sbTwinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.sb-sparkles span {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  background: linear-gradient(135deg, #fff, #c4b5ff);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  opacity: 0.8;
+  animation: sbFloat 6s ease-in-out infinite;
+  animation-delay: var(--d);
+  pointer-events: none;
+}
+
+@keyframes sbFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.85; }
+  50% { transform: translateY(-10px) rotate(25deg) scale(0.75); opacity: 0.35; }
+}
+
+.season-break > *:not(.sb-lights):not(.sb-sparkles) { position: relative; }
+
+.sb-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 14px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  background: rgba(251, 191, 36, 0.08);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fcd34d;
+}
+
+.sb-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.9);
+}
+
+.sb-title {
+  margin: 0;
+  font-size: clamp(2rem, 5.4vw, 3.3rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.sb-year {
+  background: linear-gradient(100deg, #fbbf24, #fb7185 35%, #9b7eff 65%, #42d6ff);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: sbSweep 6s linear infinite;
+}
+
+@keyframes sbSweep {
+  to { background-position: 200% center; }
+}
+
+.sb-lede {
+  max-width: 58ch;
+  margin: 16px auto 0;
+  color: #c5cdea;
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.sb-stats {
+  list-style: none;
+  margin: 28px auto 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-width: 680px;
+}
+
+.sb-stats li {
+  padding: 14px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sb-num {
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(130deg, #9b7eff 10%, #42d6ff 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sb-label {
+  font-size: 0.74rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+.sb-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.sb-cta .button { min-width: 210px; }
+
+.sb-foot {
+  margin: 22px 0 0;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.sb-foot strong { color: var(--text); }
+
+@media (max-width: 620px) {
+  .season-break { padding: 56px 18px 28px; }
+  .sb-stats { grid-template-columns: repeat(2, 1fr); }
+  .sb-cta .button { min-width: 0; width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sb-bulbs circle, .sb-sparkles span, .sb-year { animation: none; }
+}
