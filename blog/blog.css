@@ -3216,3 +3216,340 @@ input {
 @media (prefers-reduced-motion: reduce) {
   .rca-bar span { transition: none; }
 }
+
+/* ─── MCP wire player: step through real client/server messages ─── */
+
+.wire {
+  margin: 6px 0 26px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid var(--uu-border2);
+  background:
+    radial-gradient(ellipse 70% 60% at 0% 0%, rgba(66, 214, 255, 0.07), transparent),
+    radial-gradient(ellipse 70% 60% at 100% 0%, rgba(124, 92, 255, 0.1), transparent),
+    var(--uu-panel);
+  box-shadow: var(--uu-glow);
+}
+
+.wire-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.wire .seg button {
+  white-space: nowrap;
+}
+
+.wire-count {
+  font-family: var(--uu-mono);
+  font-size: 12px;
+  color: var(--uu-muted);
+}
+
+.wire-lanes {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.wire-node {
+  display: grid;
+  gap: 2px;
+  min-width: 112px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--c, var(--uu-border2));
+  background: rgba(8, 11, 28, 0.7);
+  text-align: center;
+}
+
+.wire-node.is-client { --c: rgba(66, 214, 255, 0.55); }
+.wire-node.is-server { --c: rgba(124, 92, 255, 0.65); }
+
+.wire-node strong {
+  font-size: 13px;
+}
+
+.wire-node small {
+  font-family: var(--uu-mono);
+  font-size: 10.5px;
+  color: var(--uu-muted);
+}
+
+.wire-line {
+  position: relative;
+  height: 46px;
+}
+
+.wire-line::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 2px dashed rgba(255, 255, 255, 0.16);
+}
+
+.wire-method {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--uu-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--uu-accent-text);
+}
+
+.wire-packet {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--uu-accent2);
+  box-shadow: 0 0 16px var(--uu-accent2);
+  opacity: 0;
+}
+
+.wire.is-sending .wire-packet {
+  animation: wireTrip 1.5s var(--uu-ease) forwards;
+}
+
+@keyframes wireTrip {
+  0% { left: 0; opacity: 1; background: #42d6ff; box-shadow: 0 0 16px #42d6ff; }
+  45% { left: calc(100% - 14px); opacity: 1; background: #42d6ff; box-shadow: 0 0 16px #42d6ff; }
+  55% { left: calc(100% - 14px); opacity: 1; background: #7c5cff; box-shadow: 0 0 16px #7c5cff; }
+  100% { left: 0; opacity: 0; background: #7c5cff; box-shadow: 0 0 16px #7c5cff; }
+}
+
+.wire-title {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.wire-http {
+  margin: 0 0 8px;
+  font-family: var(--uu-mono);
+  font-size: 11.5px;
+  color: var(--uu-accent2);
+  overflow-wrap: anywhere;
+}
+
+.wire-note {
+  margin: 0 0 14px;
+  color: #c5cdea;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.wire-panes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.wire-pane {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 11px;
+  border: 1px solid var(--uu-border);
+  background: var(--uu-code-bg);
+}
+
+.wire-label {
+  margin: 0;
+  padding: 7px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  font-family: var(--uu-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--uu-muted);
+}
+
+.wire-pane:first-child .wire-label { color: #7dd3fc; background: rgba(66, 214, 255, 0.07); }
+.wire-pane:last-child .wire-label { color: #b9a8ff; background: rgba(124, 92, 255, 0.09); }
+
+.wire-pane pre {
+  margin: 0;
+  max-height: 340px;
+  padding: 12px;
+  overflow: auto;
+  color: #c9d3f5;
+  font-family: var(--uu-mono);
+  font-size: 11.5px;
+  line-height: 1.55;
+  white-space: pre;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-width: thin;
+}
+
+.wire-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.wire-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.wire-dots button {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--uu-border2);
+  background: transparent;
+  cursor: pointer;
+}
+
+.wire-dots button[aria-current="step"] {
+  border-color: var(--uu-accent2);
+  background: var(--uu-accent2);
+}
+
+@media (max-width: 720px) {
+  .wire { padding: 14px; }
+  .wire-panes { grid-template-columns: 1fr; }
+  .wire-node { min-width: 84px; padding: 8px; }
+  .wire-node small { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wire.is-sending .wire-packet { animation: none; }
+}
+
+/* ─── Flow map: inline SVG architecture figure ─── */
+
+.flowmap {
+  margin: 6px 0 26px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--uu-border);
+  background: rgba(8, 11, 28, 0.6);
+}
+
+.flowmap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.flowmap figcaption {
+  margin-top: 10px;
+  color: var(--uu-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ─── Chat transcript (agent conversations) ─── */
+
+.chat {
+  display: grid;
+  gap: 10px;
+  margin: 6px 0 24px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--uu-border);
+  background: var(--uu-code-bg);
+}
+
+.chat-msg {
+  max-width: 92%;
+  padding: 10px 13px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.chat-msg.is-user {
+  justify-self: end;
+  border: 1px solid rgba(66, 214, 255, 0.3);
+  background: rgba(66, 214, 255, 0.08);
+}
+
+.chat-msg.is-ai {
+  border: 1px solid rgba(124, 92, 255, 0.35);
+  background: rgba(124, 92, 255, 0.1);
+}
+
+.chat-msg.is-tool {
+  max-width: 100%;
+  padding: 7px 11px;
+  border: 1px dashed rgba(61, 220, 151, 0.4);
+  background: rgba(61, 220, 151, 0.06);
+  font-family: var(--uu-mono);
+  font-size: 11.5px;
+  color: #a7f3d0;
+  overflow-wrap: anywhere;
+}
+
+.chat-msg.is-tool b { color: #3ddc97; }
+
+.chat-who {
+  display: block;
+  margin-bottom: 3px;
+  font-family: var(--uu-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--uu-muted);
+}
+
+.chat-msg ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.chat-msg p { margin: 0 0 6px; }
+.chat-msg p:last-child { margin-bottom: 0; }
+
+/* ─── Governance tally ─── */
+
+.tally {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin: 6px 0 22px;
+  padding: 0;
+  list-style: none;
+}
+
+.tally li {
+  padding: 14px;
+  border-radius: 13px;
+  border: 1px solid var(--uu-border);
+  background: var(--uu-panel);
+}
+
+.tally strong {
+  display: block;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--c, var(--uu-text));
+}
+
+.tally span {
+  color: var(--uu-muted);
+  font-size: 12.5px;
+}

@@ -535,4 +535,52 @@
     slider.addEventListener('input', update);
     update();
   });
+  // ─── MCP wire player: real client/server messages, one step at a time ─
+  document.querySelectorAll('[data-wire]').forEach((wire) => {
+    let data;
+    try { data = JSON.parse(wire.querySelector('script[type="application/json"]').textContent); } catch (e) { return; }
+    const q = (s) => wire.querySelector(s);
+    const flowBtns = wire.querySelectorAll('[data-wire-flow]');
+    const dots = q('.wire-dots');
+    let flow = flowBtns.length ? flowBtns[0].dataset.wireFlow : Object.keys(data)[0];
+    let i = 0;
+
+    const render = (animate) => {
+      const steps = data[flow];
+      const s = steps[i];
+      q('.wire-count').textContent = `${i + 1} / ${steps.length}`;
+      q('.wire-method').textContent = s.method;
+      q('.wire-title').textContent = s.title;
+      q('.wire-http').textContent = s.http;
+      q('.wire-note').textContent = s.note;
+      q('.wire-req').textContent = s.req;
+      q('.wire-res').textContent = s.res;
+      q('[data-wire-prev]').disabled = i === 0;
+      q('[data-wire-next]').disabled = i === steps.length - 1;
+      dots.replaceChildren(...steps.map((st, n) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', `Step ${n + 1}: ${st.method}`);
+        if (n === i) b.setAttribute('aria-current', 'step');
+        b.addEventListener('click', () => { i = n; render(true); });
+        return b;
+      }));
+      if (animate) {
+        wire.classList.remove('is-sending');
+        void wire.offsetWidth;
+        wire.classList.add('is-sending');
+      }
+    };
+
+    flowBtns.forEach((b) => b.addEventListener('click', () => {
+      flow = b.dataset.wireFlow;
+      i = 0;
+      flowBtns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      render(true);
+    }));
+    q('[data-wire-prev]').addEventListener('click', () => { if (i > 0) { i -= 1; render(true); } });
+    q('[data-wire-next]').addEventListener('click', () => { if (i < data[flow].length - 1) { i += 1; render(true); } });
+    render(false);
+  });
+
 })();

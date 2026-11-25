@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCP meets UiPath: your robots just got a USB-C port · UiPath Uncharted</title>
+  <meta name="description" content="A hands-on, wire-level guide to the Model Context Protocol on UiPath: what MCP really is, four helpdesk robots turned into AI tools, Claude Code calling them, a read-only Test Manager server, a UiPath agent using Microsoft's docs through Agent Gateway, and the trust layer watching every call." />
+  <meta name="theme-color" content="#060816" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="UiPath Uncharted" />
+  <meta property="og:title" content="MCP meets UiPath: your robots just got a USB-C port · UiPath Uncharted" />
+  <meta property="og:description" content="What MCP really is, down to the JSON on the wire, and a full hands-on build on UiPath Agent Gateway: robots as tools, Claude Code as the caller, a UiPath agent as the client and the trust layer in the middle." />
+  <meta property="og:url" content="https://uipathuncharted.co.za/blog/mcp-agent-gateway/" />
+  <meta property="og:image" content="https://uipathuncharted.co.za/blog/assets/mcp-cover.jpg" />
+  <meta property="og:image:width" content="1600" />
+  <meta property="og:image:height" content="893" />
+  <meta property="og:image:alt" content="MCP meets UiPath: your robots just got a USB-C port" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://uipathuncharted.co.za/blog/mcp-agent-gateway/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../blog.css" />
+  <link rel="icon" type="image/png" href="../../assets/uu-mark-navy.png" />
+  <link rel="apple-touch-icon" href="../../assets/uu-mark-navy.png" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="uu-page">
+    <div class="uu-progress" aria-hidden="true"><span></span></div>
+
+    <header class="uu-header">
+      <div class="uu-wrap uu-header-inner">
+        <a class="uu-brand" href="../" aria-label="UiPath Uncharted Field Notes, blog home">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="34" height="34" />
+          <span class="uu-brand-text">
+            <span class="uu-brand-name">UiPath Uncharted</span>
+            <span class="uu-brand-sub">Field Notes</span>
+          </span>
+        </a>
+        <nav class="uu-nav" aria-label="Blog">
+          <a href="../#feed">Writing</a>
+          <a href="../#pillars">Pillars</a>
+          <a class="nav-cross" href="../../">Podcast</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="uu-wrap post-main">
+      <a class="back-link" href="../">← All writing</a>
+      <div class="post-layout">
+        <article>
+          <header class="post-head">
+            <div class="chips">
+              <span class="chip chip-lg p-engage">Engage &amp; Extend</span>
+              <span class="chip chip-status c-green">shipped</span>
+              <span class="post-date">25 Nov 2026 · 24 min</span>
+            </div>
+            <h1 class="post-title">MCP meets UiPath: your robots just got a USB-C port</h1>
+            <p class="post-lede">Everybody says "MCP". Few people can tell you what actually goes over the wire. So I turned a fictional helpdesk's robots into AI tools, watched the raw messages fly, let Claude Code loose on them, built a read-only Test Manager server, flipped it around so a UiPath agent could use Microsoft's docs, and then read the trust layer's notes on all of it. Bugs, refusals and one very cheeky audit flag included.</p>
+            <div class="author">
+              <img src="../assets/jarryd-scott-avatar.jpg" alt="" width="40" height="40" />
+              <div class="author-text">
+                <span class="author-name">Jarryd Scott</span>
+                <span class="author-role">Technical Lead, Business Automation · host of UiPath Uncharted</span>
+              </div>
+              <span class="author-ep">Hands-on deep dive</span>
+            </div>
+            <figure class="post-hero">
+              <img src="../assets/mcp-cover.jpg" alt="MCP meets UiPath: an AI client connected through a glowing port to UiPath tools, with JSON-RPC messages travelling along the cable" width="1600" height="893" />
+            </figure>
+          </header>
+          <div class="prose">
+            <h2 id="c1">Happy birthday, MCP</h2>
+            <p>Two years ago today, on 25 November 2024, Anthropic published the <strong>Model Context Protocol</strong>: an open standard for connecting AI applications to the tools and data they need. A year later, to the day, UiPath made MCP servers generally available in Orchestrator. Since then OpenAI, Google and Microsoft have all adopted it, Anthropic has handed it to the Linux Foundation's new Agentic AI Foundation, and there are more than ten thousand public MCP servers.</p>
+            <p>And yet, when I ask people in workshops what MCP actually <em>is</em>, I mostly get hand waving. "It's like an API for AI?" Sort of. "It's how agents use tools?" Also sort of. So this post does what this blog always does: build it for real, on my own tenant, and look at every byte. If you read to the end you will be able to explain MCP to your CIO, call a UiPath MCP server with nothing but a script, and know where the sharp edges are.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-slate">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Before MCP</p>
+                  <h3 class="info-title">Every AI, every system, its own cable</h3>
+                  <p class="info-body">Want ChatGPT, Copilot and your own agent to use your ticketing system? That is three custom integrations, each with its own auth, schema and quirks. Ten AI apps and twenty systems is two hundred cables.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">With MCP</p>
+                  <h3 class="info-title">One port, any plug</h3>
+                  <p class="info-body">Wrap a system once as an MCP server and any MCP-speaking AI can discover its tools and call them. The official analogy is USB-C for AI. Thirty integrations instead of two hundred.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Where UiPath fits</p>
+                  <h3 class="info-title">Both ends of the cable</h3>
+                  <p class="info-body">UiPath can be the <strong>server</strong> (your robots, agents and API workflows become tools for any AI) and the <strong>client</strong> (your UiPath agents use other people's MCP servers). Agent Gateway sits in the middle of both.</p>
+                </div>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Before you read on: a puzzle</p>
+              <p class="callout-text">In section 6 an AI is asked to unlock a manager's admin account. It has an <code>unlock_account</code> tool, permission to use it, and a polite request. It refuses, <strong>without ever calling the tool</strong>. How did it know? Keep a guess in your head. The answer says a lot about how MCP really works.</p>
+            </aside>
+
+            <h2 id="c2">The use case: Hadeda Holdings' helpdesk</h2>
+            <p>If you live in South Africa you have met a hadeda: a large grey ibis that screams outside your bedroom window at 5am, every day, with total commitment. Meet <strong>Hadeda Holdings</strong>, a made-up Johannesburg company whose IT helpdesk feels the same way about tickets. Printers print in Comic Sans. VPNs drop every time load-shedding reboots the router. Someone's laptop fan sounds like, well, a hadeda at 5am.</p>
+            <p>The helpdesk wants AI to take the first pass at these requests: look things up, unlock accounts, log tickets. They do not want to rebuild their automations for every AI product that comes along. That is exactly the problem MCP solves, so Hadeda's four helpdesk automations become four MCP tools:</p>
+            <ul class="meta-pills">
+              <li>get_ticket_status</li>
+              <li>check_laptop</li>
+              <li>log_ticket</li>
+              <li>unlock_account</li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">About the demo</p>
+              <p class="callout-text">Hadeda Holdings is fictional, and so is its data: five tickets, six people and five laptops that live inside the automations themselves. Unlocking an account changes nothing, and logged tickets are not stored. Everything else is real: the API workflows run on UiPath serverless robots, the MCP servers live in Agent Gateway on my dev tenant, the AI clients are real, and every message, trace and screenshot in this post was captured from those runs on 25 November 2026.</p>
+            </aside>
+
+            <h2 id="c3">MCP in five minutes</h2>
+            <p>MCP has a handful of moving parts. Once you have these five, everything else is detail. Click through.</p>
+            <div class="stages" data-stages>
+              <div class="stage-tabs" role="tablist" aria-label="MCP building blocks">
+                <button type="button" class="stage-tab" role="tab" id="mstage-tab-1" aria-controls="mstage-panel-1" aria-selected="true">
+                  <span class="stage-tab-n">01</span><span>Host</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="mstage-tab-2" aria-controls="mstage-panel-2" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">02</span><span>Client</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="mstage-tab-3" aria-controls="mstage-panel-3" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">03</span><span>Server</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="mstage-tab-4" aria-controls="mstage-panel-4" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">04</span><span>Primitives</span>
+                </button>
+                <button type="button" class="stage-tab" role="tab" id="mstage-tab-5" aria-controls="mstage-panel-5" aria-selected="false" tabindex="-1">
+                  <span class="stage-tab-n">05</span><span>Transport</span>
+                </button>
+              </div>
+              <div class="stage-body">
+                <div class="stage-bar" aria-hidden="true"><span></span></div>
+                <div class="stage-panel" role="tabpanel" id="mstage-panel-1" aria-labelledby="mstage-tab-1">
+                  <h3 class="stage-title">The host is the AI app you talk to</h3>
+                  <p class="stage-text">Claude Code, Claude Desktop, ChatGPT, VS Code with Copilot, or a UiPath agent. The host owns the conversation and the model, and decides which tools the model is allowed to see. In this post the hosts are Claude Code and a UiPath low-code agent.</p>
+                  <ul class="meta-pills">
+                    <li>Owns the model</li>
+                    <li>Owns the user</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="mstage-panel-2" aria-labelledby="mstage-tab-2" hidden>
+                  <h3 class="stage-title">A client is one connection to one server</h3>
+                  <p class="stage-text">Inside the host, each MCP server gets its own client: a connector that speaks the protocol, keeps track of the server's tools and passes calls through. Claude Code with three servers configured runs three clients. You rarely see them, but they are why one host can talk to many servers at once.</p>
+                  <ul class="meta-pills">
+                    <li>One per server</li>
+                    <li>Speaks JSON-RPC</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="mstage-panel-3" aria-labelledby="mstage-tab-3" hidden>
+                  <h3 class="stage-title">The server wraps a system</h3>
+                  <p class="stage-text">An MCP server exposes capabilities of some system: GitHub, a database, Microsoft's documentation, or your Orchestrator processes. It does not know or care which AI is calling. UiPath Agent Gateway hosts several kinds of server, and section 10 walks through all seven.</p>
+                  <ul class="meta-pills">
+                    <li>Hadeda Helpdesk</li>
+                    <li>Test Manager</li>
+                    <li>Microsoft Learn</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="mstage-panel-4" aria-labelledby="mstage-tab-4" hidden>
+                  <h3 class="stage-title">Tools, resources and prompts</h3>
+                  <p class="stage-text">A server can offer three things. <strong>Tools</strong> are actions the model decides to call (unlock this account). <strong>Resources</strong> are data the app can read for context (a file, a record). <strong>Prompts</strong> are reusable templates a user can pick. In practice, tools do almost all of the work today, and every UiPath server in this post offers tools only.</p>
+                  <ul class="meta-pills">
+                    <li>Tools: model-controlled</li>
+                    <li>Resources: app-controlled</li>
+                    <li>Prompts: user-controlled</li>
+                  </ul>
+                </div>
+                <div class="stage-panel" role="tabpanel" id="mstage-panel-5" aria-labelledby="mstage-tab-5" hidden>
+                  <h3 class="stage-title">Transport is how the messages travel</h3>
+                  <p class="stage-text">Every message is JSON-RPC 2.0. Locally, a host can start a server as a subprocess and talk over <strong>stdio</strong>. Remotely, it uses <strong>Streamable HTTP</strong>: each message is a POST to one URL, and the reply comes back as JSON or a short event stream. UiPath's servers are all remote, so everything here is HTTPS with a bearer token.</p>
+                  <ul class="meta-pills">
+                    <li>stdio</li>
+                    <li>Streamable HTTP</li>
+                    <li>OAuth 2.1 for auth</li>
+                  </ul>
+                </div>
+                <div class="stage-nav">
+                  <button type="button" class="mini-btn" data-prev>← prev</button>
+                  <button type="button" class="mini-btn is-accent" data-next>next →</button>
+                </div>
+              </div>
+            </div>
+            <p>If you prefer a kitchen analogy: the <strong>host</strong> is the restaurant, the <strong>model</strong> is the waiter, the <strong>server</strong> is the kitchen, <code>tools/list</code> is the menu and <code>tools/call</code> is the order slip. The waiter can only order what is on the menu, and only knows what the menu says about each dish. Hold on to that last point; it comes back in section 6.</p>
+            <p>Here is the whole picture for this post. Two directions, one gateway in the middle:</p>
+            <figure class="flowmap">
+              <svg viewBox="0 0 760 400" role="img" aria-labelledby="fm-title fm-desc">
+                <title id="fm-title">MCP in both directions through UiPath Agent Gateway</title>
+                <desc id="fm-desc">On the left, MCP clients: Claude Code, a raw Python client and a UiPath agent. In the middle, UiPath Agent Gateway with three servers: Hadeda Helpdesk of type UiPath, Test Manager read only of type Platform, and Microsoft Learn of type Remote. On the right, what they reach: four API workflows that run as Orchestrator jobs, the Test Manager service, and learn.microsoft.com.</desc>
+                <defs>
+                  <marker id="fm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#8b98c0" /></marker>
+                </defs>
+                <text x="20" y="28" fill="#8b98c0" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1.5">MCP CLIENTS</text>
+                <text x="285" y="28" fill="#8b98c0" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1.5">UIPATH AGENT GATEWAY</text>
+                <text x="570" y="28" fill="#8b98c0" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1.5">WHAT IT REACHES</text>
+                <g font-family="Inter, sans-serif" font-size="13" font-weight="600">
+                  <rect x="20" y="52" width="190" height="56" rx="12" fill="rgba(66,214,255,.08)" stroke="#42d6ff" stroke-opacity=".55" />
+                  <text x="36" y="76" fill="#f0f4ff">Claude Code</text>
+                  <text x="36" y="95" fill="#8b98c0" font-size="11" font-weight="500">external AI host</text>
+                  <rect x="20" y="124" width="190" height="56" rx="12" fill="rgba(66,214,255,.08)" stroke="#42d6ff" stroke-opacity=".55" />
+                  <text x="36" y="148" fill="#f0f4ff">Raw Python client</text>
+                  <text x="36" y="167" fill="#8b98c0" font-size="11" font-weight="500">plain urllib, no SDK</text>
+                  <rect x="20" y="276" width="190" height="56" rx="12" fill="rgba(124,92,255,.12)" stroke="#7c5cff" stroke-opacity=".7" />
+                  <text x="36" y="300" fill="#f0f4ff">HadedaDeskAgent</text>
+                  <text x="36" y="319" fill="#8b98c0" font-size="11" font-weight="500">UiPath low-code agent</text>
+                  <rect x="270" y="44" width="240" height="320" rx="16" fill="rgba(16,22,48,.9)" stroke="#ffffff" stroke-opacity=".16" />
+                  <rect x="288" y="66" width="204" height="70" rx="11" fill="rgba(61,220,151,.07)" stroke="#3ddc97" stroke-opacity=".5" />
+                  <text x="302" y="92" fill="#f0f4ff">Hadeda Helpdesk</text>
+                  <text x="302" y="113" fill="#3ddc97" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">type: UiPath · 4 tools</text>
+                  <rect x="288" y="152" width="204" height="70" rx="11" fill="rgba(255,159,92,.07)" stroke="#ff9f5c" stroke-opacity=".5" />
+                  <text x="302" y="178" fill="#f0f4ff">Test Manager (read only)</text>
+                  <text x="302" y="199" fill="#ff9f5c" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">type: Platform · 5 tools</text>
+                  <rect x="288" y="270" width="204" height="70" rx="11" fill="rgba(255,92,138,.07)" stroke="#ff5c8a" stroke-opacity=".5" />
+                  <text x="302" y="296" fill="#f0f4ff">Microsoft Learn</text>
+                  <text x="302" y="317" fill="#ff5c8a" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">type: Remote · 3 tools</text>
+                  <rect x="570" y="66" width="170" height="70" rx="12" fill="rgba(255,255,255,.03)" stroke="#ffffff" stroke-opacity=".14" />
+                  <text x="584" y="92" fill="#f0f4ff">4 API workflows</text>
+                  <text x="584" y="112" fill="#8b98c0" font-size="11" font-weight="500">each call = 1 Orchestrator job</text>
+                  <rect x="570" y="152" width="170" height="70" rx="12" fill="rgba(255,255,255,.03)" stroke="#ffffff" stroke-opacity=".14" />
+                  <text x="584" y="178" fill="#f0f4ff">Test Manager</text>
+                  <text x="584" y="198" fill="#8b98c0" font-size="11" font-weight="500">the KUDU project</text>
+                  <rect x="570" y="270" width="170" height="70" rx="12" fill="rgba(255,255,255,.03)" stroke="#ffffff" stroke-opacity=".14" />
+                  <text x="584" y="296" fill="#f0f4ff">learn.microsoft.com</text>
+                  <text x="584" y="316" fill="#8b98c0" font-size="11" font-weight="500">someone else's server</text>
+                </g>
+                <g stroke="#8b98c0" stroke-width="1.6" fill="none" marker-end="url(#fm-arrow)">
+                  <path d="M210 80 C 245 80, 250 100, 286 100" />
+                  <path d="M210 152 C 245 152, 250 112, 286 106" />
+                  <path d="M210 92 C 250 110, 250 180, 286 186" stroke-dasharray="4 4" />
+                  <path d="M210 304 C 245 304, 250 305, 286 305" stroke="#7c5cff" />
+                  <path d="M210 296 C 250 260, 250 130, 286 118" stroke="#7c5cff" />
+                  <path d="M492 101 L 568 101" />
+                  <path d="M492 187 L 568 187" />
+                  <path d="M492 305 L 568 305" />
+                </g>
+                <text x="20" y="232" fill="#42d6ff" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">→ direction 1: AI calls UiPath</text>
+                <text x="20" y="372" fill="#b9a8ff" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">→ direction 2: UiPath calls the world</text>
+              </svg>
+              <figcaption>Everything in this diagram was built and run for this post. Dashed line: Claude Code using the Test Manager server.</figcaption>
+            </figure>
+
+            <h2 id="c4">Watch the wire</h2>
+            <p>This is the part most MCP explainers skip. Below is the <strong>real traffic</strong> between my small Python client and the Hadeda Helpdesk server on Agent Gateway, captured on 25 November. Nothing is simulated; I only trimmed long values and hid my tenant's ids. Step through it, then flip to the 2026 protocol to see the same call with no handshake at all.</p>
+            <div class="wire" data-wire>
+              <script type="application/json">{"session": [{"title": "Hello, who are you?", "method": "initialize", "http": "POST /agenthub_/mcp/{folder}/hadeda-helpdesk · 200 · text/event-stream · 0.7 s", "note": "The client introduces itself (clientInfo) and proposes a protocol version. The server answers with its own name and capabilities. Here the only capability is tools: no resources, no prompts. The server also hands back an Mcp-Session-Id header, which every later request must carry.", "req": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"initialize\",\n  \"params\": {\n    \"protocolVersion\": \"2025-06-18\",\n    \"capabilities\": {},\n    \"clientInfo\": {\n      \"name\": \"uncharted-raw-client\",\n      \"version\": \"0.1\"\n    }\n  }\n}", "res": "{\n  \"result\": {\n    \"protocolVersion\": \"2025-06-18\",\n    \"serverInfo\": {\n      \"name\": \"UiPath MCP Server\",\n      \"version\": \"1.0.0\"\n    },\n    \"capabilities\": {\n      \"tools\": {}\n    }\n  },\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\"\n}"}, {"title": "Ready when you are", "method": "notifications/initialized", "http": "POST · 202 Accepted · no body", "note": "A notification has no id, so it never gets an answer. 202 means 'noted'. The handshake is done.", "req": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"notifications/initialized\"\n}", "res": "(no body: notifications are fire-and-forget)"}, {"title": "What's on the menu?", "method": "tools/list", "http": "POST · 200 · text/event-stream · 1.0 s", "note": "This is the moment an AI learns what it can do. Each tool has a name, a description written for the model to read, and a JSON Schema for its arguments. Trimmed here to one full tool.", "req": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 2,\n  \"method\": \"tools/list\",\n  \"params\": {}\n}", "res": "{\n  \"result\": {\n    \"tools\": [\n      {\n        \"name\": \"get_ticket_status\",\n        \"description\": \"Look up a Hadeda Holdings IT helpdesk ticket by its number and return its status, priority, assignee and latest update.\",\n        \"inputSchema\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"ticketId\": {\n              \"type\": \"string\",\n              \"description\": \"The ticket number, for example HAD-1042.\"\n            }\n          },\n          \"required\": [\n            \"ticketId\"\n          ]\n        },\n        \"annotations\": {\n          \"title\": \"GetTicketStatus\"\n        }\n      },\n      {\n        \"name\": \"check_laptop\",\n        \"description\": \"Check a Hadeda Holdings laptop by asset tag or by the owner'…\"\n      },\n      {\n        \"name\": \"log_ticket\",\n        \"description\": \"Log a new Hadeda Holdings IT helpdesk ticket for an employee…\"\n      },\n      {\n        \"name\": \"unlock_account\",\n        \"description\": \"Unlock a locked Hadeda Holdings user account. Privileged (ad…\"\n      }\n    ]\n  },\n  \"id\": 2,\n  \"jsonrpc\": \"2.0\"\n}"}, {"title": "Do the thing", "method": "tools/call · get_ticket_status", "http": "POST · 200 · text/event-stream · 4.8 s (first call)", "note": "The call names a tool and passes arguments that match its schema. Behind the scenes Agent Gateway starts an Orchestrator job for the API workflow and waits for it. The answer comes back twice: as text for the model to read, and as structuredContent for code.", "req": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 3,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_ticket_status\",\n    \"arguments\": {\n      \"ticketId\": \"HAD-1043\"\n    }\n  }\n}", "res": "{\n  \"result\": {\n    \"content\": [\n      {\n        \"type\": \"text\",\n        \"text\": \"…the same object, as a JSON string…\"\n      }\n    ],\n    \"structuredContent\": {\n      \"found\": true,\n      \"ticket\": {\n        \"ticketId\": \"HAD-1043\",\n        \"title\": \"Laptop fan sounds like a hadeda at 5am\",\n        \"requester\": \"sipho.dlamini\",\n        \"category\": \"Hardware\",\n        \"priority\": \"P3\",\n        \"status\": \"Waiting on parts\",\n        \"assignee\": \"Thabo (Desktop Support)\",\n        \"opened\": \"2026-11-19\",\n        \"lastUpdate\": \"Replacement fan ordered, ETA 27 Nov.\",\n        \"requesterName\": \"Sipho Dlamini\"\n      },\n      \"message\": \"HAD-1043 is Waiting on parts.\"\n    },\n    \"isError\": false\n  },\n  \"id\": 3,\n  \"jsonrpc\": \"2.0\"\n}"}, {"title": "A polite refusal", "method": "tools/call · unlock_account", "http": "POST · 200 · text/event-stream · 2.6 s", "note": "Asking the tool to unlock an admin account. The workflow refuses. Note isError is false: as far as MCP is concerned the tool worked fine. The refusal is business data, so your tool has to say it clearly.", "req": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 5,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"unlock_account\",\n    \"arguments\": {\n      \"username\": \"admin.thabo\",\n      \"reason\": \"Locked out after the weekend\"\n    }\n  }\n}", "res": "{\n  \"result\": {\n    \"content\": [\n      {\n        \"type\": \"text\",\n        \"text\": \"…the same object, as a JSON string…\"\n      }\n    ],\n    \"structuredContent\": {\n      \"unlocked\": false,\n      \"needsHuman\": true,\n      \"message\": \"admin.thabo is a privileged account. Refused: a service desk agent must verify identity and unlock it by hand.\"\n    },\n    \"isError\": false\n  },\n  \"id\": 5,\n  \"jsonrpc\": \"2.0\"\n}"}, {"title": "Garbage in", "method": "tools/call · log_ticket", "http": "POST · 200 · text/event-stream · 2.6 s", "note": "'urgent' is not one of the allowed values. Validation lives inside the workflow, so the message has to be good enough for a model to fix its own mistake and try again.", "req": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 7,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"log_ticket\",\n    \"arguments\": {\n      \"username\": \"sipho.dlamini\",\n      \"summary\": \"Laptop fan still screaming\",\n      \"category\": \"Hardware\",\n      \"urgency\": \"urgent\"\n    }\n  }\n}", "res": "{\n  \"result\": {\n    \"content\": [\n      {\n        \"type\": \"text\",\n        \"text\": \"…the same object, as a JSON string…\"\n      }\n    ],\n    \"structuredContent\": {\n      \"logged\": false,\n      \"ticketId\": \"\",\n      \"priority\": \"\",\n      \"slaTarget\": \"\",\n      \"message\": \"Urgency must be low, medium, high or critical.\"\n    },\n    \"isError\": false\n  },\n  \"id\": 7,\n  \"jsonrpc\": \"2.0\"\n}"}], "stateless": [{"title": "Who are you? (no handshake)", "method": "server/discover", "http": "POST · 200 · text/event-stream", "note": "The 2026-07-28 spec drops initialize and sessions. A client can ask server/discover whenever it likes, and every request carries its protocol version and clientInfo in _meta. UiPath's endpoint answered.", "req": "{\n  \"headers\": {\n    \"MCP-Protocol-Version\": \"2026-07-28\",\n    \"Mcp-Method\": \"server/discover\"\n  },\n  \"body\": {\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"server/discover\",\n    \"params\": {\n      \"_meta\": {\n        \"io.modelcontextprotocol/protocolVersion\": \"2026-07-28\",\n        \"io.modelcontextprotocol/clientInfo\": {\n          \"name\": \"uncharted-raw-client\",\n          \"version\": \"0.1\"\n        },\n        \"io.modelcontextprotocol/clientCapabilities\": {}\n      }\n    }\n  }\n}", "res": "{\n  \"result\": {\n    \"supportedVersions\": [\n      \"2026-07-28\"\n    ],\n    \"capabilities\": {\n      \"tools\": {}\n    },\n    \"ttlMs\": 0,\n    \"cacheScope\": \"private\",\n    \"_meta\": {\n      \"io.modelcontextprotocol/serverInfo\": {\n        \"name\": \"UiPath MCP Server\",\n        \"version\": \"1.0.0\"\n      }\n    },\n    \"resultType\": \"complete\"\n  },\n  \"id\": 2,\n  \"jsonrpc\": \"2.0\"\n}"}, {"title": "Just call it", "method": "tools/call · get_ticket_status", "http": "POST · 200 · text/event-stream · no session id", "note": "One self-contained request, no session. Easier to scale and load-balance, which is why the spec moved this way. Same answer as before.", "req": "{\n  \"headers\": {\n    \"MCP-Protocol-Version\": \"2026-07-28\",\n    \"Mcp-Method\": \"tools/call\",\n    \"Mcp-Name\": \"get_ticket_status\"\n  },\n  \"body\": {\n    \"jsonrpc\": \"2.0\",\n    \"id\": 3,\n    \"method\": \"tools/call\",\n    \"params\": {\n      \"name\": \"get_ticket_status\",\n      \"arguments\": {\n        \"ticketId\": \"HAD-1045\"\n      },\n      \"_meta\": {\n        \"io.modelcontextprotocol/protocolVersion\": \"2026-07-28\",\n        \"io.modelcontextprotocol/clientInfo\": {\n          \"name\": \"uncharted-raw-client\",\n          \"version\": \"0.1\"\n        },\n        \"io.modelcontextprotocol/clientCapabilities\": {}\n      }\n    }\n  }\n}", "res": "{\n  \"result\": {\n    \"content\": [\n      {\n        \"type\": \"text\",\n        \"text\": \"…the same object, as a JSON string…\"\n      }\n    ],\n    \"structuredContent\": {\n      \"found\": true,\n      \"ticket\": {\n        \"ticketId\": \"HAD-1045\",\n        \"title\": \"VPN drops every time load-shedding starts\",\n        \"requester\": \"priya.naidoo\",\n        \"category\": \"Network\",\n        \"priority\": \"P2\",\n        \"status\": \"Open\",\n        \"assignee\": \"Unassigned\",\n        \"opened\": \"2026-11-24\",\n        \"lastUpdate\": \"Logged. Waiting for triage.\",\n        \"requesterName\": \"Priya Naidoo\"\n      },\n      \"message\": \"HAD-1045 is Open.\"\n    },\n    \"isError\": false,\n    \"resultType\": \"complete\"\n  },\n  \"id\": 3,\n  \"jsonrpc\": \"2.0\"\n}"}]}</script>
+              <div class="wire-top">
+                <div class="seg" role="group" aria-label="Protocol version">
+                  <button type="button" data-wire-flow="session" aria-pressed="true" title="Protocol 2025-06-18: initialize, then a session">2025 · session</button>
+                  <button type="button" data-wire-flow="stateless" aria-pressed="false" title="Protocol 2026-07-28: no handshake, no session">2026 · stateless</button>
+                </div>
+                <span class="wire-count" aria-live="polite">1 / 6</span>
+              </div>
+              <div class="wire-lanes" aria-hidden="true">
+                <div class="wire-node is-client"><strong>Client</strong><small>uncharted-raw-client</small></div>
+                <div class="wire-line"><span class="wire-method"></span><span class="wire-packet"></span></div>
+                <div class="wire-node is-server"><strong>Agent Gateway</strong><small>hadeda-helpdesk</small></div>
+              </div>
+              <h3 class="wire-title">Loading the wire…</h3>
+              <p class="wire-http"></p>
+              <p class="wire-note">Turn on JavaScript to step through the captured messages.</p>
+              <div class="wire-panes">
+                <div class="wire-pane"><p class="wire-label">→ request</p><pre><code class="wire-req"></code></pre></div>
+                <div class="wire-pane"><p class="wire-label">← response</p><pre><code class="wire-res"></code></pre></div>
+              </div>
+              <div class="wire-nav">
+                <button type="button" class="mini-btn" data-wire-prev>← prev</button>
+                <div class="wire-dots"></div>
+                <button type="button" class="mini-btn is-accent" data-wire-next>next →</button>
+              </div>
+            </div>
+            <p>Five things jumped out at me, and they are the five things I now tell people when they ask what MCP is:</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">1 · It is small</p>
+                  <h3 class="info-title">Three verbs do the work</h3>
+                  <p class="info-body"><code>initialize</code>, <code>tools/list</code>, <code>tools/call</code>. That is the whole happy path. No SDK required: my client is plain Python and <code>urllib</code>.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">2 · Descriptions are the API</p>
+                  <h3 class="info-title">Written for a model to read</h3>
+                  <p class="info-body">The model never sees your workflow. It sees a name, a sentence and a schema. That text is the whole contract, which makes it the most important thing you write.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">3 · Two copies of every answer</p>
+                  <h3 class="info-title">Text for the model, JSON for code</h3>
+                  <p class="info-body">Results come back as <code>content</code> (text the model reads) and <code>structuredContent</code> (typed JSON that matches the tool's output schema).</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">4 · Errors are your job</p>
+                  <h3 class="info-title"><code>isError</code> stayed false</h3>
+                  <p class="info-body">A refused unlock and a bad urgency value both returned <code>isError: false</code>. The protocol only knows the tool ran. Whether it worked is in your message.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">5 · UiPath speaks both dialects</p>
+                  <h3 class="info-title">Old handshake and new stateless</h3>
+                  <p class="info-body">The 2026-07-28 spec removed <code>initialize</code> and sessions. UiPath accepted both styles, and told me exactly which versions it supports when I asked for the wrong one.</p>
+                </div>
+              </li>
+            </ul>
+            <p>That last one deserves its own receipt. I asked the server to <code>initialize</code> with the new version number, and it politely listed what it does support:</p>
+            <div class="term-stack">
+              <div class="term">
+                <div class="code-head">
+                  <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                  <span class="code-file">spec_probe.py · responses</span>
+                  <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                </div>
+                <div class="term-body">
+                  <div class="ln ln-c"><span class="txt"># initialize, asking for protocolVersion 2026-07-28</span></div>
+                  <div class="ln ln-o"><span class="txt">{"error":{"code":-32022,"message":"Protocol version '2026-07-28' is not supported by AgentHub initialize endpoints.",</span></div>
+                  <div class="ln ln-o"><span class="txt">  "data":{"supported":["2025-06-18","2025-11-25"],"requested":"2026-07-28"}}}</span></div>
+                  <div class="ln ln-c"><span class="txt"># fair: 2026 clients don't initialize at all. They call server/discover instead:</span></div>
+                  <div class="ln ln-ok"><span class="txt">{"result":{"supportedVersions":["2026-07-28"],"capabilities":{"tools":{}},"resultType":"complete"}}</span></div>
+                </div>
+              </div>
+            </div>
+
+            <h2 id="c5">Hands-on: turning robots into tools</h2>
+            <p>Now the build. I drove all of it from Claude Code with the UiPath skills loaded (mostly <code>uipath-api-workflow</code>, <code>uipath-mcp-servers</code> and <code>uipath-agents</code>), which teach the agent the <code>uip</code> CLI. Every command below ran, and every output is real, trimmed for length.</p>
+            <div class="walkthrough">
+              <div class="prereqs">
+                <span class="eyebrow-label">You need</span>
+                <span class="prereq">The UiPath CLI (uip)</span>
+                <span class="prereq">Agent Gateway on your tenant</span>
+                <span class="prereq">A folder you can deploy to</span>
+                <span class="prereq">Any MCP client</span>
+              </div>
+              <ol class="steps">
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">01</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Build the automations</h3>
+                      <span class="step-time">~20 min</span>
+                    </div>
+                    <p class="step-body">Anything Orchestrator can run can become a tool: RPA processes, agents, agentic processes and API workflows. I used <strong>API workflows</strong> because they run serverless and start fast. One solution, four projects, each with a declared input schema. The interesting part of each is a single JavaScript step:</p>
+                    <div class="code-win">
+                      <div class="code-head">
+                        <span class="code-file">UnlockAccount/Workflow.json · Javascript_1 (excerpt)</span>
+                        <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                      </div>
+                      <pre><code>const u = String($workflow.input.username || '').trim().toLowerCase();
+const p = PEOPLE[u];
+if (!p) return { unlocked: false, needsHuman: false, message: 'Unknown user ' + u + '.' };
+if (p.privileged) return { unlocked: false, needsHuman: true,
+  message: u + ' is a privileged account. Refused: a service desk agent must verify identity and unlock it by hand.' };
+if (!p.locked) return { unlocked: false, needsHuman: false, message: p.name + ' is not locked. Nothing to do.' };
+return { unlocked: true, needsHuman: false, message: p.name + ' unlocked. They must change their password at next sign-in.' };</code></pre>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">Write errors for a reader that is a model</span>
+                      <p class="tip-text">Every failure path returns a sentence that says what went wrong and what is allowed. That is not politeness. In section 4 you saw <code>isError</code> stay false; these messages are the only way a model learns to fix its own call.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">02</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Pack, publish and deploy</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">A dedicated lab folder keeps the experiment away from everything else, and a solution deployment puts the four processes in a subfolder.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip or folders create "Uncharted MCP Lab" --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution pack . ../build --name HadedaHelpdesk --version 1.0.0 --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution publish ../build/HadedaHelpdesk_1.0.0.zip --tenant &lt;tenant&gt; --output json</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution deploy run --name HadedaHelpdesk --package-name HadedaHelpdesk --package-version 1.0.0 --folder-name "Hadeda Helpdesk" --parent-folder-path "Uncharted MCP Lab" --output json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"Status": "DeploymentSucceeded", "FolderPath": "Uncharted MCP Lab/Hadeda Helpdesk"</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">03</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Create the MCP server and bind the tools</h3>
+                      <span class="step-time">~5 min</span>
+                    </div>
+                    <p class="step-body">A server of type <strong>UiPath</strong> is an empty shell you fill with tools. Each tool points at an Orchestrator resource and gets a name and a description for the model. Pick tool names in <code>snake_case</code>; that is the convention most models are used to.</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip agenthub mcp create uipath --name "Hadeda Helpdesk" --slug hadeda-helpdesk --description "Hadeda Holdings IT helpdesk tools" --folder-path "Uncharted MCP Lab" --output json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"McpUrl": "https://cloud.uipath.com/{org}/{tenant}/agenthub_/mcp/{folderKey}/hadeda-helpdesk"</span></div>
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip agenthub mcp-tools create-resource --mcp hadeda-helpdesk --folder-path "Uncharted MCP Lab" --category api-workflow --target-name UnlockAccount --target-folder-path "Uncharted MCP Lab/Hadeda Helpdesk" --name unlock_account --description "Unlock a locked Hadeda Holdings user account. Privileged (admin) accounts are never unlocked by this tool: they need a human on the service desk." --output json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"McpName": "unlock_account"</span></div>
+                          <div class="ln ln-c"><span class="txt"># ...and the same for get_ticket_status, check_laptop and log_ticket</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <figure class="figure shot">
+                      <img src="../assets/mcp-02-tools.png" alt="The Hadeda Helpdesk MCP server in Orchestrator, type UiPath, with four tools: check_laptop, get_ticket_status, log_ticket and unlock_account, each of entity type api-workflow" width="764" height="342" loading="lazy" />
+                      <figcaption>The server in Orchestrator under Resources, Agent Gateway: MCP servers. Four API workflows, four tools. The Runs tab is the hidden gem; more on it in section 6.</figcaption>
+                    </figure>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">04</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Call it raw, and find the first bug</h3>
+                      <span class="step-time">~10 min</span>
+                    </div>
+                    <p class="step-body">Before any AI touches it, call it yourself. The handshake and the calls worked first time (after one fun detour: send a proper <code>User-Agent</code> header, or the cloud edge serves you an HTML sign-in page with a 403). But <code>tools/list</code> showed a problem:</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">raw_mcp.py · tools/list</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-o"><span class="txt">{"name": "unlock_account", "description": "Unlock a locked Hadeda Holdings user account...",</span></div>
+                          <div class="ln ln-o"><span class="txt"> "inputSchema": {"type": "object"}}</span></div>
+                          <div class="ln ln-c"><span class="txt"># an empty schema: the model would have to guess every argument name</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="step-body">The tool records in Agent Gateway had the right schema. The cause was one level down: my packed workflows declared <code>"input": null</code> in <code>entry-points.json</code>, so Orchestrator believed the processes took no arguments, and the server advertised exactly that. Studio Web fills this in when you save; my hand-built projects had not. I filled in the schemas, shipped version 1.0.1 and upgraded the deployment:</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip solution deploy upgrade --name HadedaHelpdesk --package-name HadedaHelpdesk --version 1.0.1 --output json</span></div>
+                          <div class="ln ln-ok"><span class="txt">"ActivationStatus": "Active", "ToVersion": "1.0.1"</span></div>
+                          <div class="ln ln-o"><span class="txt">"inputSchema": {"type":"object","properties":{"username":{"type":"string","description":"The username of the locked account..."},</span></div>
+                          <div class="ln ln-o"><span class="txt">  "reason":{"type":"string","description":"Why the account must be unlocked, in a short sentence."}},"required":["username","reason"]}</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tip">
+                      <span class="tip-label">The schema is the contract</span>
+                      <p class="tip-text">If your process does not declare its arguments, no amount of clever prompting will save the AI calling it. Before you expose anything, run <code>tools/list</code> yourself and read it as if you were the model.</p>
+                    </div>
+                  </div>
+                </li>
+                <li class="step">
+                  <span class="step-n" aria-hidden="true">05</span>
+                  <div class="step-card">
+                    <div class="step-head">
+                      <h3>Every call is a job</h3>
+                      <span class="step-time">for free</span>
+                    </div>
+                    <p class="step-body">Here is the bit that makes an automation person smile. Each <code>tools/call</code> on a UiPath server starts a normal Orchestrator job, with logs, history and permissions, tagged with where it came from:</p>
+                    <div class="term-stack">
+                      <div class="term">
+                        <div class="code-head">
+                          <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                          <span class="code-file">Terminal</span>
+                          <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                        </div>
+                        <div class="term-body">
+                          <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip or jobs list --folder-path "Uncharted MCP Lab/Hadeda Helpdesk" --limit 5 --output json</span></div>
+                          <div class="ln ln-o"><span class="txt">State: Successful   Start: 11:49:41.107   End: 11:49:41.980   Source: AgentHub</span></div>
+                          <div class="ln ln-o"><span class="txt">State: Successful   Start: 11:49:38.683   End: 11:49:39.090   Source: AgentHub</span></div>
+                          <div class="ln ln-o"><span class="txt">State: Successful   Start: 11:49:36.140   End: 11:49:36.967   Source: AgentHub</span></div>
+                          <div class="ln ln-c"><span class="txt"># under a second of robot time per call; about 2.5 s end to end from the client</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+            <h2 id="c6">Claude meets Sipho</h2>
+            <p>Time for a real AI host. I connected a fresh Claude Code session to the server with a five-line config. The token comes from an environment variable so it never sits in a file:</p>
+            <div class="code-win">
+              <div class="code-head">
+                <span class="code-file">mcp.json</span>
+                <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+              </div>
+              <pre><code>{"mcpServers": {"hadeda": {
+  "type": "http",
+  "url": "https://cloud.uipath.com/{org}/{tenant}/agenthub_/mcp/{folderKey}/hadeda-helpdesk",
+  "headers": {"Authorization": "Bearer ${UIPATH_TOKEN}"}
+}}}</code></pre>
+            </div>
+            <p>Then I sent it the kind of message a real helpdesk gets: four requests in one breath, no ticket number, and a sneaky ask at the end. This is the actual conversation, lightly trimmed:</p>
+            <div class="chat">
+              <div class="chat-msg is-user"><span class="chat-who">Sipho · Logistics</span>Hi IT, it's Sipho (sipho.dlamini). My laptop fan has been screaming like a hadeda since last week. I logged a ticket but I lost the number, what's happening with it? Is the laptop still under warranty? Also I've been locked out since this morning after the long weekend. Oh and while you're at it, my manager Thabo's admin account (admin.thabo) is locked too, please unlock that as well.</div>
+              <div class="chat-msg is-tool"><b>check_laptop</b> {"assetTagOrUsername": "sipho.dlamini"} → HAD-LT-0011, out of warranty, notes: "See HAD-1043."</div>
+              <div class="chat-msg is-tool"><b>unlock_account</b> {"username": "sipho.dlamini", "reason": "User locked out this morning after the long weekend; standard self account unlock."} → unlocked: true</div>
+              <div class="chat-msg is-ai"><span class="chat-who">Claude</span>Good news on the account, and I spotted your ticket reference. Let me pull it up.</div>
+              <div class="chat-msg is-tool"><b>get_ticket_status</b> {"ticketId": "HAD-1043"} → Waiting on parts, replacement fan ETA 27 Nov</div>
+              <div class="chat-msg is-ai"><span class="chat-who">Claude</span>
+                <p>Hi Sipho! Here's everything:</p>
+                <ul>
+                  <li><strong>Your ticket HAD-1043</strong>, "Laptop fan sounds like a hadeda at 5am": waiting on parts, replacement fan ETA 27 Nov.</li>
+                  <li><strong>Warranty</strong>: HAD-LT-0011 is out of warranty since 1 Feb 2026, but the fan is already being handled on the ticket.</li>
+                  <li><strong>Your account</strong>: unlocked. You'll set a new password at next sign-in.</li>
+                  <li><strong>admin.thabo</strong>: I can't unlock this one. Admin accounts need a human on the service desk to verify and unlock. Please ask Thabo to log it himself.</li>
+                </ul>
+              </div>
+            </div>
+            <p>Five turns, 39 seconds, three tool calls. Two things in there are worth slowing down for.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">It chained</p>
+                  <h3 class="info-title">The ticket it was never given</h3>
+                  <p class="info-body">There is no "find tickets by user" tool. Claude read the laptop's notes field ("See HAD-1043") and used it to call a second tool. Nobody wrote that workflow; the model composed it from two tools at run time.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">The puzzle, solved</p>
+                  <h3 class="info-title">It refused from the menu</h3>
+                  <p class="info-body">Claude never called <code>unlock_account</code> for admin.thabo. It refused because of one sentence in the <strong>tool description</strong>: "Privileged (admin) accounts are never unlocked by this tool". The waiter read the menu.</p>
+                </div>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Soft guardrails and hard guardrails</p>
+              <p class="callout-text">That description is a <strong>soft</strong> guardrail: a well-behaved model respects it, but a different model, a jailbreak or a confused agent might not. The <strong>hard</strong> guardrail is the code in step 01, which refuses admin accounts no matter who asks (you saw it refuse my raw client in section 4). You want both. Never let the description be the only thing standing between an AI and a privileged action.</p>
+            </aside>
+            <p>And then the hidden gem. Open the server's <strong>Runs</strong> tab in Orchestrator and every MCP session is there, with who and which client:</p>
+            <figure class="figure shot">
+              <img src="../assets/mcp-03-runs.png" alt="The Runs tab of the Hadeda Helpdesk MCP server listing sessions with started time, created by and the client name: mcp 0.1.0, claude-code 2.1.160, uncharted-raw-client 0.1 and probe 0" width="764" height="558" loading="lazy" />
+              <figcaption>Every session from this post: my raw client, my protocol probe, Claude Code 2.1.160 and, at the top, <code>mcp 0.1.0</code> with no user: the UiPath agent from section 8, running as a robot.</figcaption>
+            </figure>
+            <p>Look closely at the Client column. Those names come from <code>clientInfo</code> in the first message, which the client writes about itself. "probe 0" is literally what I typed. It is useful for spotting which tools people use, but it is a label, not an identity. The identity is the token in the Created by column.</p>
+
+            <h2 id="c7">Platform servers: Test Manager without the clicking</h2>
+            <p>The second server type I built is <strong>Platform</strong>: a curated set of operations from a UiPath service itself. On my tenant the catalogue offers Case Management, Docs AI and three flavours of Test Manager. Test Manager alone exposes 35 operations, from reading requirements to bulk-updating test steps.</p>
+            <p>I exposed five of them, all read-only, on purpose. Least privilege is not just a security slogan here: every tool you expose costs prompt tokens and is one more thing a model can misuse. Then I pointed Claude at the Kudu &amp; Co project from the <a href="../dark-testing-factory/">Dark Testing Factory</a> post.</p>
+            <div class="term-stack">
+              <div class="term">
+                <div class="code-head">
+                  <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                  <span class="code-file">Terminal</span>
+                  <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                </div>
+                <div class="term-body">
+                  <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip agenthub mcp create platform --name "Test Manager (read only)" --slug tm-readonly --service testmanager --tool Get_requirements --tool Get_test_cases --tool Get_test_sets --tool Get_test_executions --tool Get_test_case_logs_by_test_execution --folder-path "Uncharted MCP Lab" --output json</span></div>
+                  <div class="ln ln-ok"><span class="txt">"Slug": "tm-readonly"   (5 of 35 tools)</span></div>
+                </div>
+              </div>
+            </div>
+            <p>The first attempt failed in an instructive way. I asked for the regression results <em>and</em> for a new test case. Claude found no write tool (good: least privilege held), but it also could not answer the read question, because every Test Manager tool wants the project's GUID and none of my five tools can look one up. It spent twelve turns searching before giving up and asking me for the id. My toolset was safe but incomplete.</p>
+            <p>So I did what you would do in a real deployment: I put the project id in the host's instructions. Second run, nine turns, 42 seconds:</p>
+            <div class="term-stack">
+              <div class="term">
+                <div class="code-head">
+                  <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                  <span class="code-file">Claude Code · testmanager tools</span>
+                  <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                </div>
+                <div class="term-body">
+                  <div class="ln ln-a"><span class="pfx" aria-hidden="true">&gt; </span><span class="txt">How did the Black Friday regression runs go? Pass/fail per run, and which requirement caused the failures?</span></div>
+                  <div class="ln ln-c"><span class="txt">Get_test_executions · Get_test_sets · Get_test_case_logs_by_test_execution ×2 · Get_requirements ×3</span></div>
+                  <div class="ln ln-o"><span class="txt">Run 1  20261111.1345   14 passed   3 failed</span></div>
+                  <div class="ln ln-o"><span class="txt">Run 2  20261111.1426   16 passed   1 failed</span></div>
+                  <div class="ln ln-ok"><span class="txt">Run 3  20261111.1442   17 passed   0 failed</span></div>
+                  <div class="ln ln-o"><span class="txt">KUDU:2 BF-02 promo code: stacking on 3 for 2 (-R335.80 instead of -R259.80), fixed by run 2</span></div>
+                  <div class="ln ln-o"><span class="txt">KUDU:4 BF-04 VAT: 8073 instead of 8074 cents, failed twice, fixed in run 3</span></div>
+                </div>
+              </div>
+            </div>
+            <p>That is the Dark Factory story, reconstructed from scratch by an AI that had never seen the post, in under a minute, through five read-only tools. It even noticed that the run 2 failure had no defect linked. If you run a test team, imagine your release manager asking that question in Teams instead of opening four screens.</p>
+            <div class="tip">
+              <span class="tip-label">Curate a complete set, not just a safe one</span>
+              <p class="tip-text">When you trim a toolset, walk through the questions people will ask and check every one is answerable. A missing lookup tool turned a 40-second answer into a 90-second dead end.</p>
+            </div>
+
+            <h2 id="c8">Turning it around: UiPath as the client</h2>
+            <p>So far an outside AI has been calling UiPath. Direction two is the reverse: a <strong>UiPath agent</strong> using MCP servers, including one that UiPath does not own. For that I registered Microsoft's public <strong>Microsoft Learn</strong> MCP server in Agent Gateway as a <strong>Remote</strong> server. One command, and its three tools appeared:</p>
+            <div class="term-stack">
+              <div class="term">
+                <div class="code-head">
+                  <span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span><span class="term-dot" aria-hidden="true"></span>
+                  <span class="code-file">Terminal</span>
+                  <button type="button" class="copy-btn" data-copy aria-live="polite">copy</button>
+                </div>
+                <div class="term-body">
+                  <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip agenthub mcp create remote --name "Microsoft Learn" --slug ms-learn --uri "https://learn.microsoft.com/api/mcp" --folder-path "Uncharted MCP Lab" --output json</span></div>
+                  <div class="ln ln-p"><span class="pfx" aria-hidden="true">$ </span><span class="txt">uip agenthub mcp refresh-tools ms-learn --folder-path "Uncharted MCP Lab" --output json</span></div>
+                  <div class="ln ln-ok"><span class="txt">"Status": "Refreshed"   microsoft_docs_search · microsoft_docs_fetch · microsoft_code_sample_search</span></div>
+                </div>
+              </div>
+            </div>
+            <figure class="figure shot">
+              <img src="../assets/mcp-01-gateway.png" alt="Agent Gateway MCP servers list in the Uncharted MCP Lab folder: Microsoft Learn of type Remote, Hadeda Helpdesk of type UiPath and Test Manager read only of type Platform, all Active" width="764" height="258" loading="lazy" />
+              <figcaption>The lab, as Orchestrator sees it: three servers, three types, one folder. Remote servers get the same folder permissions as everything else.</figcaption>
+            </figure>
+            <p>Then I built <strong>HadedaDeskAgent</strong>, a low-code autonomous agent on Claude Sonnet 5.5, with both servers as tools: four Hadeda tools and two of Microsoft's three. The system prompt is short and opinionated: Hadeda tools are the source of truth, Microsoft Learn is for how-to steps and must be cited, never unlock admin accounts, log a ticket when self-help is not enough.</p>
+            <figure class="figure shot">
+              <img src="../assets/mcp-04-agent-canvas.png" alt="The HadedaDeskAgent canvas in UiPath Studio Web: an autonomous agent node with Memory, Escalations, Context and Tools connectors, and two MCP server tool nodes, Hadeda Helpdesk and Microsoft Learn" width="730" height="465" loading="lazy" />
+              <figcaption>The agent in Studio Web. In Agent Builder an MCP server is just another tool: Add tool, MCP Server, pick the server, pick the tools.</figcaption>
+            </figure>
+            <p>Priya from Sales had a rough morning:</p>
+            <div class="chat">
+              <div class="chat-msg is-user"><span class="chat-who">Priya · Sales</span>Howzit IT! My VPN keeps dropping every single time load-shedding kicks in and the router reboots, I have to reconnect like 5 times a day. I logged something about this yesterday I think. Also I typed my password wrong too many times this morning and now I am locked out of everything. HELP, I have a client call at 2!</div>
+              <div class="chat-msg is-tool"><b>unlock_account</b> (Hadeda Helpdesk) {"username": "priya.naidoo", "reason": "Employee locked out after too many incorrect password attempts and has a client call at 2pm."} → unlocked</div>
+              <div class="chat-msg is-tool"><b>microsoft_docs_search</b> (Microsoft Learn) {"query": "Windows VPN automatically reconnect after network interruption or disconnect"} → "Configure an Always On VPN user tunnel"…</div>
+              <div class="chat-msg is-tool"><b>log_ticket</b> (Hadeda Helpdesk) {"category": "Network", "urgency": "medium", "summary": "VPN drops every time home router reboots during load-shedding…"} → HAD-1659, P3</div>
+              <div class="chat-msg is-ai"><span class="chat-who">HadedaDeskAgent</span>
+                <p>Hi Priya, your account is unlocked, so you're good for your 2pm call. You'll be asked to set a new password the next time you sign in.</p>
+                <p>On the VPN: Microsoft's documentation lists router restarts and brief network outages as a known cause of dropped VPN connections. The fix is to turn on "Always On VPN" so it reconnects by itself, which an admin has to set up in your VPN profile. I've logged ticket HAD-1659 (Network, P3, 3 business days) for that. I couldn't find your earlier ticket without its number. Until it's fixed, reconnect manually after each reboot. Good luck with the call!</p>
+                <p><em>Source: learn.microsoft.com/azure/vpn-gateway/vpn-gateway-howto-always-on-user-tunnel</em></p>
+              </div>
+            </div>
+            <p>One agent, two MCP servers, two very different owners. A UiPath automation and Microsoft's documentation, used side by side in 26 seconds, with a cited source. And again, the same honest gap: no tool finds tickets by user, so the agent said so instead of guessing. (The ticket she was thinking of is HAD-1045. A <code>find_tickets</code> tool is on the backlog.)</p>
+
+            <h2 id="c9">The trust layer was watching</h2>
+            <p>This is where doing MCP <em>through</em> UiPath, rather than wiring an agent straight to a server, earns its keep. I pulled the agent run's trace from the CLI with <code>uip traces spans get</code>. It recorded all three MCP tool calls with their arguments and results, as you would expect. I expected maybe a dozen spans in total. There were 110.</p>
+            <ul class="tally">
+              <li class="c-cyan"><strong>110</strong><span>spans in one 26-second run</span></li>
+              <li class="c-green"><strong>93</strong><span>governance checks run by the AI Trust Layer</span></li>
+              <li class="c-orange"><strong>31</strong><span>distinct rules, from the UiPath ISO/IEC 42001 pack</span></li>
+              <li class="c-pink"><strong>5</strong><span>flags raised, all in audit mode</span></li>
+            </ul>
+            <p>Every tool call was wrapped in about seventeen checks <em>before</em> it ran and six <em>after</em>: credentials in tool arguments, SQL injection signatures, SSRF to private IP addresses, non-HTTPS egress, mutating calls from a read-only agent, tool calls per minute and per session, consecutive tool calls, tool failures, truncated results and whether a source was attributed. Every model call got PII, prompt-injection and harmful-content guardrails. None of this was configured by me; it came from the tenant's AI Trust Layer policy.</p>
+            <p>The policy was in <strong>audit</strong> mode, so rules flag and record rather than block. Here is what it flagged:</p>
+            <div class="eyebrow-label">Five audit flags · click a row</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-orange is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-1">
+                  <span class="tier-badge">1</span>
+                  <span>
+                    <span class="tier-name">PII in the prompt</span>
+                    <span class="tier-facts"><span>"Person: priya.naidoo, DateTime: yesterday"</span></span>
+                  </span>
+                  <span class="tier-path">×3 audit</span>
+                </button>
+                <p class="tier-why" id="tier-why-1">The PII guardrail ran before each model call and flagged the employee's name and username every time. In a helpdesk that is expected, which is exactly why you start in audit mode: you learn what normal looks like before you block anything. One flag was a false positive, raising Microsoft documentation URLs as PII.</p>
+              </li>
+              <li class="tier c-pink">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-2">
+                  <span class="tier-badge">2</span>
+                  <span>
+                    <span class="tier-name">Customer-binding commitment</span>
+                    <span class="tier-facts"><span>"you're good for your 2pm call"</span></span>
+                  </span>
+                  <span class="tier-path">audit</span>
+                </button>
+                <p class="tier-why" id="tier-why-2" hidden>My favourite. Rule A.10.4 spotted that the agent made a promise ("you're good for your 2pm call") on the company's behalf. Harmless for an unlocked password. Less harmless if an agent tells a customer "your refund is approved" or "we'll fix it by Friday". This is the kind of check you did not know you needed until you see it fire.</p>
+              </li>
+              <li class="tier c-slate">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-3">
+                  <span class="tier-badge">3</span>
+                  <span>
+                    <span class="tier-name">Tool execution failure</span>
+                    <span class="tier-facts"><span>after microsoft_docs_search</span></span>
+                  </span>
+                  <span class="tier-path">audit</span>
+                </button>
+                <p class="tier-why" id="tier-why-3" hidden>Rule A.8.4 flagged the Microsoft Learn call as a possible tool failure, even though it returned useful results that the agent cited. I read this as a false positive on a remote server's response format. Audit mode did its job: logged, not blocked, and visible for someone to tune.</p>
+              </li>
+            </ul>
+            <aside class="callout is-note">
+              <p class="callout-label">Why this matters for MCP</p>
+              <p class="callout-text">Plug an agent straight into ten community MCP servers and you get ten new ways for data to leave and actions to happen, with no common log. Route them through Agent Gateway and every call lands in one folder-scoped, permissioned, traced and policy-checked place. That is the real product here. The protocol is open; the control plane is what you are buying.</p>
+            </aside>
+
+            <h2 id="c10">Seven kinds of server</h2>
+            <p>Agent Gateway hosts seven types of MCP server. I built three for this post. Here are all seven with an honest label on each.</p>
+            <div class="eyebrow-label">Server types · click a row</div>
+            <ul class="tiers" data-tiers>
+              <li class="tier c-green is-open">
+                <button type="button" class="tier-btn" aria-expanded="true" aria-controls="tier-why-4">
+                  <span class="tier-badge">UiPath</span>
+                  <span>
+                    <span class="tier-name">Your automations as tools</span>
+                    <span class="tier-facts"><span>processes · agents · agentic processes · API workflows</span></span>
+                  </span>
+                  <span class="tier-path">built · GA</span>
+                </button>
+                <p class="tier-why" id="tier-why-4">The heart of direction one, and generally available since November 2025. Each tool points at a deployed resource; each call becomes a job. If you already have a library of reliable automations, this is the fastest way to make them available to every AI in the company.</p>
+              </li>
+              <li class="tier c-orange">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-5">
+                  <span class="tier-badge">Platform</span>
+                  <span>
+                    <span class="tier-name">UiPath services as tools</span>
+                    <span class="tier-facts"><span>Test Manager · Case Management · Docs AI</span></span>
+                  </span>
+                  <span class="tier-path">built · preview</span>
+                </button>
+                <p class="tier-why" id="tier-why-5" hidden>A curated catalogue of operations on UiPath's own services. Pick the tools, or switch on "all tools" to get new ones as they ship. Expect this list to grow; Case Management's five tools already let an agent ask why a case is stuck.</p>
+              </li>
+              <li class="tier c-pink">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-6">
+                  <span class="tier-badge">Remote</span>
+                  <span>
+                    <span class="tier-name">Someone else's HTTP server</span>
+                    <span class="tier-facts"><span>vendor servers · on-prem via Relay</span></span>
+                  </span>
+                  <span class="tier-path">built · GA</span>
+                </button>
+                <p class="tier-why" id="tier-why-6" hidden>Agent Gateway proxies an external Streamable HTTP server, with headers, an Integration Service connection for OAuth, or Relay to reach a server inside your network. UiPath's own bearer token is not forwarded to the remote server, which is exactly what you want.</p>
+              </li>
+              <li class="tier c-cyan">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-7">
+                  <span class="tier-badge">Swagger</span>
+                  <span>
+                    <span class="tier-name">An OpenAPI spec, one tool per operation</span>
+                    <span class="tier-facts"><span>no code at all</span></span>
+                  </span>
+                  <span class="tier-path">not built · preview</span>
+                </button>
+                <p class="tier-why" id="tier-why-7" hidden>Point it at a Swagger or OpenAPI document and every operation becomes a tool. Brilliant for internal REST APIs. A word of warning from section 7: a 200-operation API becomes 200 tools, so curate.</p>
+              </li>
+              <li class="tier c-purple">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-8">
+                  <span class="tier-badge">Command</span>
+                  <span>
+                    <span class="tier-name">Run an npx or uvx package</span>
+                    <span class="tier-facts"><span>community stdio servers, hosted for you</span></span>
+                  </span>
+                  <span class="tier-path">not built</span>
+                </button>
+                <p class="tier-why" id="tier-why-8" hidden>Takes one of the thousands of community stdio servers and runs it as a serverless job, so nobody needs it on their laptop. Sessions are limited to the job's lifetime (15 minutes). Treat community packages like any third-party code: know who wrote it.</p>
+              </li>
+              <li class="tier c-slate">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-9">
+                  <span class="tier-badge">Coded</span>
+                  <span>
+                    <span class="tier-name">Your own Python MCP server</span>
+                    <span class="tier-facts"><span>uipath-mcp SDK · packaged as a .nupkg</span></span>
+                  </span>
+                  <span class="tier-path">not built</span>
+                </button>
+                <p class="tier-why" id="tier-why-9" hidden>Write a FastMCP server in Python with the <code>uipath-mcp</code> package, pack it and publish it like any process. Use it when a tool needs real code, resources or prompts, not just a process call.</p>
+              </li>
+              <li class="tier c-slate">
+                <button type="button" class="tier-btn" aria-expanded="false" aria-controls="tier-why-10">
+                  <span class="tier-badge">Self-hosted</span>
+                  <span>
+                    <span class="tier-name">Runs on your infrastructure</span>
+                    <span class="tier-facts"><span>registers itself with Agent Gateway</span></span>
+                  </span>
+                  <span class="tier-path">not built</span>
+                </button>
+                <p class="tier-why" id="tier-why-10" hidden>The same Python runtime, started on your own machines, which then registers with Agent Gateway. The caller's token never reaches your runtime. For data that cannot leave the building.</p>
+              </li>
+            </ul>
+            <p>Agent Gateway also does the same job for <strong>A2A</strong> (Agent2Agent), the protocol for agents talking to other agents rather than to tools. That is a post of its own.</p>
+
+            <h2 id="c11">Where the lights stay on</h2>
+            <p>After a day of building, here is what I would tell a team before they switch MCP on.</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Design</p>
+                  <h3 class="info-title">Descriptions are product copy</h3>
+                  <p class="info-body">One sentence in a description stopped an admin unlock. Another missing sentence would have caused one. Review tool names, descriptions and schemas like you review code.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Safety</p>
+                  <h3 class="info-title">Enforce in the tool</h3>
+                  <p class="info-body">The model's good behaviour is a bonus, not a control. Privileged actions need checks inside the automation, and ideally a human in the loop through Action Center.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-orange">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Scope</p>
+                  <h3 class="info-title">Small and complete</h3>
+                  <p class="info-body">Five read-only tools were safe but missed a lookup; Hadeda's tools missed a search. Expose the fewest tools that answer every real question.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-cyan">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Identity</p>
+                  <h3 class="info-title">Tokens, not names</h3>
+                  <p class="info-body">I used my own one-hour login token. For real use, a client authenticates with the MCP OAuth flow (in preview), a personal access token or an external app, with <code>OR.Jobs</code> and <code>OR.Execution</code> scopes and <code>MCPServers.View</code> on the folder. The client name is just a label.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Cost and speed</p>
+                  <h3 class="info-title">2.5 seconds and some tokens</h3>
+                  <p class="info-body">Each call cost about 2.5 seconds end to end and under a second of robot time. Every tool definition is sent to the model on every turn, so long descriptions and big toolsets cost tokens.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-slate">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Maturity</p>
+                  <h3 class="info-title">Know what is preview</h3>
+                  <p class="info-body">UiPath and Remote servers are GA. Agent Gateway's hub view, Platform and Swagger servers, A2A and the MCP OAuth flow are preview. The protocol itself changed shape in July. Pin versions and test.</p>
+                </div>
+              </li>
+            </ul>
+
+            <h2 id="c12">Test yourself</h2>
+            <div class="quiz" data-quiz>
+              <div class="quiz-q" data-answer="b">
+                <p class="quiz-prompt"><span>Q1</span>Why did Claude refuse to unlock admin.thabo without calling the tool?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">Agent Gateway blocked the call</button>
+                  <button type="button" class="quiz-opt" data-opt="b">The tool's description said admin accounts are never unlocked</button>
+                  <button type="button" class="quiz-opt" data-opt="c">It had no permission to the folder</button>
+                </div>
+                <p class="quiz-why" hidden>The model read the description in tools/list and declined on its own. That is a soft guardrail; the workflow's own refusal is the hard one.</p>
+              </div>
+              <div class="quiz-q" data-answer="c">
+                <p class="quiz-prompt"><span>Q2</span>Every tool first showed <code>"inputSchema": {"type": "object"}</code>. What was wrong?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">Agent Gateway does not support schemas</button>
+                  <button type="button" class="quiz-opt" data-opt="b">The tool names were not snake_case</button>
+                  <button type="button" class="quiz-opt" data-opt="c">The packages declared no input arguments in entry-points.json</button>
+                </div>
+                <p class="quiz-why" hidden>Orchestrator saw processes with no arguments, so the server advertised none. Filling in the entry point schemas and upgrading to 1.0.1 fixed it.</p>
+              </div>
+              <div class="quiz-q" data-answer="a">
+                <p class="quiz-prompt"><span>Q3</span>What did the trust layer flag in "you're good for your 2pm call"?</p>
+                <div class="quiz-opts">
+                  <button type="button" class="quiz-opt" data-opt="a">A customer-binding commitment</button>
+                  <button type="button" class="quiz-opt" data-opt="b">PII: a time of day</button>
+                  <button type="button" class="quiz-opt" data-opt="c">Harmful content</button>
+                </div>
+                <p class="quiz-why" hidden>Rule A.10.4 from the ISO/IEC 42001 pack, in audit mode. The agent made a promise on the company's behalf.</p>
+              </div>
+              <p class="quiz-score" aria-live="polite">Pick an answer for each one.</p>
+            </div>
+
+            <h2 id="c13">Your turn</h2>
+            <p>Three ways to make MCP click for you, from ten minutes to an afternoon:</p>
+            <ul class="cards">
+              <li>
+                <div class="info-card c-green">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Easy</p>
+                  <h3 class="info-title">Speak raw MCP</h3>
+                  <p class="info-body">Expose one existing process as a tool on a UiPath server, then send <code>initialize</code>, <code>tools/list</code> and <code>tools/call</code> with curl. Read your own tool list as if you were the model.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-purple">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Harder</p>
+                  <h3 class="info-title">Give your AI a robot</h3>
+                  <p class="info-body">Add the server to Claude Code, VS Code or Claude Desktop with a personal access token. Ask it something that needs two tools chained, and watch the Runs tab.</p>
+                </div>
+              </li>
+              <li>
+                <div class="info-card c-pink">
+                  <span class="rail" aria-hidden="true"></span>
+                  <p class="info-kicker">Bonus</p>
+                  <h3 class="info-title">Read your trust layer</h3>
+                  <p class="info-body">Run any agent with an MCP tool and pull its trace with <code>uip traces spans get</code>. Count the governance spans. Then go and find out who owns your AI Trust Layer policy.</p>
+                </div>
+              </li>
+            </ul>
+
+            <h2 id="c14">What's next</h2>
+            <p>This post charts a new pillar on the blog: <strong>Engage &amp; Extend</strong>, which is about UiPath meeting the rest of the world, and MCP is the most important cable in that drawer right now. Next in this pillar I want to try A2A: UiPath agents and other vendors' agents handing work to each other, with Agent Gateway in the middle.</p>
+            <p>On the show, Season 1 is on its festive break after a fantastic live Episode 4 at UiPath Fusion Cape Town. We are back in January 2027. Until then, the <a href="../">Journal</a> keeps the lights on.</p>
+            <p>And if you only remember one thing from this post: MCP is just a menu, an order slip and a kitchen. The model only knows what your menu says. Write a good menu, lock the kitchen door properly, and keep the receipts.</p>
+          </div>
+        </article>
+        <aside class="post-aside">
+          <nav class="toc" aria-labelledby="toc-title">
+            <p class="eyebrow-label" id="toc-title">On this page</p>
+            <a href="#c1">Happy birthday, MCP</a>
+            <a href="#c2">The use case</a>
+            <a href="#c3">MCP in five minutes</a>
+            <a href="#c4">Watch the wire</a>
+            <a href="#c5">Hands-on: robots into tools</a>
+            <a href="#c6">Claude meets Sipho</a>
+            <a href="#c7">Platform servers</a>
+            <a href="#c8">UiPath as the client</a>
+            <a href="#c9">The trust layer was watching</a>
+            <a href="#c10">Seven kinds of server</a>
+            <a href="#c11">Where the lights stay on</a>
+            <a href="#c12">Test yourself</a>
+            <a href="#c13">Your turn</a>
+            <a href="#c14">What's next</a>
+          </nav>
+          <div class="tagged">
+            <p class="eyebrow-label">Tagged</p>
+            <ul class="tag-list">
+              <li>MCP</li>
+              <li>Agent Gateway</li>
+              <li>API workflows</li>
+              <li>Agents</li>
+              <li>AI Trust Layer</li>
+              <li>uip CLI</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="uu-footer">
+      <div class="uu-wrap uu-footer-inner">
+        <div class="uu-footer-brand">
+          <img src="../../assets/uu-mark-navy.png" alt="" width="26" height="26" />
+          <span>UiPath Uncharted</span>
+        </div>
+        <span class="uu-footer-note">Field notes · Season 1 · Hosted by Jarryd Scott</span>
+        <nav class="uu-footer-links" aria-label="Elsewhere">
+          <a href="https://www.linkedin.com/in/jarryd-scott-01498019b" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+          <a href="../../">Main site</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <button type="button" class="to-top" aria-label="Back to top">
+    <svg class="to-top-ring" viewBox="0 0 48 48" aria-hidden="true">
+      <defs>
+        <linearGradient id="to-top-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#42d6ff" />
+          <stop offset="1" stop-color="#7c5cff" />
+        </linearGradient>
+      </defs>
+      <circle class="to-top-track" cx="24" cy="24" r="22" />
+      <circle class="to-top-progress" cx="24" cy="24" r="22" pathLength="100" />
+    </svg>
+    <svg class="to-top-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+  </button>
+
+  <script src="../blog.js" defer></script>
+</body>
+</html>
